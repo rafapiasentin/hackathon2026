@@ -54,3 +54,4 @@ jobs:
             dados_recebidos/pipeline/coleta.zip
             dados_recebidos/pipeline/docs/
             dados_recebidos/conferencia_fonte/resultado.json
+            dados_recebidos/conferencia_fonte/dadosabertos.html

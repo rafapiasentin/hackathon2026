@@ -72,7 +72,13 @@ def main():
                 resultados.append(dict(url=API, contrato_compativel=False, erro='contract_Leis_nao_confirmado'))
     (pasta / 'resultado.json').write_text(json.dumps(resultados, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(resultados, ensure_ascii=False))
-    return 0 if all(r['contrato_compativel'] for r in resultados) else 2
+    # A página explica o serviço; o contrato consumido pela ETL é o da API.
+    # Mantém a divergência da documentação registrada, sem invalidar uma API
+    # cuja estrutura foi conferida diretamente (tipos e página de leis).
+    if args.api and not resultados[0]['contrato_compativel']:
+        print('AVISO: documentação HTML indisponível ou divergente; consulte o relatório preservado.')
+    contratos = resultados[1:] if args.api else resultados
+    return 0 if contratos and all(r['contrato_compativel'] for r in contratos) else 2
 
 
 if __name__ == '__main__':

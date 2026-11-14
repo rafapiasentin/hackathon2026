@@ -59,6 +59,19 @@ def test_indisponibilidade_fonte_nao_vaza_url_preparada(tmp_path):
     assert 'SEGREDO_TESTE' not in json.dumps(resultado)
 
 
+@pytest.mark.parametrize('api_valida,esperado', [(True, 0), (False, 2)])
+def test_documentacao_divergente_nao_substitui_validacao_da_api(tmp_path, monkeypatch, api_valida, esperado):
+    import conferir_fonte as fonte
+    monkeypatch.setenv('CML_TOKEN', 'sintetico')
+    monkeypatch.setattr('sys.argv', ['conferir_fonte.py', '--api', '--saida', str(tmp_path)])
+    def consultar_fake(url, pasta, nome, params=None):
+        return dict(contrato_compativel=api_valida if params else False,
+                    contratos=['Leis'] if params else [])
+    monkeypatch.setattr(fonte, 'consultar', consultar_fake)
+    assert fonte.main() == esperado
+    assert (tmp_path / 'resultado.json').exists()
+
+
 @pytest.mark.postgres
 def test_consumidor_espera_estabilidade_e_nao_duplica(db_governanca, tmp_path, lei_sintetica, monkeypatch):
     lei = revisar(lei_sintetica, monkeypatch)

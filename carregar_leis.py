@@ -10,7 +10,8 @@ from zipfile import ZipFile
 
 from peewee import chunked
 
-from banco import (Artigo, Carga, Lei, MODELOS, Relacao, RelacionamentoCml, conectar)
+from banco import (Artigo, Carga, Lei, MODELOS, MODELOS_GOVERNANCA, PublicacaoLei,
+                   Relacao, RelacionamentoCml, conectar)
 
 
 def ler_entrada(caminho, meta_path=None):
@@ -44,12 +45,12 @@ def booleano(valor, campo):
     return valor
 
 
-def normalizar(leis):
+def normalizar(leis, ids_conhecidos=None):
     """Valida tudo antes de qualquer DROP. Não tenta adivinhar a redação vigente."""
     ids = [str(lei['id']) for lei in leis]
     if len(set(ids)) != len(ids):
         raise ValueError('IDs da Câmara duplicados.')
-    conhecidos = set(ids)
+    conhecidos = set(ids) | set(ids_conhecidos or ())
     resultado = {k: [] for k in ('leis', 'artigos', 'relacoes', 'relacionamentos_cml', 'complementos')}
     artigos = [art for lei in leis for art in lei.get('artigos', [])]
     corrigido = bool(artigos) and all('revogado' in art and 'texto_riscado' in art for art in artigos)
@@ -125,12 +126,18 @@ def validar_meta(meta, sha256, totais, obrigatorio=False):
         return
     if not isinstance(meta, dict):
         raise ValueError('Metadados devem ser um objeto JSON.')
-    esperado = meta.get('sha256') or meta.get('sha256_leis_json')
-    if isinstance(esperado, dict):
-        esperado = esperado.get('leis.json')
-    if not isinstance(esperado, str) or esperado.lower() != sha256:
+    hashes = []
+    if 'arquivo' in meta:
+        if not isinstance(meta['arquivo'], dict) or 'sha256' not in meta['arquivo']:
+            raise ValueError('Metadados: arquivo deve conter sha256.')
+        hashes.append(meta['arquivo']['sha256'])
+    for campo in ('sha256', 'sha256_leis_json'):
+        if campo in meta:
+            valor = meta[campo]
+            hashes.append(valor.get('leis.json') if isinstance(valor, dict) else valor)
+    if not hashes or any(not isinstance(h, str) or h.lower() != sha256 for h in hashes):
         raise ValueError('SHA256 de leis.json ausente nos metadados ou diferente do arquivo.')
-    # O contrato exato ainda será publicado; formatos desconhecidos falham explicitamente.
+    # Contrato da equipe: arquivo.sha256 e totais. Mantém aliases anteriores.
     fontes = [meta] + [meta[k] for k in ('totais', 'contagens', 'resumo') if isinstance(meta.get(k), dict)]
     aliases = {
         'leis': ('leis', 'total_leis'), 'artigos': ('artigos', 'total_artigos'),
@@ -147,7 +154,10 @@ def validar_meta(meta, sha256, totais, obrigatorio=False):
                     if type(valor) is not int or valor != totais[campo]:
                         raise ValueError(f'Total divergente nos metadados: {campo}: {valor!r} != {totais[campo]}.')
                     verificados.add(campo)
-    faltantes = {'leis', 'artigos', 'artigos_revogados'} - verificados
+    exigidos = {'leis', 'artigos', 'artigos_revogados'}
+    if obrigatorio:
+        exigidos.add('relacoes')
+    faltantes = exigidos - verificados
     if faltantes:
         raise ValueError('Metadados sem totais reconhecidos: ' + ', '.join(sorted(faltantes)))
 
@@ -167,6 +177,9 @@ def importar(db, dados, totais, sha256, meta, arquivo, corrigido, final=False, l
     with db.atomic():
         # Serializa duas cargas simultâneas. DDL e dados voltam integralmente em caso de falha.
         db.execute_sql('SELECT pg_advisory_xact_lock(2026, 14308)')
+        # Recarga manual não pode deixar aprovações da versão anterior ativas.
+        if PublicacaoLei.table_exists():
+            PublicacaoLei.update(estado='pendente', vigencia_verificada=False).execute()
         db.drop_tables(MODELOS, safe=True)
         db.create_tables(MODELOS)
         for linhas in chunked(dados['leis'], lote):
@@ -178,6 +191,7 @@ def importar(db, dados, totais, sha256, meta, arquivo, corrigido, final=False, l
                 db.execute_sql('INSERT INTO carga_complemento VALUES ' + placeholders,
                                [v for par in linhas for v in par])
             db.execute_sql('UPDATE lei SET complementa_id = c.destino FROM carga_complemento c WHERE lei.id = c.origem')
+            db.execute_sql('DROP TABLE pg_temp.carga_complemento')
         for modelo, campo in ((Artigo, 'artigos'), (Relacao, 'relacoes'),
                                (RelacionamentoCml, 'relacionamentos_cml')):
             for linhas in chunked(dados[campo], lote):
@@ -227,9 +241,20 @@ def main():
             if args.criar_banco:
                 criar_banco(db)
             with db.connection_context():
-                db.create_tables(MODELOS, safe=True)
+                db.create_tables(MODELOS + MODELOS_GOVERNANCA, safe=True)
             print(f'Tabelas criadas em {db.database}. Nenhum dado carregado.')
             return 0
+        if args.final and not args.validar:
+            if args.recriar:
+                print('Carga final governada usa atualização incremental; --recriar não apagará dados.')
+            from governanca import receber
+            db = conectar(args.banco)
+            if args.criar_banco:
+                criar_banco(db)
+            with db.connection_context():
+                resultado = receber(db, args.arquivo, 'https://www.cml.pr.gov.br/dadosabertos', args.meta)
+            print(json.dumps(resultado, ensure_ascii=False))
+            return 0 if resultado['estado'] == 'publicado' else 2
         leis, sha256, meta = ler_entrada(args.arquivo, args.meta)
         dados, totais, corrigido = normalizar(leis)
         validar_meta(meta, sha256, totais, obrigatorio=args.final)

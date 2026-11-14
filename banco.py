@@ -1,11 +1,12 @@
 """Conexão local e modelos da legislação. Nunca usa o número como identidade."""
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
 from peewee import (
-    AutoField, BooleanField, CharField, Check, CompositeKey, DatabaseProxy,
-    DateField, ForeignKeyField, IntegerField, Model, TextField,
+    AutoField, BlobField, BooleanField, CharField, Check, CompositeKey, DatabaseProxy,
+    DateField, DateTimeField, ForeignKeyField, IntegerField, Model, TextField,
 )
 from playhouse.postgres_ext import BinaryJSONField, PostgresqlExtDatabase
 
@@ -104,11 +105,77 @@ class Carga(BaseModel):
 MODELOS = [Lei, Artigo, Relacao, RelacionamentoCml, Carga]
 
 
+def agora_utc():
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+class DocumentoOriginal(BaseModel):
+    sha256 = CharField(primary_key=True, max_length=64)
+    conteudo = BlobField()
+    recebido_em = DateTimeField(default=agora_utc)
+
+
+class LoteIngestao(BaseModel):
+    id = AutoField()
+    identidade = CharField(unique=True, max_length=64)
+    documento = ForeignKeyField(DocumentoOriginal, on_delete='RESTRICT')
+    nome_arquivo = TextField()
+    fonte = TextField()
+    formato = CharField()
+    contrato = CharField()
+    recebido_em = DateTimeField(default=agora_utc)
+    estado = CharField(default='recebido')
+    metadados = BinaryJSONField(null=True)
+    relatorio = BinaryJSONField(default=dict)
+
+
+class VersaoRegistro(BaseModel):
+    id = AutoField()
+    lote = ForeignKeyField(LoteIngestao, backref='registros', on_delete='RESTRICT')
+    posicao = IntegerField()
+    lei_id = CharField(null=True, index=True)
+    original = BinaryJSONField()
+    normalizado = BinaryJSONField(null=True)
+    estado = CharField()
+    vigencia_verificada = BooleanField(default=False)
+    criado_em = DateTimeField(default=agora_utc)
+
+    class Meta:
+        indexes = ((('lote', 'posicao'), True),)
+
+
+class PendenciaIngestao(BaseModel):
+    id = AutoField()
+    lote = ForeignKeyField(LoteIngestao, backref='pendencias', on_delete='RESTRICT')
+    registro = ForeignKeyField(VersaoRegistro, null=True, backref='pendencias', on_delete='RESTRICT')
+    codigo = CharField(index=True)
+    campo = TextField()
+    mensagem = TextField()
+    valor = BinaryJSONField(null=True)
+    severidade = CharField(default='erro')
+    estado = CharField(default='aberta')
+    criado_em = DateTimeField(default=agora_utc)
+
+
+class PublicacaoLei(BaseModel):
+    # Sem FK para lei: mantém o histórico mesmo em restaurações da base de leitura.
+    lei_id = CharField(primary_key=True)
+    versao = ForeignKeyField(VersaoRegistro, on_delete='RESTRICT')
+    estado = CharField(index=True)
+    vigencia_verificada = BooleanField(default=False)
+    atualizado_em = DateTimeField(default=agora_utc)
+
+
+MODELOS_GOVERNANCA = [DocumentoOriginal, LoteIngestao, VersaoRegistro,
+                     PendenciaIngestao, PublicacaoLei]
+
+
 def artigos_para_chatbot():
     """Somente texto vigente. Não expõe uma carga antiga como redação corrigida."""
-    carga = Carga.select().first()
-    if not carga or not carga.formato_corrigido or not carga.final:
-        raise ValueError('Chatbot indisponível: execute a carga final dos dados corrigidos.')
+    if not PublicacaoLei.table_exists():
+        raise ValueError('Chatbot indisponível: execute a ingestão governada.')
+    aprovadas = PublicacaoLei.select(PublicacaoLei.lei_id).where(
+        PublicacaoLei.estado == 'publicado', PublicacaoLei.vigencia_verificada == True)
     return (Artigo.select(Artigo, Lei).join(Lei)
             .where(Lei.situacao.in_(['vigente', 'vigente_com_alteracoes']),
-                   Artigo.revogado == False, Artigo.texto != ''))
+                   Artigo.revogado == False, Artigo.texto != '', Lei.id.in_(aprovadas)))

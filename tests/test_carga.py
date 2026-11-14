@@ -85,6 +85,26 @@ class ValidacaoTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             validar_meta(dict(sha256=sha), sha, totais)
 
+    def test_contrato_oficial_arquivo_sha256_e_quatro_totais(self):
+        _, totais, _ = normalizar(fixture())
+        sha = 'a' * 64
+        meta = dict(arquivo=dict(sha256=sha), totais=totais, commit='f9be9d4')
+        validar_meta(meta, sha, totais, obrigatorio=True)
+        for campo in ('leis', 'artigos', 'artigos_revogados', 'relacoes'):
+            errado = copy.deepcopy(meta)
+            errado['totais'][campo] += 1
+            with self.subTest(campo=campo), self.assertRaises(ValueError):
+                validar_meta(errado, sha, totais, obrigatorio=True)
+        incompleto = copy.deepcopy(meta)
+        del incompleto['totais']['relacoes']
+        with self.assertRaises(ValueError):
+            validar_meta(incompleto, sha, totais, obrigatorio=True)
+        for arquivo in (None, {}, dict(sha256='b' * 64)):
+            with self.subTest(arquivo=arquivo), self.assertRaises(ValueError):
+                validar_meta(dict(meta, arquivo=arquivo), sha, totais, obrigatorio=True)
+        with self.assertRaises(ValueError):
+            validar_meta(dict(meta, sha256='b' * 64), sha, totais, obrigatorio=True)
+
 
 @unittest.skipUnless(os.getenv('DB_TEST_NAME'), 'Defina DB_TEST_NAME para integração PostgreSQL.')
 class PostgresTest(unittest.TestCase):
@@ -103,7 +123,7 @@ class PostgresTest(unittest.TestCase):
     def setUp(self):
         self.dados, self.totais, self.corrigido = normalizar(fixture())
         self.sha = 'a' * 64
-        self.meta = dict(sha256=self.sha, totais=self.totais)
+        self.meta = dict(arquivo=dict(sha256=self.sha), totais=self.totais, commit='f9be9d4')
 
     def carregar(self, **kwargs):
         return importar(self.db, self.dados, self.totais, self.sha, self.meta,
@@ -114,12 +134,15 @@ class PostgresTest(unittest.TestCase):
         self.carregar(final=True, lote=2)
         self.assertEqual(totais_banco(), self.totais)
         self.assertEqual(Carga.select().count(), 1)
+        self.assertEqual(Carga.get().metadados['commit'], 'f9be9d4')
         self.assertEqual(Lei.get_by_id('1').complementa_id, '2')
         self.assertIsNone(Lei.get_by_id('1').ementa)
         self.assertEqual(len(Lei.get_by_id('1').anexos), 1)
         self.assertEqual(Relacao.select().where(Relacao.lei_destino.is_null()).count(), 1)
         self.assertEqual(RelacionamentoCml.get().data, '14/11/2026')
-        self.assertEqual([a.ordem for a in artigos_para_chatbot()], [1])
+        # A flag final da carga legada não substitui aprovação governada.
+        with self.assertRaises(ValueError):
+            artigos_para_chatbot()
         self.assertEqual(Artigo.get_by_id(('1', 2)).texto, '')
 
     def test_rollback_restaura_tabelas_e_carga_anterior(self):
@@ -135,6 +158,12 @@ class PostgresTest(unittest.TestCase):
         self.carregar()
         with self.assertRaises(ValueError):
             artigos_para_chatbot()
+
+    def test_duas_cargas_na_mesma_transacao(self):
+        with self.db.atomic():
+            self.carregar(final=True)
+            self.carregar(final=True)
+            self.assertEqual(totais_banco(), self.totais)
 
 
 if __name__ == '__main__':

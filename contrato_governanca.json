@@ -1,0 +1,13 @@
+{
+  "versao": "1.1.0",
+  "fonte_conferida": "https://www.cml.pr.gov.br/dadosabertos",
+  "dominios_oficiais": ["www.cml.pr.gov.br", "cml.pr.gov.br", "www1.cml.pr.gov.br", "portal.londrina.pr.gov.br", "londrina.pr.gov.br", "www.londrina.pr.gov.br"],
+  "tipos": ["Lei", "Lei Complementar", "Promulgação de partes vetadas"],
+  "situacoes": ["vigente", "vigente_com_alteracoes", "revogada", "inexistente"],
+  "tipos_relacao": ["altera", "alterada_por", "revoga", "revogada_por", "cita", "citada_por", "regulamenta", "regulamentada_por"],
+  "campos_obrigatorios": ["id", "chave", "tipo", "numero", "ano", "titulo", "link", "situacao", "texto_disponivel", "artigos", "relacoes", "relacionamentos"],
+  "formatos_estruturados": ["json", "jsonl", "csv", "xml", "zip"],
+  "formatos_documentais": ["html", "htm", "pdf"],
+  "limite_bytes": 209715200,
+  "observacao": "Contrato técnico do projeto. Página e API conferidas em 14/11/2026 com HTTP 200 após indisponibilidade inicial 503/406. O fluxo institucional e a evidência de vigência ainda dependem da equipe. A API de legislação fornece ementas, não texto integral nem vigência."
+}

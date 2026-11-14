@@ -3,3 +3,5 @@ psycopg2-binary==2.9.13
 python-dotenv==1.2.4
 requests==2.34.2
 beautifulsoup4==4.15.0
+defusedxml==0.7.1
+pymupdf==2.1

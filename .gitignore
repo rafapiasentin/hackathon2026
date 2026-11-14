@@ -1,5 +1,6 @@
 .env
 __pycache__/
+.data/
 *.pyc
 .venv/
 cache_textos/
@@ -7,3 +8,10 @@ leis.json
 *.zip
 GUIA_CODEX_HACKATHON_LONDRINA.md
 ""
+tests
+!tests/
+!tests/**
+dados_recebidos/
+.pytest_cache/
+dados_entrada/
+__pycache__/

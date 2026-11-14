@@ -153,6 +153,15 @@ Resultado da coleta completa (14/11/2026): **14.308 leis**, **74.631 artigos** e
 
 ## Banco local com Peewee
 
+O fluxo atual de publicação é documentado em [GOVERNANCA.md](GOVERNANCA.md).
+`governanca.py` preserva originais, valida diferentes formatos, registra pendências
+e publica somente versões conformes com evidência de revisão de vigência.
+`atualizar_base.py` consome automaticamente uma pasta de entrada. O caminho
+`carregar_leis.py --final` também usa esse fluxo; a flag não concede aprovação.
+HTML e PDF (textual ou escaneado com OCR português) também são extraídos.
+Para habilitar OCR após instalar as dependências, execute
+`.\.venv\Scripts\python.exe preparar_ocr.py`.
+
 Os modelos estão em `banco.py` e a importação em `carregar_leis.py`. A estrutura
 aceita o JSON antigo e os novos campos informados pela equipe. O coletor deste
 checkout ainda gera o formato antigo; a carga final deve aguardar o novo ZIP.
@@ -182,14 +191,17 @@ quando usar `--criar-banco`.
 
 # Quando a equipe publicar o ZIP corrigido e os metadados:
 .\.venv\Scripts\python.exe carregar_leis.py leis.zip --validar --final
-.\.venv\Scripts\python.exe carregar_leis.py leis.zip --recriar --final
+.\.venv\Scripts\python.exe governanca.py leis.zip
 ```
 
 O argumento também aceita `leis.json`. O ZIP é lido sem extrair arquivos. Os
 metadados são procurados no ZIP ou como `leis.meta.json` ao lado da entrada;
 `--meta caminho` seleciona explicitamente um arquivo externo.
 
-**`--recriar` substitui os dados das cinco tabelas abaixo.** Não apaga o banco
+**No modo legado de teste, `--recriar` substitui as cinco tabelas abaixo.**
+Na carga final governada, usa atualização incremental, preservando histórico;
+`--recriar` não apaga dados quando combinado com `--final`.
+O modo legado não apaga o banco
 nem outras tabelas e não usa `CASCADE` para derrubar dependências externas.
 Valida o arquivo antes de alterar o banco. O DROP, a criação das tabelas, as
 inserções e as verificações dos totais ocorrem na mesma transação: uma falha
@@ -209,9 +221,10 @@ As leis são inseridas primeiro, em lotes; depois são preenchidos os
 `complementa_id`, os artigos e as relações. Assim, a ordem das leis na entrada
 não interfere nas FKs. O tamanho padrão do lote é 500 (`--lote`, máximo 1000).
 IDs de lei duplicados, ordens duplicadas dentro da lei e FKs inválidas impedem
-a carga. Datas impossíveis são preservadas em `data_lei_original`, com
-`data_lei` nula. Não há enum fechado para `tipo`: aceita também
-`Promulgação de partes vetadas`.
+a carga. No modo legado, datas impossíveis são preservadas em
+`data_lei_original`, com `data_lei` nula. Na governança, geram pendência para
+revisão. O campo de banco é texto, mas a governança valida `tipo` pela lista do
+contrato, que inclui `Promulgação de partes vetadas`.
 
 ### Artigos e texto riscado
 
@@ -227,41 +240,51 @@ antigo esteja vigente**. Por isso a importação antiga exige
 As autorrelações antigas são preservadas apenas para compatibilidade e totais;
 autorrelações em `relacoes` no formato corrigido causam erro.
 
-Após a carga final, `artigos_para_chatbot()` restringe os resultados a leis com
+`artigos_para_chatbot()` exige publicação governada com revisão de vigência
+vinculada à versão. A flag de carga final não basta. Restringe os resultados a leis com
 `situacao IN ('vigente', 'vigente_com_alteracoes')`, artigos com `revogado = false`
 e `texto` não vazio. O chatbot deve usar somente `texto` como evidência vigente;
 `texto_riscado` é histórico.
 
 ### Metadados e totais
 
-A carga final exige SHA256 e totais de leis, artigos e artigos revogados. O hash
+A carga final exige SHA256 e totais de leis, artigos, artigos revogados e relações. O hash
 é calculado sobre os bytes originais de `leis.json` descompactado. Exemplo
-**sintético** do contrato reconhecido:
+**sintético** do contrato informado pela equipe (commit do coletor `f9be9d4`):
 
 ```json
 {
-  "sha256": "HASH_SHA256_DO_LEIS_JSON",
-  "totais": {"leis": 2, "artigos": 3, "artigos_revogados": 1}
+  "arquivo": {"sha256": "HASH_SHA256_DO_LEIS_JSON"},
+  "commit": "f9be9d4",
+  "totais": {"leis": 2, "artigos": 3, "artigos_revogados": 1, "relacoes": 2}
 }
 ```
 
-Também aceita `sha256_leis_json` ou `sha256: {"leis.json": "HASH"}`; totais
+O objeto original dos metadados, incluindo o commit do coletor, é preservado
+em `lote_ingestao.metadados` (e em `carga.metadados` no modo legado).
+O commit identifica o código que gerou o arquivo; não é
+fixado como requisito para permitir coletas futuras com novas versões.
+
+Também aceita `sha256` na raiz, `sha256_leis_json` ou
+`sha256: {"leis.json": "HASH"}`. Se houver vários hashes declarados, todos devem
+conferir. Os totais
 podem estar na raiz, em `totais`, `contagens` ou `resumo`, usando os nomes acima
-ou `total_leis`, `total_artigos`, `total_artigos_revogados`. Se fornecidos,
-`relacoes` e `relacionamentos_cml` também são conferidos (ou seus nomes com
+ou `total_leis`, `total_artigos`, `total_artigos_revogados`, `total_relacoes`.
+Se fornecido, `relacionamentos_cml` também é conferido (ou seu nome com
 prefixo `total_`). Campos de metadados desconhecidos não são adivinhados:
 se o arquivo final usar outro contrato, será necessário ajustar o leitor antes
 da carga. Os totais são comparados com a entrada e novamente com o banco antes
-do commit. O contrato real de `leis.meta.json` ainda aguarda publicação.
+do commit. A verificação com o arquivo real aguarda o término da coleta.
 
 ### Verificação
 
 ```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest -q
 
 # Integração: substitui as tabelas do banco de testes por fixtures sintéticas.
 $env:DB_TEST_NAME = 'hackathon2026_teste'
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m pytest -q
 Remove-Item Env:DB_TEST_NAME
 ```
 

@@ -22,6 +22,20 @@ jobs:
   pipeline:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    services:
+      postgres_teste:
+        image: postgres:18
+        env:
+          POSTGRES_DB: hackathon2026_teste
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: teste_isolado
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     env:
       DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
       CML_TOKEN: ${{ secrets.CML_TOKEN }}
@@ -35,10 +49,16 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - name: Preparar OCR português
         run: python preparar_ocr.py
-      - name: Testes determinísticos dos adaptadores e busca
-        run: python -m pytest -q -m 'not postgres'
+      - name: Testar API, adaptadores, OCR e governança em banco isolado
+        run: python -m pytest -q
         env:
           DATABASE_URL: ''
+          DB_HOST: 127.0.0.1
+          DB_PORT: '5432'
+          DB_USER: postgres
+          DB_PASSWORD: teste_isolado
+          DB_NAME: hackathon2026_teste
+          DB_TEST_NAME: hackathon2026_teste
       - name: Executar backend hospedado
         run: python deploy/worker.py --acao "${ACAO}"
         env:

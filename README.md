@@ -1,27 +1,146 @@
-# hackathon2026
+# Londrina Conecta: as leis de Londrina em linguagem simples
 
-Projeto do Hackathon Smart Cities Londrina 2026: um assistente de consulta à legislação municipal de Londrina que responde sempre com base na **lei vigente mais recente**, e não em uma lei já revogada ou alterada.
+Projeto do **Hackathon Smart Cities Londrina 2026**. Um assistente em que o cidadão e os servidores perguntam sobre as leis municipais de Londrina e recebem a resposta com base **só nas leis em vigor**, citando a lei, o artigo e o link oficial da Câmara.
+
+- **Site:** https://rafapiasentin.github.io/hackathon2026/
+- **API pública:** https://londrina-conecta-api.vercel.app (saúde e totais em [`/api/health`](https://londrina-conecta-api.vercel.app/api/health))
+- **Repositório:** https://github.com/rafapiasentin/hackathon2026
+
+> Este README é o ponto de partida do projeto, tanto para a equipe quanto para quem (ou qual assistente de IA) for usá-lo como contexto. As seções do começo dão a visão geral; os detalhes de cada parte estão nas seções seguintes e nos documentos indicados.
+
+## Sumário
+
+1. [Introdução: o problema e a solução](#introdução-o-problema-e-a-solução)
+2. [Arquitetura](#arquitetura)
+3. [Mapa do repositório](#mapa-do-repositório)
+4. [Estado atual](#estado-atual-14112026)
+5. [Como rodar](#como-rodar-escolha-um-caminho)
+6. [Regras do projeto](#regras-do-projeto-não-quebrar)
+7. [Produção](#produção-onde-cada-parte-roda)
+8. [Decisões em aberto](#decisões-em-aberto)
+9. Detalhes: [coleta](#coleta-dos-dados-como-rodar), [fonte](#fonte-dos-dados), [formato do `leis.json`](#formato-do-leisjson), [vigência](#como-a-vigência-é-calculada), [problemas nos dados](#problemas-encontrados-nos-dados-e-como-foram-resolvidos), [banco](#banco-local-com-peewee)
+
+## Introdução: o problema e a solução
+
+**O problema.** Londrina tem mais de 14 mil leis municipais. Muitas já foram revogadas ou alteradas, e quem consulta (cidadão ou servidor) acaba usando uma lei que não vale mais. A responsável pelas leis relatou exatamente essa dor.
 
 > Exemplo que motivou o projeto: a Lei nº 14.294, de 29/10/2026, instituiu o novo Código Ambiental de Londrina e revogou a Lei nº 11.471/2012. Uma pergunta sobre regra ambiental precisa ser respondida com a lei de 2026, não com a de 2012.
 
-## Estrutura
+**A solução.**
 
-| Arquivo | O que é |
+1. **Coletamos todas as leis** da API oficial da Câmara Municipal (14.308 leis, 74.630 artigos), com o texto completo e as relações oficiais (quem altera e quem revoga quem).
+2. **Calculamos a vigência** de cada lei e de cada artigo. A página da Câmara mostra o texto compilado, com a redação antiga riscada; separamos a redação vigente da revogada (1.492 artigos revogados identificados).
+3. **Guardamos tudo num banco** (PostgreSQL), com conferência de integridade (hash e totais) e um fluxo de governança para publicação.
+4. **O assistente** busca só em leis vigentes e artigos não revogados, responde citando lei, artigo e link, e avisa quando uma lei sobre o assunto foi revogada (e por qual).
+5. **O site** (React) tem conversa, busca, página da lei com histórico, comparação "o que mudou" e um **validador de leis** (padrão da LC 95/1998), além de recursos de acessibilidade.
+
+## Arquitetura
+
+```
+ API da Câmara (CML)                         coleta_leis.py
+ + página de cada lei      ───────────────►  (texto, artigos, riscado, relações, vigência)
+                                                     │
+                                                     ▼
+                                       leis.zip  =  leis.json + leis.meta.json (SHA-256 e totais)
+                                                     │
+                                                     ▼
+                       carregar_leis.py / governanca.py  ──►  PostgreSQL (banco.py, Peewee)
+                       (valida hash e totais, contrato,          tabelas: lei, artigo, relacao,
+                        publicação governada)                    relacionamento_cml, carga...
+                                                     │
+                                                     ▼
+                       api_local.py (FastAPI)  ◄── busca_documental.py (full-text em português)
+                       GET /api/leis · GET /api/leis/{id} · POST /api/perguntar · GET /api/health
+                                                     │
+                                                     ▼
+                       frontend/ (React + Vite)  ──►  GitHub Pages
+```
+
+Em produção, o PostgreSQL roda no **Neon**, a API na **Vercel** e o site no **GitHub Pages**; a coleta é refeita todo dia pelo **GitHub Actions**. Ver [Produção](#produção-onde-cada-parte-roda).
+
+## Mapa do repositório
+
+| Área | Arquivo | O que é |
+|---|---|---|
+| **Coleta** | `coleta_leis.py` | Baixa as leis da API e das páginas da Câmara; marca texto riscado; calcula vigência; gera `leis.json` e `leis.meta.json`. Explicado em [docs/COMO_FUNCIONA.md](docs/COMO_FUNCIONA.md) |
+| | `relatorio_problemas.py` | Gera [docs/PROBLEMAS_NOS_DADOS.md](docs/PROBLEMAS_NOS_DADOS.md) e `docs/leis_com_problemas.csv` (1.490 leis com problemas na fonte e a solução de cada um) |
+| | `conferir_fonte.py` | Confere disponibilidade e estrutura da API da Câmara sem expor o token |
+| **Dados** | `leis.zip` | `leis.json` + `leis.meta.json` da coleta completa de 14/11/2026 (formato 2.0) |
+| | `leis.meta.json` | Hash SHA-256, totais e commit do coletor; usado para conferir a carga |
+| **Banco e governança** | `banco.py` | Modelos Peewee (PostgreSQL) e filtro `artigos_para_chatbot()` |
+| | `carregar_leis.py` | Carga do `leis.zip` no PostgreSQL, conferindo hash e totais |
+| | `governanca.py`, `contrato_governanca.json` | Publicação governada: contrato versionado, pendências, revisão de vigência. Ver [GOVERNANCA.md](GOVERNANCA.md) |
+| | `adaptadores.py`, `extracao_documentos.py`, `atualizar_base.py`, `preparar_ocr.py` | Entrada de novos dados em vários formatos (JSON, CSV, XML, HTML, PDF com OCR) e pasta de entrada automática |
+| **API** | `api_local.py` | API sobre o PostgreSQL, com busca documental (sem IA) e governança |
+| | `busca_documental.py` | Regras de busca e relevância, sem IA. Ver [BUSCA_DOCUMENTAL.md](BUSCA_DOCUMENTAL.md) |
+| | `iniciar_local.py` | Sobe o `api_local.py` em modo local (127.0.0.1:8000). Ver [RODAR_LOCAL.md](RODAR_LOCAL.md) |
+| **Front** | `frontend/` | React + Vite + TypeScript + Tailwind. Telas, contrato da API e Pages em [frontend/README.md](frontend/README.md) |
+| | `index.html`, `assets/`, `.nojekyll`, `.github/workflows/pages.yml` | Build publicado no GitHub Pages |
+| **Produção** | `deploy/api/` (`app.py`, `vercel.json`), `requirements-api.txt` | Publicação da API na Vercel (usa o mesmo `api_local.py`) |
+| | `deploy/worker.py`, `.github/workflows/backend.yml` | Coleta e governança diárias no GitHub Actions, gravando no banco de produção. Ver [deploy/README.md](deploy/README.md) |
+| **Testes** | `tests/`, `pytest.ini` | Carga, governança, API, busca e casos de consulta reais (`tests/casos_consulta.json`) |
+| **Documentação** | `ATUALIZACAO.md` | Resumo para o grupo |
+| | `docs/REVISAO_INTEGRACAO_FRONT.md` | Revisão técnica da integração do front |
+| **Configuração** | `.env.example`, `frontend/.env.example` | Modelos de configuração (token da CML, banco, endereço da API) |
+
+Não vão para o git: `.env` (token e senha do banco), `leis.json` descompactado, `cache_textos/` e `frontend/.env.local`.
+
+## Estado atual (14/11/2026)
+
+| Parte | Situação |
 |---|---|
-| `coleta_leis.py` | Baixa as leis da API da Câmara Municipal de Londrina (CML), extrai texto, artigos e relações "altera/revoga" e salva em `leis.json` |
-| `leis.zip` | `leis.json` da coleta completa, pronto para usar |
-| `leis.meta.json` | Metadados do `leis.json`: quando foi gerado, commit do script, totais e hash SHA-256 |
-| `relatorio_problemas.py` | Gera o relatório das leis com problemas nos dados de origem |
-| `docs/PROBLEMAS_NOS_DADOS.md` | Cada problema encontrado na fonte, como foi resolvido e a lista de todas as leis afetadas |
-| `docs/leis_com_problemas.csv` | A mesma lista em CSV (uma linha por lei e problema), para filtrar ou carregar no banco |
-| `docs/COMO_FUNCIONA.md` | Guia passo a passo do `coleta_leis.py`, com os trechos de código explicados e perguntas frequentes |
-| `ATUALIZACAO.md` | Resumo para o grupo: o que foi feito e próximos passos |
-| `.env.example` | Modelo do arquivo de configuração com o token da API |
-| `hello.py` | Arquivo de teste |
+| Coleta completa, texto riscado, vigência, relatório de problemas | ✅ Pronta (`leis.zip`, hash `459d6a82…`) |
+| Carga no PostgreSQL com conferência de hash e totais | ✅ Feita, local e em produção (Neon) |
+| API (`api_local.py`) com busca documental | ✅ Publicada na Vercel, em modo `documental` |
+| Front no GitHub Pages ligado à API pública | ✅ No ar, com os dados reais |
+| Coleta e governança automáticas | ✅ GitHub Actions, todo dia às 06:00 UTC (03:00 em Brasília) |
+| Busca 2.2.0: tipo de pergunta, resposta direta citando lei e artigo, fontes só quando sustentam a resposta | ✅ No código e nos testes · ⏳ aguarda deploy da API na Vercel (produção ainda na 2.1.0) |
+| IA gerando a resposta em linguagem natural | ⏳ Não implementado; a resposta é extrativa (cita trechos literais) |
+| Lei Orgânica, leis complementares e emendas | ⏳ Ainda não coletadas |
+| Revisão institucional de vigência (governança) | ⏳ Aguarda o fluxo oficial do órgão |
 
-Não vão para o git: `.env` (token), `leis.json` descompactado e `cache_textos/`.
+## Como rodar (escolha um caminho)
 
-## Como rodar
+**A. Completo, com PostgreSQL (recomendado):** siga [RODAR_LOCAL.md](RODAR_LOCAL.md). Resumo: carregar o `leis.zip` no PostgreSQL ([Banco local com Peewee](#banco-local-com-peewee)), `python iniciar_local.py` e, em outro terminal, `cd frontend && npm ci && npm run dev`, com `VITE_API_URL=http://127.0.0.1:8000` em `frontend/.env.local`.
+
+**B. Front local usando a API pública:** `cd frontend && npm install && npm run dev`, com `VITE_API_URL=https://londrina-conecta-api.vercel.app` em `frontend/.env.local`. Não precisa de banco.
+
+**C. Só o front, com dados de exemplo:** `cd frontend && npm install && npm run dev` (sem `VITE_API_URL`).
+
+**D. Refazer a coleta dos dados:** [Coleta dos dados: como rodar](#coleta-dos-dados-como-rodar) (precisa do token da Câmara no `.env`).
+
+## Regras do projeto (não quebrar)
+
+Estas regras valem para qualquer código novo, inclusive gerado por IA:
+
+1. **O identificador de uma lei é o `id` da Câmara.** `chave`/`numero` se repetem (ex.: duas Leis nº 48 de 1949) e não podem ser chave primária nem `UNIQUE`.
+2. **Responder só com o que está vigente:** leis com `situacao IN ('vigente', 'vigente_com_alteracoes')` e artigos com `revogado = false`, usando apenas o campo `texto`. `texto_riscado` é histórico ("como era antes").
+3. **"Revogada por" nos relacionamentos não significa revogação total.** A revogação total vem da anotação "(REVOGADA pelo ...)" na ementa; a parcial aparece só nos relacionamentos.
+4. **Nunca inventar dados.** Data, ementa, vigência e revogador ausentes ficam nulos, com o campo de fonte indicando a origem (`data_lei_fonte`, `ementa_fonte`, `revogacao_nota`).
+5. **Toda resposta cita lei, artigo e link oficial**, e avisa que não substitui orientação jurídica. Quando a base não responde, o assistente diz que não sabe.
+6. **Toda carga confere o SHA-256 e os totais** do `leis.meta.json`.
+7. **Segredos nunca vão para o git:** token da Câmara (`CML_TOKEN`), senha do banco e chaves de API de IA ficam só no `.env` ou nas variáveis de ambiente da hospedagem; nunca no front.
+
+## Produção: onde cada parte roda
+
+| Parte | Onde | Detalhes |
+|---|---|---|
+| Site | GitHub Pages: https://rafapiasentin.github.io/hackathon2026/ | Build com `VITE_API_URL` da API pública (`frontend/.env.pages`). **Não renomear** o repositório, o dono nem o caminho base |
+| API | Vercel: https://londrina-conecta-api.vercel.app | Mesmo `api_local.py`, `busca_documental.py` e `banco.py` da execução local; credencial do banco **somente leitura**; `API_MODO=documental` |
+| Banco | Neon (PostgreSQL), projeto `hackathon2026-londrina`, branch `producao` | Migração integral conferida por hash de todas as tabelas |
+| Coleta e governança | GitHub Actions (`backend.yml`), diário às 06:00 UTC | Ações manuais: `validar` (só confere) e `coletar` (fluxo completo). Segredos `NEON_DATABASE_URL` e `CML_TOKEN` criptografados no GitHub |
+
+Como atualizar cada parte: [deploy/README.md](deploy/README.md). O modo `documental` mostra a situação informada pela Câmara e avisa que a revisão institucional está pendente; o modo `governado` só expõe publicações com revisão de vigência aprovada (ver [GOVERNANCA.md](GOVERNANCA.md)).
+
+## Decisões em aberto
+
+| Tema | Opções | Observações |
+|---|---|---|
+| **Usar IA (LLM) na resposta** | Manter a busca documental sem IA ou adicionar um modelo (ex.: Gemini, pelo Google AI Studio) | Sem IA, perguntas de fato ("quantos vereadores…") não são respondidas. Com IA, ela deve ler **só** os artigos encontrados, citar a fonte e, se falhar, voltar à resposta extrativa. A chave fica nas variáveis de ambiente da Vercel, nunca no front |
+| **Revisores da governança** | Definir com o órgão quem pode declarar a revisão de vigência (`GOVERNANCA_REVISORES`) | Sem revisores, a API continua em modo `documental`; não preencher automaticamente |
+| **Ampliar a base** | Lei Orgânica, leis complementares e emendas (outros tipos da API da Câmara) | Perguntas sobre a composição da Câmara, por exemplo, dependem da Lei Orgânica |
+
+## Coleta dos dados: como rodar
 
 Requisitos: Python 3.10 ou superior.
 
@@ -203,12 +322,16 @@ A lista completa, **lei por lei** (com link para a página oficial e o detalhe d
 ## Próximos passos
 
 - [x] Verificar "Relacionamentos desta Matéria" como fonte oficial das relações
-- [x] Rodar a coleta completa com texto
-- [ ] Carregar o `leis.json` no Postgres local (Peewee), com as tabelas sugeridas acima
-- [ ] Busca por palavras em português (full-text do Postgres) e por significado (`pgvector`, um embedding por artigo)
-- [ ] Chatbot em página web: responde só com artigos de leis não revogadas, citando lei, artigo e link
+- [x] Rodar a coleta completa com texto, separar o texto riscado e documentar os problemas da fonte
+- [x] Carregar o `leis.json` no PostgreSQL local (Peewee), conferindo hash e totais
+- [x] Busca por palavras em português (full-text do PostgreSQL) com filtro de vigência
+- [x] Front ligado à API local (conversa, busca, página da lei, comparação, validador)
+- [x] Publicar a API (Vercel) e o banco (Neon) e ligar o front do Pages a eles
+- [x] Coleta e governança automáticas diárias (GitHub Actions)
+- [ ] Decidir e, se for o caso, integrar uma IA para responder em linguagem natural (a partir dos artigos encontrados)
 - [ ] Incluir leis complementares, Lei Orgânica e Emendas à Lei Orgânica (outros tipos da API)
 - [ ] Ler o texto das 18 leis que só têm PDF
+- [ ] Definir com o órgão o fluxo de revisão institucional de vigência (governança)
 
 ## Banco local com Peewee
 
@@ -222,8 +345,8 @@ Para habilitar OCR após instalar as dependências, execute
 `.\.venv\Scripts\python.exe preparar_ocr.py`.
 
 Os modelos estão em `banco.py` e a importação em `carregar_leis.py`. A estrutura
-aceita o JSON antigo e os novos campos informados pela equipe. O coletor deste
-checkout ainda gera o formato antigo; a carga final deve aguardar o novo ZIP.
+aceita o JSON antigo e os novos campos informados pela equipe. O `leis.zip`
+publicado já está no formato final (2.0) e foi carregado e conferido (ver [RODAR_LOCAL.md](RODAR_LOCAL.md)).
 
 ### Preparação (PowerShell)
 

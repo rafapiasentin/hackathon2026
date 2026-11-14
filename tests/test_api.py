@@ -60,6 +60,37 @@ def test_cors_local_e_health(api):
 
 
 @pytest.mark.postgres
+def test_som_do_carro_nao_recupera_carga_descarga_ou_deixar(api):
+    Artigo.create(lei='123', ordem=4, artigo='Art. 4º', texto='A carga e descarga somente poderá ocorrer entre as 8 horas e as 22 horas.', revogado=False)
+    Artigo.create(lei='123', ordem=5, artigo='Art. 5º', texto='São motivos de suspensão: deixar de afixar o alvará; deixar de cumprir a escala.', revogado=False)
+    resposta = api.post('/api/perguntar', json={'pergunta': 'até que horas posso deixar o som do carro ligado?'}).json()
+    assert resposta['fontes'] == []
+    assert '22 horas' not in resposta['resposta']
+    assert 'Não encontrei' in resposta['resposta']
+
+
+@pytest.mark.postgres
+def test_som_do_carro_cita_ruido_sem_inventar_horario(api):
+    Artigo.create(lei='123', ordem=4, artigo='Art. 4º', texto='A emissão de som por veículos deve observar os limites de ruído e as normas vigentes.', revogado=False)
+    resposta = api.post('/api/perguntar', json={'pergunta': 'até que horas posso deixar o som do carro ligado?'}).json()
+    assert len(resposta['fontes']) == 1
+    assert resposta['fontes'][0]['artigo'] == 'Art. 4º'
+    assert 'Não há evidência suficiente' in resposta['resposta']
+    assert resposta['resposta'].count('Consulta documental local:') == 1
+    assert resposta['evidencia']['estado'] == 'trechos_relacionados'
+
+
+@pytest.mark.postgres
+def test_chat_pede_contexto_e_nao_retoma_artigo_generico(api):
+    resposta = api.post('/api/perguntar', json={'pergunta': 'Até que horas posso fazer barulho?'}).json()
+    assert resposta['evidencia']['estado'] == 'precisa_contexto'
+    assert resposta['fontes'] == []
+    resposta = api.post('/api/perguntar', json={'pergunta': 'Tenho desconto no IPTU?'}).json()
+    assert resposta['evidencia']['estado'] == 'insuficiente'
+    assert resposta['fontes'] == []
+
+
+@pytest.mark.postgres
 def test_api_governada_nao_publica_carga_sem_revisao(db_api, lei_sintetica):
     dados, _, _ = normalizar([lei_sintetica])
     Lei.insert_many(dados['leis']).execute()

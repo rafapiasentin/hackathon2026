@@ -1,7 +1,6 @@
 """API de catálogo e consulta documental; modo local explícito sem revisão presumida."""
 import os
 import re
-import unicodedata
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,6 +8,7 @@ from peewee import DatabaseError, Expression, SQL, fn
 from pydantic import BaseModel, Field
 
 from banco import Artigo, Carga, Lei, PublicacaoLei, Relacao, artigos_para_chatbot, conectar
+from busca_documental import VERSAO_BUSCA, avaliar, planejar
 
 AVISO = ('Consulta documental local: a situação foi informada pela Câmara; '
          'a revisão institucional de vigência ainda está pendente. '
@@ -16,8 +16,6 @@ AVISO = ('Consulta documental local: a situação foi informada pela Câmara; '
 VETOR_LEI = SQL("to_tsvector('portuguese', coalesce(titulo, '') || ' ' || coalesce(ementa, ''))")
 VETOR_ARTIGO = SQL("to_tsvector('portuguese', texto)")
 SITUACOES = {'vigente', 'vigente_com_alteracoes', 'revogada', 'inexistente'}
-
-
 def preparar_indices(db):
     with db.connection_context():
         db.execute_sql("CREATE INDEX IF NOT EXISTS lei_busca_pt ON lei USING gin "
@@ -41,20 +39,6 @@ def _aprovadas():
 def _catalogo(local):
     consulta = Lei.select()
     return consulta if local else consulta.where(Lei.id.in_(_aprovadas()))
-
-
-def _termos(pergunta):
-    normal = lambda s: ''.join(c for c in unicodedata.normalize('NFD', s.lower()) if not unicodedata.combining(c))
-    stop = {'posso', 'pode', 'podem', 'quero', 'gostaria', 'como', 'qual', 'quais', 'para', 'uma',
-            'das', 'dos', 'com', 'que', 'por', 'sobre', 'preciso', 'londrina', 'regras', 'saber', 'tem', 'lei', 'leis'}
-    palavras = [p for p in re.findall(r'[^\W\d_]{3,}', pergunta.lower()) if normal(p) not in stop][:12]
-    temas = {'arvore': ['árvore', 'vegetação', 'poda', 'supressão'],
-             'arvores': ['árvore', 'vegetação', 'poda'], 'cortar': ['corte', 'supressão'],
-             'ambiental': ['ambiental'], 'calcada': ['calçada', 'passeio']}
-    termos = []
-    for palavra in palavras:
-        termos.extend(temas.get(normal(palavra), [palavra]))
-    return ' | '.join(dict.fromkeys(termos))
 
 
 class Pergunta(BaseModel):
@@ -129,7 +113,11 @@ def create_app(db=None, catalogo_local=None):
         pergunta = corpo.pergunta.strip()
         if not pergunta:
             raise HTTPException(422, 'Informe uma pergunta.')
-        termos = _termos(pergunta)
+        plano = planejar(pergunta)
+        if plano.esclarecimento:
+            return dict(resposta=plano.esclarecimento, fontes=[], ignoradas=[], modo='documental',
+                        evidencia=dict(estado='precisa_contexto', versao_busca=VERSAO_BUSCA))
+        termos = plano.termos_sql
         if not termos:
             return dict(resposta='Informe o assunto ou busque uma lei pelo número.', fontes=[], ignoradas=[], modo='documental')
         with db.connection_context():
@@ -142,30 +130,38 @@ def create_app(db=None, catalogo_local=None):
             else:
                 consulta = artigos_para_chatbot()
             consulta = consulta.where(Expression(VETOR_ARTIGO, '@@', tsquery))
-            assunto = ''.join(c for c in unicodedata.normalize('NFD', pergunta.lower()) if not unicodedata.combining(c))
-            # O radical português de "poda" também encontra "poderá". Exige contexto
-            # discriminativo para não citar cláusulas genéricas como resultado ambiental.
-            if any(p in assunto for p in ('arvore', 'podar', 'poda', 'vegetacao')):
-                consulta = consulta.where(Expression(Artigo.texto, '~*',
-                    r'\m(árvores?|arvores?|vegetação|vegetacao|supressão|supressao|podas?|podar)\M'))
-            elif 'ambient' in assunto:
-                consulta = consulta.where(Expression(Artigo.texto, '~*', r'\m(ambiental|ambientais|ambiente)\M'))
-            # Normaliza pelo tamanho: anexos extensos não devem superar artigos específicos.
-            artigos = list(consulta.order_by(fn.ts_rank_cd(VETOR_ARTIGO, tsquery, 2).desc(), Artigo.lei, Artigo.ordem).limit(3))
+            # PostgreSQL gera candidatos; a relevância precisa passar pelo contrato de conceitos.
+            candidatos = list(consulta.order_by(fn.ts_rank_cd(VETOR_ARTIGO, tsquery, 2).desc(),
+                                                Lei.ano.desc(), Artigo.lei, Artigo.ordem).limit(100))
+            aceitos = []
+            for artigo in candidatos:
+                evidencia = avaliar(artigo.texto, plano)
+                if evidencia:
+                    aceitos.append((artigo, evidencia))
+            aceitos.sort(key=lambda item: (-item[1]['pontos'], -item[0].lei.ano, len(item[0].texto), item[0].lei_id, item[0].ordem))
             fontes = [dict(lei_id=a.lei_id, chave=a.lei.chave, ano=str(a.lei.ano),
                            ementa=a.lei.ementa, situacao=a.lei.situacao, artigo=a.artigo,
-                           trecho=a.texto[:1800], link=a.lei.link, vigencia_verificada=not local) for a in artigos]
+                           trecho=e['trecho'], link=a.lei.link, vigencia_verificada=not local)
+                      for a, e in aceitos[:3]]
             if not fontes:
                 texto = 'Não encontrei artigos suficientes para responder na base disponível. Tente outro termo ou busque pelo número da lei.'
             else:
                 texto = 'Encontrei estes trechos nos documentos da Câmara:\n\n' + '\n\n'.join(
                     f'Lei {f["chave"]}/{f["ano"]}, {f["artigo"]}:\n{f["trecho"]}' for f in fontes)
+                if plano.intencao_horario:
+                    texto = ('Estes são trechos relacionados ao assunto, não uma confirmação de horário-limite. '
+                             'Não há evidência suficiente nesta consulta documental para concluir qual horário '
+                             'se aplica ao seu caso.\n\n' + texto)
+            consulta_ignoradas = _catalogo(local).where(Lei.situacao == 'revogada', Expression(VETOR_LEI, '@@', tsquery))
             ignoradas = [dict(lei_id=l.id, chave=l.chave, ano=str(l.ano),
                              motivo='Consta como revogada na fonte; não usada na resposta.')
-                         for l in _catalogo(local).where(Lei.situacao == 'revogada',
-                             Expression(VETOR_LEI, '@@', tsquery)).limit(5)]
+                         for l in consulta_ignoradas.limit(30)
+                         if avaliar((l.titulo or '') + '\n' + (l.ementa or ''), plano) is not None][:5]
             return dict(resposta=(AVISO + '\n\n' if local else '') + texto,
                         fontes=fontes, ignoradas=ignoradas, modo='documental',
+                        evidencia=dict(estado='trechos_relacionados' if fontes else 'insuficiente',
+                                       conceitos=list(plano.nomes), candidatos=len(candidatos),
+                                       aceitos=len(aceitos), versao_busca=VERSAO_BUSCA),
                         vigencia_verificada=not local)
 
     return app

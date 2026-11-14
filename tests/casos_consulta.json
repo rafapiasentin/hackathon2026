@@ -1,0 +1,33 @@
+[
+  {
+    "pergunta": "até que horas posso deixar o som do carro ligado?",
+    "leis_relacionadas": ["11947", "13289", "14294"],
+    "leis_inadequadas": ["11747", "7288", "4861", "11699", "11473"],
+    "estado": "trechos_relacionados",
+    "nao_concluir_horario": true
+  },
+  {
+    "pergunta": "Quais são as regras do Código Ambiental?",
+    "leis_relacionadas": ["14294"],
+    "leis_inadequadas": ["11471"],
+    "estado": "trechos_relacionados"
+  },
+  {
+    "pergunta": "Posso podar uma árvore na calçada?",
+    "leis_relacionadas": ["11996", "14294", "14279"],
+    "leis_inadequadas": ["11471"],
+    "estado": "trechos_relacionados"
+  },
+  {
+    "pergunta": "Até que horas posso fazer barulho?",
+    "leis_relacionadas": [],
+    "leis_inadequadas": [],
+    "estado": "precisa_contexto"
+  },
+  {
+    "pergunta": "Posso criar um ornitorrinco no apartamento?",
+    "leis_relacionadas": [],
+    "leis_inadequadas": [],
+    "estado": "insuficiente"
+  }
+]

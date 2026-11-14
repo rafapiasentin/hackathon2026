@@ -41,8 +41,7 @@ export function TextoDigitando({
   }, [mostradas, total]);
 
   return (
-    <p className={className}>
-      <span className="sr-only">{texto}</span>
+    <p className={`${className ?? ""} whitespace-pre-line`} role="status" aria-live="polite" aria-label={texto}>
       <span aria-hidden="true">
         {palavras.slice(0, mostradas).join("")}
         {mostradas < total && <span className="ml-0.5 inline-block h-[1.1em] w-[3px] translate-y-[3px] animate-pulse rounded bg-primary" />}

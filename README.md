@@ -12,7 +12,7 @@ Projeto do Hackathon Smart Cities Londrina 2026: um assistente de consulta à le
 | `.env.example` | Modelo do arquivo de configuração com o token da API |
 | `hello.py` | Arquivo de teste |
 
-Arquivos gerados que não vão para o git: `.env`, `leis.json` e `cache_textos/`.
+`leis.zip` traz o `leis.json` da coleta completa de 14/11/2026, pronto para usar. Não vão para o git: `.env`, `leis.json` (descompactado, 72 MB) e `cache_textos/`.
 
 ## Como rodar
 

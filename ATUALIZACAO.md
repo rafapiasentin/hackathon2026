@@ -44,7 +44,7 @@ O formato completo está no `README.md`. Em resumo:
 - O campo `relacoes` de cada lei já vem pronto para a tabela `relacao`: `{"tipo": "revoga", "id": "35210", "chave": "11471"}`.
 - Para busca por significado, a biblioteca `pgvector` para Python tem campo próprio para Peewee: `pgvector.peewee.VectorField`.
 
-O `leis.json` **não fica no GitHub**: tem uns 100 MB e qualquer um pode gerá-lo de novo. Peça o arquivo zipado ou rode:
+O `leis.json` pronto está no repositório como **`leis.zip`** (13 MB; descompactado são 72 MB). É só baixar e descompactar. Para gerar de novo com dados atualizados, rode:
 
 ```bash
 pip install requests beautifulsoup4 python-dotenv

@@ -25,7 +25,7 @@ export function Layout() {
 
       <header className="border-b border-border bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <NavLink to="/" className="flex items-center gap-2.5 rounded-lg" aria-label="Londrina Conecta, página inicial">
+          <NavLink to="/inicio" className="flex items-center gap-2.5 rounded-lg" aria-label="Londrina Conecta, página inicial">
             <span className="grid size-9 place-items-center rounded-xl bg-primary text-on-primary">
               <Scale aria-hidden="true" className="size-5" />
             </span>
@@ -35,7 +35,7 @@ export function Layout() {
             </span>
           </NavLink>
           <nav aria-label="Menu principal" className="flex gap-1">
-            <NavLink to="/" end className={link}>
+            <NavLink to="/inicio" end className={link}>
               Perguntar
             </NavLink>
             <NavLink to="/leis" className={link}>

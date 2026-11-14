@@ -1,0 +1,5 @@
+peewee==4.5.3
+psycopg2-binary==2.9.13
+python-dotenv==1.2.4
+fastapi==0.163.0
+uvicorn==0.54.0

@@ -1,0 +1,56 @@
+name: Backend completo - coleta e governança
+
+on:
+  workflow_dispatch:
+    inputs:
+      acao:
+        description: Operação do pipeline
+        type: choice
+        options: [validar, coletar]
+        default: validar
+  schedule:
+    - cron: '0 6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-coleta
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+      CML_TOKEN: ${{ secrets.CML_TOKEN }}
+      GOVERNANCA_REVISORES: ${{ vars.GOVERNANCA_REVISORES }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Preparar OCR português
+        run: python preparar_ocr.py
+      - name: Testes determinísticos dos adaptadores e busca
+        run: python -m pytest tests/test_busca_documental.py tests/test_documentos.py -q -m 'not postgres'
+        env:
+          DATABASE_URL: ''
+      - name: Executar backend hospedado
+        run: python deploy/worker.py --acao "${ACAO}"
+        env:
+          ACAO: ${{ github.event_name == 'schedule' && 'coletar' || inputs.acao }}
+      - name: Preservar relatórios e documentos da coleta
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-${{ github.run_id }}
+          retention-days: 7
+          path: |
+            dados_recebidos/pipeline/resultado.json
+            dados_recebidos/pipeline/coleta.zip
+            dados_recebidos/pipeline/docs/
+            dados_recebidos/conferencia_fonte/resultado.json

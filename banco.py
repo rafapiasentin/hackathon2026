@@ -2,6 +2,7 @@
 import os
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import parse_qsl, unquote, urlsplit
 
 from dotenv import load_dotenv
 from peewee import (
@@ -15,14 +16,26 @@ database = DatabaseProxy()
 
 
 def conectar(nome=None):
-    db = PostgresqlExtDatabase(
+    url = os.getenv('DATABASE_URL') if nome is None else None
+    if url:
+        partes = urlsplit(url)
+        if partes.scheme not in ('postgres', 'postgresql') or not partes.hostname:
+            raise ValueError('DATABASE_URL deve ser uma conexão PostgreSQL válida.')
+        opcoes = dict(parse_qsl(partes.query))
+        opcoes.setdefault('sslmode', 'require')
+        opcoes.setdefault('connect_timeout', 10)
+        db = PostgresqlExtDatabase(unquote(partes.path.lstrip('/')),
+            host=partes.hostname, port=partes.port or 5432,
+            user=unquote(partes.username or ''), password=unquote(partes.password or ''), **opcoes)
+    else:
+        db = PostgresqlExtDatabase(
         nome or os.getenv('DB_NAME', 'hackathon2026'),
         host=os.getenv('DB_HOST', '127.0.0.1'),
         port=int(os.getenv('DB_PORT', '5432')),
         user=os.getenv('DB_USER', 'postgres'),
         password=os.getenv('DB_PASSWORD', ''),
         connect_timeout=10,
-    )
+        )
     database.initialize(db)
     return db
 

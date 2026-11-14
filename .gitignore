@@ -1,6 +1,8 @@
 .env
 __pycache__/
 .data/
+.env.neon
+.vercel/
 *.pyc
 .venv/
 cache_textos/

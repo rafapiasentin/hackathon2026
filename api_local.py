@@ -47,10 +47,21 @@ class Pergunta(BaseModel):
 
 def create_app(db=None, catalogo_local=None):
     db = db or conectar()
-    local = (os.getenv('API_MODO_DOCUMENTAL_LOCAL', '').lower() == 'true'
-             if catalogo_local is None else catalogo_local)
-    if local and (os.getenv('VERCEL') or os.getenv('RENDER')):
+    somente_local = (os.getenv('API_MODO_DOCUMENTAL_LOCAL', '').lower() == 'true'
+                     if catalogo_local is None else catalogo_local)
+    modo = os.getenv('API_MODO', 'governado')
+    if modo not in ('governado', 'documental'):
+        raise ValueError('API_MODO deve ser governado ou documental.')
+    nuvem = bool(os.getenv('VERCEL') or os.getenv('RENDER'))
+    if somente_local and nuvem:
         raise RuntimeError('Modo documental local não pode ser ativado nesta hospedagem.')
+    if nuvem and not os.getenv('DATABASE_URL'):
+        raise RuntimeError('DATABASE_URL é obrigatória na hospedagem.')
+    # Consulta documental pública é um modo explícito de publicação,
+    # sem alterar ou presumir aprovações institucionais na governança.
+    local = somente_local or modo == 'documental'
+    nome_modo = 'documental_local' if somente_local else 'documental' if local else 'governado'
+    aviso = AVISO if somente_local else AVISO.replace('documental local', 'documental')
     app = FastAPI(title='Londrina Conecta', version='0.1.0')
     origens = os.getenv('CORS_ORIGINS', 'http://127.0.0.1:5173,http://localhost:5173').split(',')
     app.add_middleware(CORSMiddleware, allow_origins=[o.strip() for o in origens],
@@ -66,7 +77,8 @@ def create_app(db=None, catalogo_local=None):
         with db.connection_context():
             carga = Carga.select().order_by(Carga.id.desc()).first()
             return dict(status='ok', banco='conectado', leis=Lei.select().count(),
-                        artigos=Artigo.select().count(), modo='documental_local' if local else 'governado',
+                        artigos=Artigo.select().count(), modo=nome_modo,
+                        versao_busca=VERSAO_BUSCA, consulta='PostgreSQL', modo_publicacao=nome_modo,
                         sha256=carga.sha256 if carga else None)
 
     @app.get('/api/leis')
@@ -157,7 +169,7 @@ def create_app(db=None, catalogo_local=None):
                              motivo='Consta como revogada na fonte; não usada na resposta.')
                          for l in consulta_ignoradas.limit(30)
                          if avaliar((l.titulo or '') + '\n' + (l.ementa or ''), plano) is not None][:5]
-            return dict(resposta=(AVISO + '\n\n' if local else '') + texto,
+            return dict(resposta=(aviso + '\n\n' if local else '') + texto,
                         fontes=fontes, ignoradas=ignoradas, modo='documental',
                         evidencia=dict(estado='trechos_relacionados' if fontes else 'insuficiente',
                                        conceitos=list(plano.nomes), candidatos=len(candidatos),

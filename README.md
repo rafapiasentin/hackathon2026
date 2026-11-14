@@ -150,3 +150,121 @@ Resultado da coleta completa (14/11/2026): **14.308 leis**, **74.631 artigos** e
 - [ ] Chatbot em página web: responde só com artigos de leis não revogadas, citando lei, artigo e link
 - [ ] Incluir leis complementares, Lei Orgânica e Emendas à Lei Orgânica (outros tipos da API)
 - [ ] Ler o texto das 18 leis que só têm PDF
+
+## Banco local com Peewee
+
+Os modelos estão em `banco.py` e a importação em `carregar_leis.py`. A estrutura
+aceita o JSON antigo e os novos campos informados pela equipe. O coletor deste
+checkout ainda gera o formato antigo; a carga final deve aguardar o novo ZIP.
+
+### Preparação (PowerShell)
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD` no `.env`,
+usando `.env.example` como referência. A senha fica somente no `.env` ignorado
+pelo Git. O banco padrão é `hackathon2026`; o banco de testes é
+`hackathon2026_teste`. O usuário precisa de permissão de criação de bancos apenas
+quando usar `--criar-banco`.
+
+```powershell
+# Cria o banco, se necessário, e as tabelas vazias. Não apaga tabelas existentes.
+.\.venv\Scripts\python.exe carregar_leis.py --criar-banco --criar-tabelas
+
+# Confere a entrada sem conectar ao PostgreSQL.
+.\.venv\Scripts\python.exe carregar_leis.py leis.zip --validar
+
+# Testa o ZIP antigo exclusivamente no banco de testes.
+.\.venv\Scripts\python.exe carregar_leis.py leis.zip --banco hackathon2026_teste --criar-banco --recriar --permitir-legado
+
+# Quando a equipe publicar o ZIP corrigido e os metadados:
+.\.venv\Scripts\python.exe carregar_leis.py leis.zip --validar --final
+.\.venv\Scripts\python.exe carregar_leis.py leis.zip --recriar --final
+```
+
+O argumento também aceita `leis.json`. O ZIP é lido sem extrair arquivos. Os
+metadados são procurados no ZIP ou como `leis.meta.json` ao lado da entrada;
+`--meta caminho` seleciona explicitamente um arquivo externo.
+
+**`--recriar` substitui os dados das cinco tabelas abaixo.** Não apaga o banco
+nem outras tabelas e não usa `CASCADE` para derrubar dependências externas.
+Valida o arquivo antes de alterar o banco. O DROP, a criação das tabelas, as
+inserções e as verificações dos totais ocorrem na mesma transação: uma falha
+restaura a carga anterior. Uma trava de transação impede cargas concorrentes.
+
+### Tabelas e regras
+
+| Tabela | Regras |
+|---|---|
+| `lei` | `id` da Câmara como PK; `chave` e `numero` podem repetir; `ementa` aceita nulo; `ano` inteiro; campos de fonte, nota de revogação, hash e anexos JSONB; `complementa_id` é FK anulável para `lei.id` |
+| `artigo` | PK composta `(lei_id, ordem)`; rótulo pode repetir; `texto` pode ser vazio; `texto_riscado` anulável e `revogado` booleano |
+| `relacao` | Origem obrigatória, destino anulável, chave legível e tipo; destinos fora do conjunto devem vir com `id: null` |
+| `relacionamento_cml` | Relação oficial original: tipo, `materia_id`, descrição e `data` textual; o destino pode ser projeto fora da base e não tem FK |
+| `carga` | Arquivo, SHA256 do JSON descompactado, totais, metadados e indicação de carga corrigida/final |
+
+As leis são inseridas primeiro, em lotes; depois são preenchidos os
+`complementa_id`, os artigos e as relações. Assim, a ordem das leis na entrada
+não interfere nas FKs. O tamanho padrão do lote é 500 (`--lote`, máximo 1000).
+IDs de lei duplicados, ordens duplicadas dentro da lei e FKs inválidas impedem
+a carga. Datas impossíveis são preservadas em `data_lei_original`, com
+`data_lei` nula. Não há enum fechado para `tipo`: aceita também
+`Promulgação de partes vetadas`.
+
+### Artigos e texto riscado
+
+Na coleta corrigida, `artigo.texto` contém somente a redação vigente e fica
+vazio quando o artigo inteiro foi revogado. A redação anterior fica em
+`texto_riscado`. O importador preserva esses campos e rejeita um artigo marcado
+como revogado que ainda tenha conteúdo em `texto`.
+
+No formato antigo, usa `art.get('texto_riscado')` e
+`art.get('revogado', False)`. Esses valores padrão **não comprovam que o texto
+antigo esteja vigente**. Por isso a importação antiga exige
+`--permitir-legado`; `artigos_para_chatbot()` bloqueia qualquer carga provisória.
+As autorrelações antigas são preservadas apenas para compatibilidade e totais;
+autorrelações em `relacoes` no formato corrigido causam erro.
+
+Após a carga final, `artigos_para_chatbot()` restringe os resultados a leis com
+`situacao IN ('vigente', 'vigente_com_alteracoes')`, artigos com `revogado = false`
+e `texto` não vazio. O chatbot deve usar somente `texto` como evidência vigente;
+`texto_riscado` é histórico.
+
+### Metadados e totais
+
+A carga final exige SHA256 e totais de leis, artigos e artigos revogados. O hash
+é calculado sobre os bytes originais de `leis.json` descompactado. Exemplo
+**sintético** do contrato reconhecido:
+
+```json
+{
+  "sha256": "HASH_SHA256_DO_LEIS_JSON",
+  "totais": {"leis": 2, "artigos": 3, "artigos_revogados": 1}
+}
+```
+
+Também aceita `sha256_leis_json` ou `sha256: {"leis.json": "HASH"}`; totais
+podem estar na raiz, em `totais`, `contagens` ou `resumo`, usando os nomes acima
+ou `total_leis`, `total_artigos`, `total_artigos_revogados`. Se fornecidos,
+`relacoes` e `relacionamentos_cml` também são conferidos (ou seus nomes com
+prefixo `total_`). Campos de metadados desconhecidos não são adivinhados:
+se o arquivo final usar outro contrato, será necessário ajustar o leitor antes
+da carga. Os totais são comparados com a entrada e novamente com o banco antes
+do commit. O contrato real de `leis.meta.json` ainda aguarda publicação.
+
+### Verificação
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+
+# Integração: substitui as tabelas do banco de testes por fixtures sintéticas.
+$env:DB_TEST_NAME = 'hackathon2026_teste'
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+Remove-Item Env:DB_TEST_NAME
+```
+
+Os testes cobrem os formatos antigo/novo, hash do ZIP, divergência de totais,
+FKs, números e rótulos repetidos, ementa nula, artigo revogado, filtro do chatbot,
+repetição da carga e rollback após falha. Fixtures são sintéticas e identificadas.

@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { MotionConfig } from "motion/react";
 import "./index.css";
 import { Layout } from "./components/Layout";
@@ -21,8 +21,10 @@ createRoot(document.getElementById("root")!).render(
     <MotionConfig reducedMotion="user">
       <Router>
         <Routes>
+          {/* O link enviado à banca abre direto o clone da Câmara */}
+          <Route index element={<Navigate to="/camara" replace />} />
           <Route element={<Layout />}>
-            <Route index element={<Inicio />} />
+            <Route path="inicio" element={<Inicio />} />
             <Route path="perguntar" element={<Conversa />} />
             <Route path="leis" element={<Busca />} />
             <Route path="lei/:id" element={<Lei />} />

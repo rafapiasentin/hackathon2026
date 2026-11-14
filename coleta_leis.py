@@ -10,6 +10,7 @@ import json
 import os
 import re
 import time
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -41,6 +42,12 @@ RE_VERBO_ALTERA = re.compile(
 # "(REVOGADA pelo art. 270. da Lei nº 12.236, de 29 de janeiro de 2015)"
 RE_ANOTACAO_REVOGADA = re.compile(r"\(\s*REVOGAD[AO]\b([^()]*)\)", re.I)
 RE_ARTIGO = re.compile(r"(?m)^\s*(Art\.\s*\d+[º°o]?[A-Z\-]*\.?)")
+# Assinatura: "Londrina, 5 de janeiro de 2012." ou "...DE LONDRINA, aos 3 de julho de 1970." (ano às vezes "1.991")
+RE_ASSINATURA = re.compile(r"LONDRINA,?\s*(?:aos|em)?\s*(\d{1,2})\s*[º°o]?\s+de\s+([A-Za-zçÇ]+)\s+de\s+(\d\.?\d{3})", re.I)
+# Data do anexo em PDF: linha "Anexos (1)" seguida de "18/10/1994 00:00 -"
+RE_ANEXO = re.compile(r"Anexos \(\d+\)\n(\d{2})/(\d{2})/(\d{4})")
+# Rodapé do site que aparece no fim do texto das páginas antigas
+RE_RODAPE = re.compile(r"\n(?:Anexos \(\d+\)\n|Observações:\nAs normas e informações complementares)")
 
 # Rótulos da seção "Relacionamentos desta Matéria" que interessam
 RELACOES = {
@@ -178,6 +185,7 @@ def extrair_relacionamentos(soup):
         tipo = cabecalho.split(" - ", 1)[-1].rstrip(":").strip()
         rels.append({
             "tipo": tipo,
+            "data": cabecalho.split(" - ", 1)[0].strip(),
             "id": a.get("href", "").rstrip("/").split("/")[-1],
             "descricao": limpar(a.get_text(" ", strip=True)[len(cabecalho):]).strip(),
         })
@@ -198,7 +206,26 @@ def baixar_pagina(id_, link):
     return dados
 
 
+def processar_texto(texto):
+    """Separa o corpo da lei do rodapé do site e procura a data da lei no texto.
+    Devolve (corpo, data_assinatura, data_anexo)."""
+    anexo = RE_ANEXO.search(texto)
+    data_anexo = "{2}-{1}-{0}".format(*anexo.groups()) if anexo else None
+    m = RE_RODAPE.search(texto)
+    corpo = texto[:m.start()] if m else texto
+    data_assinatura = None
+    a = RE_ASSINATURA.search(corpo)
+    if a:
+        dia, mes, ano = a.groups()
+        mes_n = MESES.get(mes.upper())
+        if mes_n:
+            data_assinatura = f"{ano.replace('.', '')}-{mes_n:02d}-{int(dia):02d}"
+    return corpo.strip(), data_assinatura, data_anexo
+
+
 def separar_artigos(texto):
+    # Textos que vieram numa linha só: quebra a linha antes de "Art. N" que começa uma frase
+    texto = re.sub(r"(?<=[\.:;])\s+(?=Art\.\s*\d)", "\n", texto)
     partes = RE_ARTIGO.split(texto)
     artigos = []
     for i in range(1, len(partes), 2):
@@ -244,11 +271,19 @@ def adicionar_texto(registro):
     except requests.RequestException as e:
         registro["erro_texto"] = str(e)
         return registro
-    registro["artigos"] = separar_artigos(dados["texto"])
+    corpo, data_assinatura, data_anexo = processar_texto(dados["texto"])
+    registro["artigos"] = separar_artigos(corpo)
+    registro["texto_disponivel"] = bool(registro["artigos"])
     registro["relacionamentos"] = dados["relacionamentos"]
     registro["fonte_relacoes"] = "cml"
+    if "LEI INEXISTENTE" in corpo.upper():
+        registro["situacao"] = "inexistente"  # número que ficou vago
     if not registro["data_lei"]:
-        registro["data_lei"] = parse_data(dados["texto"][:800])
+        # só aceita a data se o ano bater com o do título
+        for data in (data_assinatura, data_anexo):
+            if data and (not registro["ano"] or data[:4] == registro["ano"]):
+                registro["data_lei"] = data
+                break
     return registro
 
 
@@ -349,7 +384,7 @@ def main():
 
     with open(args.saida, "w", encoding="utf-8") as f:
         json.dump(leis, f, ensure_ascii=False, indent=2)
-    resumo = {s: sum(l["situacao"] == s for l in leis) for s in ("vigente", "vigente_com_alteracoes", "revogada")}
+    resumo = dict(Counter(l["situacao"] for l in leis))
     erros = sum("erro_texto" in l for l in leis)
     print(f"{len(leis)} leis salvas em {args.saida} -> {resumo}" + (f" ({erros} sem texto)" if erros else ""))
 

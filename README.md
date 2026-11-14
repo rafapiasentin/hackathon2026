@@ -61,7 +61,7 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
 ```
 
 - `data` é quando a lei foi publicada no site, **não** a data da lei.
-- O título tem dois formatos. As leis recentes (umas 420) vêm como `LEI N.º 14294, DE 29 DE OUTUBRO DE 2026`, com a data completa. As antigas vêm como `LEI ORDINÁRIA Nº 11341/2011`, só com o ano; nesse caso a data é tirada do texto da lei. Algumas leis antigas têm letra no número (`520 - A`, `1666 A`).
+- O título tem dois formatos. As leis recentes (umas 420) vêm como `LEI N.º 14294, DE 29 DE OUTUBRO DE 2026`, com a data completa. As antigas vêm como `LEI ORDINÁRIA Nº 11341/2011`, só com o ano; nesse caso a data é tirada da assinatura no fim do texto ("Londrina, 5 de janeiro de 2012." ou "EDIFÍCIO DA PREFEITURA... aos 3 de julho de 1970.") ou, se a lei só tiver PDF, da data do anexo. A data só é aceita se o ano bater com o do título. Algumas leis antigas têm letra no número (`520 - A`, `1666 A`).
 - **Revogação total vem anotada na ementa** pela própria CML: `... (REVOGADA pelo art. 270. da Lei nº 12.236, de 29 de janeiro de 2015)`. Cerca de 1.300 leis têm essa anotação.
 
 ### Página de cada lei (`link`)
@@ -115,7 +115,9 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
 | `relacao` | `lei_origem_id`, `lei_destino_id` (aceita nulo), `chave_destino`, `tipo` | — |
 
 Não use `chave`/`numero` como chave primária: existem leis diferentes com o mesmo número.
-- `situacao` pode ser `vigente`, `vigente_com_alteracoes` ou `revogada`.
+- `situacao` pode ser `vigente`, `vigente_com_alteracoes`, `revogada` ou `inexistente` (número que ficou vago: "LEI INEXISTENTE").
+- `data_lei` pode ser `null` (837 leis antigas sem data no título nem no texto); `ano` está sempre preenchido.
+- `texto_disponivel` é `false` quando a lei só tem PDF anexado ou é inexistente (23 leis).
 - `fonte_relacoes` é `cml` quando as relações vieram da seção oficial e `ementa` quando foram deduzidas da ementa (coleta sem `--texto`).
 - `relacionamentos` e `artigos` só são preenchidos com `--texto`.
 
@@ -126,18 +128,19 @@ Não use `chave`/`numero` como chave primária: existem leis diferentes com o me
 3. **Vigente com alterações:** a lei não está revogada, mas tem `alterada_por` ou `revogada_por` (revogação parcial).
 4. **Vigente:** nenhum dos casos acima.
 
-Resultado com a lista completa (só ementas): 12.335 vigentes, 675 vigentes com alterações e 1.298 revogadas. O caso da demo já sai certo: a 11.471 fica `revogada` com `revogada_por: ["14294"]`.
+Resultado da coleta completa (14/11/2026): **14.308 leis**, **74.631 artigos** e **9.639 relações**, com 11.974 vigentes, 1.031 vigentes com alterações, 1.298 revogadas e 5 inexistentes. O caso da demo sai certo: a 11.471 fica `revogada`, com `revogada_por: ["14294", "13529"]` (revogação total pela 14.294 e parcial pela 13.529).
 
 ## Limitações conhecidas
 
 - Sem `--texto`, as alterações são deduzidas da ementa e podem ter falsos positivos ou negativos. Com `--texto`, valem as relações oficiais da CML.
 - A situação é da lei inteira. O sistema ainda não sabe **quais artigos** foram alterados ou revogados parcialmente.
 - Em 3 leis revogadas, `revogada_por` fica vazio: uma cita um decreto como revogador e duas têm erro de digitação na anotação da CML (por exemplo, "Lei nº de 10.037").
+- 23 leis só têm o texto em PDF anexado, que ainda não é lido.
 - Requisições com `curl` são bloqueadas pelo site (406 Not Acceptable). O script em Python funciona normalmente; se ele receber 406, mostra um aviso.
 
 ## Próximos passos
 
 - [x] Verificar "Relacionamentos desta Matéria" como fonte oficial das relações
-- [ ] Rodar a coleta completa com texto
+- [x] Rodar a coleta completa com texto
 - [ ] Incluir leis complementares, Lei Orgânica e Emendas à Lei Orgânica (outros tipos da API)
 - [ ] Montar a busca e o assistente em cima do `leis.json`, filtrando leis revogadas

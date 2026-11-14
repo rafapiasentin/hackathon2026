@@ -204,7 +204,7 @@ def separar_artigos(texto):
     for i in range(1, len(partes), 2):
         rotulo = re.sub(r"\s+", " ", partes[i]).strip().rstrip(".")
         corpo = partes[i + 1] if i + 1 < len(partes) else ""
-        artigos.append({"artigo": rotulo, "texto": (partes[i] + corpo).strip()})
+        artigos.append({"ordem": len(artigos) + 1, "artigo": rotulo, "texto": (partes[i] + corpo).strip()})
     return artigos
 
 
@@ -252,42 +252,77 @@ def adicionar_texto(registro):
     return registro
 
 
+CAMPOS_RELACAO = ("altera", "alterada_por", "revoga", "revogada_por")
+
+
+def resolver_id(c, lei, por_chave, alvo_mais_novo):
+    """Acha o id da lei citada pelo número. Quando o número se repete (ex.: duas Leis nº 48 de 1949),
+    escolhe pela data: quem altera ou revoga é mais nova do que a lei alterada ou revogada."""
+    candidatas = por_chave.get(c, [])
+    if len(candidatas) > 1 and lei["ano"]:
+        if alvo_mais_novo:
+            filtradas = sorted((x for x in candidatas if (x["ano"] or "") >= lei["ano"]), key=lambda x: x["ano"])
+        else:
+            filtradas = sorted((x for x in candidatas if (x["ano"] or "9999") <= lei["ano"]), key=lambda x: x["ano"])[::-1]
+        candidatas = filtradas or candidatas
+    return candidatas[0]["id"] if candidatas else None
+
+
+def adicionar_relacao(lei, tipo, id_, c):
+    for r in lei["relacoes"]:
+        if r["tipo"] == tipo and ((id_ and r["id"] == id_) or (not id_ and r["chave"] == c)):
+            return
+    lei["relacoes"].append({"tipo": tipo, "id": id_, "chave": c})
+
+
 def calcular_vigencia(leis):
+    """Monta lei["relacoes"] (lista de {tipo, id, chave}; id é None se a lei citada não está no arquivo),
+    preenche as listas de chaves altera/alterada_por/revoga/revogada_por e define a situação."""
     por_id = {l["id"]: l for l in leis}
-    por_chave = {l["chave"]: l for l in leis if l["chave"]}
+    por_chave = {}
+    for l in leis:
+        if l["chave"]:
+            por_chave.setdefault(l["chave"], []).append(l)
 
-    # Relações oficiais da CML (quando o texto foi baixado) substituem as deduzidas pela ementa
-    for lei in leis:
-        if lei["fonte_relacoes"] != "cml":
-            continue
-        for campo in ("altera", "alterada_por", "revoga"):
-            lei[campo] = []
-        for rel in lei["relacionamentos"]:
-            campo = RELACOES.get(rel["tipo"])
-            if campo not in ("altera", "alterada_por", "revoga", "revogada_por"):
-                continue
-            alvo = por_id.get(rel["id"])
-            if alvo:
-                c = alvo["chave"]
-            elif rel["descricao"].upper().startswith("LEI"):  # lei fora do arquivo: tira o número da descrição
-                numero, _, _, complementar = parse_titulo(rel["descricao"][:80])
-                c = chave(numero, complementar) if numero else None
-            else:
-                c = None
-            if c and c not in lei[campo]:
-                lei[campo].append(c)
+    deduzidas = {l["id"]: {"altera": l["altera"], "revogada_por": l["revogada_por"]} for l in leis}
+    for l in leis:
+        l["relacoes"] = []
 
-    # Completa o lado inverso das relações deduzidas pela ementa
     for lei in leis:
+        # Revogação total anotada na ementa (vale para qualquer fonte)
+        for c in deduzidas[lei["id"]]["revogada_por"]:
+            adicionar_relacao(lei, "revogada_por", resolver_id(c, lei, por_chave, True), c)
+
         if lei["fonte_relacoes"] == "cml":
-            continue
-        for c in lei["altera"]:
-            alvo = por_chave.get(c)
-            if alvo and alvo["fonte_relacoes"] != "cml" and lei["chave"] not in alvo["alterada_por"]:
-                alvo["alterada_por"].append(lei["chave"])
+            # Relações oficiais da seção "Relacionamentos desta Matéria"
+            for rel in lei["relacionamentos"]:
+                tipo = RELACOES.get(rel["tipo"])
+                if tipo not in CAMPOS_RELACAO:
+                    continue
+                alvo = por_id.get(rel["id"])
+                if alvo:
+                    adicionar_relacao(lei, tipo, alvo["id"], alvo["chave"])
+                elif rel["descricao"].upper().startswith("LEI"):  # lei fora do arquivo
+                    numero, _, _, complementar = parse_titulo(rel["descricao"][:80])
+                    if numero:
+                        adicionar_relacao(lei, tipo, None, chave(numero, complementar))
+        else:
+            # Sem texto: alterações deduzidas da ementa
+            for c in deduzidas[lei["id"]]["altera"]:
+                adicionar_relacao(lei, "altera", resolver_id(c, lei, por_chave, False), c)
 
-    # "Revogada por" sem a anotação de REVOGADA na ementa = revogação parcial (só alguns dispositivos)
+    # Completa o lado inverso nas leis que não têm as relações oficiais
+    inverso = {"altera": "alterada_por", "revogada_por": "revoga"}
     for lei in leis:
+        for r in list(lei["relacoes"]):
+            alvo = por_id.get(r["id"]) if r["id"] else None
+            if r["tipo"] in inverso and alvo and alvo["fonte_relacoes"] != "cml":
+                adicionar_relacao(alvo, inverso[r["tipo"]], lei["id"], lei["chave"])
+
+    for lei in leis:
+        for campo in CAMPOS_RELACAO:
+            lei[campo] = list(dict.fromkeys(r["chave"] for r in lei["relacoes"] if r["tipo"] == campo and r["chave"]))
+        # "Revogada por" sem a anotação de REVOGADA na ementa = revogação parcial (só alguns dispositivos)
         if lei["situacao"] == "vigente" and (lei["alterada_por"] or lei["revogada_por"]):
             lei["situacao"] = "vigente_com_alteracoes"
     return leis

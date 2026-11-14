@@ -89,16 +89,32 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
   "alterada_por": [],
   "revoga": ["11471"],
   "revogada_por": [],
+  "relacoes": [
+    { "tipo": "revoga", "id": "35210", "chave": "11471" }
+  ],
   "fonte_relacoes": "cml",
   "relacionamentos": [
     { "tipo": "Revoga", "id": "35210", "descricao": "LEI ORDINÁRIA Nº 11471/2012 Institui o Código Ambiental ..." }
   ],
-  "artigos": [{ "artigo": "Art. 1º", "texto": "Art. 1º ..." }]
+  "artigos": [{ "ordem": 1, "artigo": "Art. 1º", "texto": "Art. 1º ..." }]
 }
 ```
 
 - `id` é o identificador da CML e é único. `chave` é o número legível: `14294`, `520-A` ou, para lei complementar, `LC-12`. Existem 4 casos de leis diferentes com o mesmo número (por exemplo, duas Leis nº 48 de 1949).
-- `altera`, `alterada_por`, `revoga` e `revogada_por` são listas de `chave`.
+- `altera`, `alterada_por`, `revoga` e `revogada_por` são listas de `chave`, para leitura humana.
+- `relacoes` traz as mesmas relações **por `id`**, para o banco: `tipo` é `altera`, `alterada_por`, `revoga` ou `revogada_por`. `id` é `null` quando a lei citada não está no arquivo (por exemplo, uma lei complementar).
+- `artigos[].ordem` é a posição do artigo no texto e é única dentro da lei. O rótulo `artigo` pode se repetir, porque leis que alteram outras citam o artigo novo entre aspas.
+- `relacionamentos` é a lista crua da seção oficial da CML, com todos os rótulos (inclusive `Cita`, `Sanção`, `Vínculo`).
+
+### Sugestão de tabelas (Postgres)
+
+| Tabela | Colunas principais | Chave |
+|---|---|---|
+| `lei` | `id`, `chave`, `numero`, `data_lei`, `ano`, `titulo`, `ementa`, `link`, `situacao` | `id` |
+| `artigo` | `lei_id`, `ordem`, `artigo`, `texto` | `(lei_id, ordem)` |
+| `relacao` | `lei_origem_id`, `lei_destino_id` (aceita nulo), `chave_destino`, `tipo` | — |
+
+Não use `chave`/`numero` como chave primária: existem leis diferentes com o mesmo número.
 - `situacao` pode ser `vigente`, `vigente_com_alteracoes` ou `revogada`.
 - `fonte_relacoes` é `cml` quando as relações vieram da seção oficial e `ementa` quando foram deduzidas da ementa (coleta sem `--texto`).
 - `relacionamentos` e `artigos` só são preenchidos com `--texto`.

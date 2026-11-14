@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/*
+  Visual inspirado no Padrão Digital de Governo (gov.br):
+  azul institucional, fundo claro, muito espaço em branco.
+  As cores ficam em variáveis para o modo "Alto contraste" trocar tudo de uma vez.
+*/
+:root {
+  --bg: #f8f9fc;
+  --surface: #ffffff;
+  --text: #1b1b1b;
+  --muted: #555b66;
+  --border: #dfe3ea;
+  --primary: #1351b4;
+  --primary-strong: #0c326f;
+  --primary-soft: #e8effa;
+  --on-primary: #ffffff;
+  --focus: #c2850c;
+
+  /* situação da lei: sempre acompanhada de ícone e texto */
+  --ok: #168821;
+  --ok-soft: #e3f5e1;
+  --warn: #8a6100;
+  --warn-soft: #fff5c2;
+  --danger: #b51b0b;
+  --danger-soft: #fde8e6;
+
+  color-scheme: light;
+}
+
+/* Alto contraste: padrão usado pelos sites do governo (fundo preto, texto branco, links amarelos) */
+:root.contraste {
+  --bg: #000000;
+  --surface: #000000;
+  --text: #ffffff;
+  --muted: #ffffff;
+  --border: #ffffff;
+  --primary: #ffff00;
+  --primary-strong: #ffff00;
+  --primary-soft: #000000;
+  --on-primary: #000000;
+  --focus: #00ffff;
+  --ok: #7cff7c;
+  --ok-soft: #000000;
+  --warn: #ffff00;
+  --warn-soft: #000000;
+  --danger: #ff8080;
+  --danger-soft: #000000;
+  color-scheme: dark;
+}
+
+/* Tamanho da letra (A+ / A-): tudo usa rem, então basta mudar a base */
+:root[data-fonte="1"] { font-size: 112.5%; }
+:root[data-fonte="2"] { font-size: 125%; }
+:root[data-fonte="3"] { font-size: 137.5%; }
+
+@theme inline {
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+}
+
+html, body, #root { min-height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
+
+.contraste a { text-decoration: underline; }
+.contraste .shadow-card { box-shadow: none; }
+
+.shadow-card { box-shadow: 0 1px 2px rgb(16 24 40 / 0.05), 0 4px 16px rgb(16 24 40 / 0.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- Réplica do site da Câmara (rota /camara) ---------- */
+.tema-camara {
+  font-family: "Mulish", var(--font-sans);
+}
+:root:not(.contraste) .tema-camara {
+  --bg: #f0f0f0;
+  --primary: #015d7a;
+  --primary-strong: #00445a;
+  --primary-soft: #e1f1f5;
+}
+.cabecalho-camara {
+  background:
+    linear-gradient(180deg, rgb(0 93 123) 5%, rgb(0 93 123 / 0.9), rgb(2 142 171 / 0.8), rgb(43 151 164)),
+    repeating-linear-gradient(90deg, transparent 0 46px, rgb(255 255 255 / 0.05) 46px 50px);
+}
+:root.contraste .cabecalho-camara {
+  background: #000;
+}
+.sem-barra { scrollbar-width: none; }
+.sem-barra::-webkit-scrollbar { display: none; }
+
+/* Esqueleto de carregamento: bloco cinza com um brilho passando */
+.esqueleto {
+  background: linear-gradient(90deg, var(--border) 0%, color-mix(in srgb, var(--border) 40%, var(--surface)) 50%, var(--border) 100%);
+  background-size: 200% 100%;
+  animation: brilho 1.4s ease-in-out infinite;
+}
+@keyframes brilho {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}

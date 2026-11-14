@@ -75,22 +75,41 @@ def parse_data(texto):
 
 # ---------- API ----------
 
+def baixar(url, tentativas=5, **kwargs):
+    """GET com novas tentativas e espera crescente (5s, 10s, 20s, 40s) em caso de falha de rede."""
+    for n in range(tentativas):
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=90, **kwargs)
+            if r.status_code == 406:
+                raise SystemExit("O site respondeu 406 (bloqueio do firewall). Rode a partir de outra rede "
+                                 "ou peça liberação à CML.")
+            if r.status_code < 500:
+                r.raise_for_status()
+                return r
+            erro = requests.HTTPError(f"HTTP {r.status_code}")
+        except (requests.ConnectionError, requests.Timeout) as e:
+            erro = e
+        if n < tentativas - 1:
+            espera = 5 * 2 ** n
+            print(f"falha em {url[:80]} ({type(erro).__name__}); nova tentativa em {espera}s", flush=True)
+            time.sleep(espera)
+    raise erro
+
+
 def chamar_api(call, **params):
-    r = requests.get(API, params={"keysoft": TOKEN, "call": call, **params}, headers=HEADERS, timeout=60)
-    if r.status_code == 406:
-        raise SystemExit("O site respondeu 406 (bloqueio do firewall). Rode a partir de outra rede "
-                         "ou peça liberação à CML.")
-    r.raise_for_status()
-    return r.json()
+    return baixar(API, params={"keysoft": TOKEN, "call": call, **params}).json()
 
 
 def listar_leis(tipo="Leis", max_paginas=None):
-    pagina, leis = 1, []
+    pagina, leis, vistos = 1, [], set()
     while True:
         dados = chamar_api("legislacoes", tipo=tipo, pagina=pagina)
         if not dados:
             break
-        leis.extend(dados)
+        for item in dados:  # se uma lei nova for publicada durante a coleta, as páginas "andam"
+            if item["link"] not in vistos:
+                vistos.add(item["link"])
+                leis.append(item)
         print(f"página {pagina}: {len(dados)} leis (total {len(leis)})", flush=True)
         if max_paginas and pagina >= max_paginas:
             break
@@ -170,8 +189,7 @@ def baixar_pagina(id_, link):
     arq = CACHE / f"{id_}.json"
     if arq.exists():
         return json.loads(arq.read_text(encoding="utf-8"))
-    r = requests.get(link, headers=HEADERS, timeout=60)
-    r.raise_for_status()
+    r = baixar(link)
     soup = BeautifulSoup(r.text, "html.parser")
     dados = {"texto": extrair_texto(soup), "relacionamentos": extrair_relacionamentos(soup)}
     CACHE.mkdir(exist_ok=True)

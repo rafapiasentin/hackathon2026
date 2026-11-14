@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pergunte sobre as leis de Londrina e receba a resposta com base só nas leis em vigor." />
+    <link rel="icon" href="/hackathon2026/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mulish:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <title>Londrina Conecta · Leis de Londrina</title>
+    <script type="module" crossorigin src="/hackathon2026/assets/index-DPnYzj1e.js"></script>
+    <link rel="stylesheet" crossorigin href="/hackathon2026/assets/index-snXpmdcp.css">
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- VLibras: tradução para Libras, ferramenta oficial do Governo Federal (gov.br/governodigital/vlibras) -->
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+      try { new window.VLibras.Widget("https://vlibras.gov.br/app"); } catch (e) { console.warn("VLibras indisponível", e); }
+    </script>
+
+  </body>
+</html>

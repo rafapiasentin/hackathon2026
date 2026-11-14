@@ -4,9 +4,12 @@
 
 Endereço: https://rafapiasentin.github.io/hackathon2026/
 
-A publicação é feita pelo workflow `.github/workflows/pages.yml`, em pushes
-da `main` que alterem o front. O build `--mode pages` usa o prefixo do
-repositório e rotas com `#`, permitindo abrir e atualizar subpáginas.
+A configuração ativa do Pages serve `main /`. O build compilado é exportado
+para a raiz do repositório, com `.nojekyll`, e publicado pelo Pages após o push.
+Para atualizar: `npm run build -- --mode pages`, depois
+`node scripts/exportar-pages.mjs` dentro de `frontend`, e commit dos arquivos
+gerados na raiz. O workflow apenas verifica o build, sem exigir configuração
+administrativa. O modo Pages usa o prefixo do repositório e rotas com `#`.
 Essa versão é uma demonstração identificada com dados de exemplo, pois a API
 PostgreSQL ainda roda localmente. A configuração local de API não é incluída no
 build público.

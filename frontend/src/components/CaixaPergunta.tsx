@@ -60,7 +60,7 @@ export function CaixaPergunta({
           autoFocus={autoFocus}
           value={texto}
           onChange={(e) => setTexto(e.target.value)}
-          placeholder={ditar.ouvindo ? "Pode falar, estou ouvindo..." : "Ex.: posso cortar uma árvore na frente de casa?"}
+          placeholder={ditar.ouvindo ? "Pode falar, estou ouvindo..." : "Ex.: isenção de IPTU para aposentado"}
           className={`min-w-0 flex-1 bg-transparent text-text placeholder:text-muted/80 focus:outline-none ${
             grande ? "py-3 text-lg" : "py-2 text-base"
           }`}

@@ -9,9 +9,11 @@ import { CartaoResposta, Pensando } from "../pages/Conversa";
 import { useOuvir } from "../lib/fala";
 
 const SUGESTOES = [
-  "Quais são as regras ambientais de Londrina?",
-  "O que a lei diz sobre lixo em fundo de vale?",
-  "Quando é o Dia Municipal do Enfermeiro?",
+  "quais são as regras do código ambiental?",
+  "corte de árvore em logradouro público",
+  "isenção de IPTU para aposentado",
+  "quem tem direito a passe escolar?",
+  "posso passear com meu cachorro na praça sem guia?",
 ];
 
 interface Mensagem {

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowRight, CircleX, ExternalLink, Info, Square, Volume2 } from "lucide-react";
 import { perguntar } from "../api/client";
@@ -22,12 +22,75 @@ export function Conversa() {
   const [params, setParams] = useSearchParams();
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [carregando, setCarregando] = useState(false);
-  const fim = useRef<HTMLDivElement>(null);
+  const [topo, setTopo] = useState(16);
   const contador = useRef(0);
+  const ultimaPergunta = useRef<HTMLParagraphElement>(null);
+  const aguardando = useRef<number | null>(null);
+  const enviada = useRef<number | null>(null);
+  const posicaoEnvio = useRef(0);
+  const rolagemManual = useRef(false);
   const voz = useOuvir();
+
+  useEffect(() => {
+    const teclas = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "]);
+    const marcar = () => {
+      if (aguardando.current !== null) rolagemManual.current = true;
+    };
+    const tecla = (e: KeyboardEvent) => {
+      if (teclas.has(e.key) && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) marcar();
+    };
+    window.addEventListener("wheel", marcar, { passive: true });
+    window.addEventListener("touchmove", marcar, { passive: true });
+    window.addEventListener("keydown", tecla);
+    return () => {
+      window.removeEventListener("wheel", marcar);
+      window.removeEventListener("touchmove", marcar);
+      window.removeEventListener("keydown", tecla);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const cabecalho = document.querySelector("header");
+    if (!cabecalho) return;
+    const medir = () => {
+      const fixo = ["fixed", "sticky"].includes(getComputedStyle(cabecalho).position);
+      setTopo((fixo ? cabecalho.getBoundingClientRect().height : 0) + 16);
+    };
+    medir();
+    const observador = new ResizeObserver(medir);
+    observador.observe(cabecalho);
+    return () => observador.disconnect();
+  }, []);
+
+  function rolarAtePergunta() {
+    const el = ultimaPergunta.current;
+    if (!el) return;
+    const suave = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const destino = el.getBoundingClientRect().top + window.scrollY - topo;
+    const maximo = document.documentElement.scrollHeight - window.innerHeight;
+    posicaoEnvio.current = Math.max(0, Math.min(destino, maximo));
+    el.scrollIntoView({ behavior: suave ? "smooth" : "auto", block: "start" });
+  }
+
+  useEffect(() => {
+    const ultima = mensagens[mensagens.length - 1];
+    if (!ultima) return;
+    if (enviada.current === ultima.id) {
+      enviada.current = null;
+      aguardando.current = ultima.id;
+      rolagemManual.current = false;
+      rolarAtePergunta();
+    } else if (aguardando.current === ultima.id && (ultima.resposta || ultima.erro)) {
+      aguardando.current = null;
+      const afastou = rolagemManual.current && Math.abs(window.scrollY - posicaoEnvio.current) > 48;
+      if (!afastou) rolarAtePergunta();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mensagens]);
 
   async function enviar(pergunta: string) {
     const id = ++contador.current;
+    enviada.current = id;
     setMensagens((m) => [...m, { id, pergunta }]);
     setCarregando(true);
     try {
@@ -55,10 +118,6 @@ export function Conversa() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    fim.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [mensagens, carregando]);
-
   return (
     <div className="mx-auto flex max-w-3xl flex-col px-4 pt-8 pb-40 sm:px-6 [&_article]:scroll-mb-40">
       <h1 className="sr-only">Conversa sobre as leis de Londrina</h1>
@@ -69,20 +128,25 @@ export function Conversa() {
 
       <ol className="grid gap-8" aria-live="polite" aria-busy={carregando}>
         <AnimatePresence initial={false}>
-          {mensagens.map((m) => (
+          {mensagens.map((m, i) => (
             <motion.li
               key={m.id}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="grid gap-4"
+              className="grid content-start gap-4"
+              style={i === mensagens.length - 1 ? { minHeight: `calc(100dvh - ${topo}px - 10rem)` } : undefined}
             >
-              <p className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-3 text-on-primary">
+              <p
+                ref={i === mensagens.length - 1 ? ultimaPergunta : undefined}
+                style={{ scrollMarginTop: topo }}
+                className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-3 text-on-primary"
+              >
                 <span className="sr-only">Você perguntou: </span>
                 {m.pergunta}
               </p>
 
-              {m.resposta && <CartaoResposta resposta={m.resposta} voz={voz} />}
+              {m.resposta && <CartaoResposta resposta={m.resposta} voz={voz} rolarAoFim={false} />}
               {m.erro && (
                 <p role="alert" className="rounded-2xl border border-danger/30 bg-danger-soft px-4 py-3 text-danger">
                   {m.erro}
@@ -93,7 +157,6 @@ export function Conversa() {
           ))}
         </AnimatePresence>
       </ol>
-      <div ref={fim} />
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-bg/90 backdrop-blur">
         <div id="busca" className="mx-auto max-w-3xl px-4 py-3 sm:px-6">
@@ -125,7 +188,15 @@ export function Pensando() {
   );
 }
 
-export function CartaoResposta({ resposta, voz }: { resposta: Resposta; voz: ReturnType<typeof useOuvir> }) {
+export function CartaoResposta({
+  resposta,
+  voz,
+  rolarAoFim = true,
+}: {
+  resposta: Resposta;
+  voz: ReturnType<typeof useOuvir>;
+  rolarAoFim?: boolean;
+}) {
   const [verTrechos, setVerTrechos] = useState(false);
   // Fontes e avisos entram depois que o texto termina de aparecer
   const [pronto, setPronto] = useState(false);
@@ -141,11 +212,11 @@ export function CartaoResposta({ resposta, voz }: { resposta: Resposta; voz: Ret
   // Enquanto as fontes entram, a rolagem acompanha até o fim do cartão
   const cartao = useRef<HTMLElement>(null);
   useEffect(() => {
-    if (!pronto) return;
+    if (!pronto || !rolarAoFim) return;
     const descer = () => cartao.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     const timers = [80, (atrasoIgnoradas + 1) * 120 + 450].map((ms) => setTimeout(descer, ms));
     return () => timers.forEach(clearTimeout);
-  }, [pronto, atrasoIgnoradas]);
+  }, [pronto, atrasoIgnoradas, rolarAoFim]);
 
   return (
     <article ref={cartao} className="scroll-mb-4 rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">

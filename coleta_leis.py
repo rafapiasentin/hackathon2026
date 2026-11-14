@@ -27,9 +27,12 @@ VISÃO GERAL DO FLUXO
     leis.json                                                                [ETAPA 6: main]
 """
 import argparse
+import datetime
+import hashlib
 import json
 import os
 import re
+import subprocess
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -50,6 +53,11 @@ API = "https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php"
 HEADERS = {"User-Agent": "Mozilla/5.0 (hackathon-smartcities-londrina)"}
 PAUSA = 0.5                     # segundos de espera entre requisições, para não sobrecarregar o site
 CACHE = Path("cache_textos")    # cada lei baixada fica salva aqui como <id>.json (permite retomar)
+# Versão do formato do cache. Se mudar o que é extraído da página (ex.: passar a marcar o texto riscado),
+# aumente este número: arquivos de cache com versão antiga são baixados de novo.
+VERSAO_CACHE = 2
+# Versão do formato do leis.json (registrada no leis.meta.json)
+VERSAO_FORMATO = "2.0"
 
 # Converte o mês por extenso do título/assinatura em número ("OUTUBRO" -> 10)
 MESES = {
@@ -97,7 +105,24 @@ RE_ANOTACAO_REVOGADA = re.compile(r"\(\s*REVOGAD[AO]\b([^()]*)\)", re.I)
 
 # Início de artigo: "Art. 1º", "Art. 225.", "Art. 5º-A".
 # (?m)^ = só no COMEÇO DE UMA LINHA. Assim "conforme o art. 5º" no meio de uma frase não vira artigo.
-RE_ARTIGO = re.compile(r"(?m)^\s*(Art\.\s*\d+[º°o]?[A-Z\-]*\.?)")
+# ⟦? = o artigo pode começar riscado (ver MARCAÇÃO DO TEXTO RISCADO abaixo).
+RE_ARTIGO = re.compile(r"(?m)^\s*(⟦?Art\.\s*\d+[º°o]?[A-Z\-]*\.?)")
+
+# MARCAÇÃO DO TEXTO RISCADO
+# As páginas da Câmara mostram o TEXTO COMPILADO: a redação antiga aparece RISCADA (<strike>, <s>, <del>
+# ou estilo "line-through") ao lado da redação nova. Na extração, cada linha riscada vira "⟦...⟧".
+# Depois, o texto riscado é separado do texto vigente de cada artigo (separar_artigos).
+RE_RISCADO = re.compile(r"⟦[^⟧]*⟧")
+RE_LINE_THROUGH = re.compile(r"line-through", re.I)
+
+# Súmula dentro do texto (usada quando a API devolve a ementa vazia):
+# "SÚMULA:\nDesafeta de uso comum ...\nA CÂMARA MUNICIPAL DE LONDRINA..." -> "Desafeta de uso comum ..."
+RE_SUMULA = re.compile(r"S[ÚU]MULA:\s*(.+?)\s*(?:\n\s*A C[ÂA]MARA MUNICIPAL|\Z)", re.I | re.S)
+
+# Promulgação de partes vetadas: quando a Câmara derruba um veto, publica os trechos à parte, com o
+# MESMO número da lei. Ex.: "...EU, PRESIDENTE, PROMULGO, NOS TERMOS DO § 7º DO ARTIGO 31 DA LEI
+# ORGÂNICA DO MUNICÍPIO, OS SEGUINTES DISPOSITIVOS DA LEI MUNICIPAL Nº 13960..."
+RE_PROMULGACAO_VETO = re.compile(r"PROMULGO,?\s+NOS TERMOS.{0,120}?SEGUINTES DISPOSITIVOS DA LEI", re.I | re.S)
 
 # Assinatura no fim da lei, de onde tiramos a data das leis antigas:
 #   "Londrina, 5 de janeiro de 2012."
@@ -153,6 +178,21 @@ def parse_data(texto):
     dia, mes, ano = m.groups()
     mes_n = MESES.get(mes.upper())
     return f"{ano}-{mes_n:02d}-{int(dia):02d}" if mes_n else None
+
+
+def data_valida(data):
+    """True se "AAAA-MM-DD" é uma data que existe no calendário.
+    Ex.: "2010-02-29" -> False (2010 não foi bissexto; erro de digitação no texto da Lei 10.887)."""
+    try:
+        datetime.date.fromisoformat(data)
+        return True
+    except (TypeError, ValueError):
+        return False
+
+
+def sem_riscado(texto):
+    """Remove o texto riscado ("⟦...⟧") e as linhas que ficaram vazias."""
+    return "\n".join(l for l in RE_RISCADO.sub("", texto).splitlines() if l.strip())
 
 
 # =============================================================================
@@ -289,10 +329,26 @@ def altera_pela_ementa(ementa):
 # "Relacionamentos desta Matéria" (Altera, Alterada por, Revoga, Revogada por...).
 # =============================================================================
 
+def marcar_riscado(soup):
+    """Troca cada trecho riscado da página por linhas "⟦...⟧" (redação antiga, que não vale mais).
+
+    Ex.: <strike>Art. 3º As obras deverão ser iniciadas dentro do prazo de um ano...</strike>
+         vira a linha "⟦Art. 3º As obras deverão ser iniciadas dentro do prazo de um ano...⟧"
+    Cada linha é marcada separadamente para que um bloco riscado com vários artigos continue
+    sendo separado em artigos. Marcas de riscados aninhados são removidas antes, para não duplicar.
+    """
+    riscados = soup.select("strike, s, del") + soup.find_all(style=RE_LINE_THROUGH)
+    for el in riscados:
+        linhas = [l.replace("⟦", "").replace("⟧", "").strip() for l in el.get_text("\n").splitlines()]
+        el.replace_with("\n" + "\n".join(f"⟦{l}⟧" for l in linhas if l) + "\n")
+
+
 def extrair_texto(soup):
     """Pega só o texto da lei de dentro da página inteira.
     O texto começa depois do botão "pasta digital" e termina antes de "Protocolos desta Publicação"
-    (nas páginas antigas esse marcador não existe; o rodapé é cortado depois, em processar_texto)."""
+    (nas páginas antigas esse marcador não existe; o rodapé é cortado depois, em processar_texto).
+    O texto riscado vem marcado como "⟦...⟧" (ver marcar_riscado)."""
+    marcar_riscado(soup)
     texto = limpar(soup.get_text("\n"))  # todo o texto visível, uma linha por elemento
     inicio = texto.find("pasta digital")
     if inicio != -1:
@@ -332,19 +388,33 @@ def extrair_relacionamentos(soup):
     return rels
 
 
-def baixar_pagina(id_, link):
-    """Baixa texto e relacionamentos da lei, com CACHE em disco.
+def extrair_anexos(soup):
+    """Links dos PDFs anexados à lei (seção "Anexos"). Importante para as leis que só têm PDF.
+    Ex.: ["https://www.cloudsoftcam.com.br/PR/LONDRINA/importacao/1994/236_lei_ordinaria_n_5933_1994.pdf"]"""
+    return [a["href"] for a in soup.find_all("a", href=True)
+            if a["href"].lower().endswith(".pdf") and "(.pdf)" in a.get_text()]
 
-    Cada lei vira um arquivo cache_textos/<id>.json. Se o arquivo já existe, usa ele e não baixa de novo.
-    Isso permite: (1) retomar a coleta se ela cair; (2) mudar o tratamento do texto (ETAPAS 4 e 5)
-    e gerar o leis.json de novo em ~5 min, sem baixar as 14 mil páginas outra vez.
+
+def baixar_pagina(id_, link):
+    """Baixa texto, relacionamentos e anexos da lei, com CACHE em disco.
+
+    Cada lei vira um arquivo cache_textos/<id>.json. Se o arquivo já existe (e é da versão VERSAO_CACHE),
+    usa ele e não baixa de novo. Isso permite: (1) retomar a coleta se ela cair; (2) mudar o tratamento
+    do texto (ETAPAS 4 e 5) e gerar o leis.json de novo em ~5 min, sem baixar as 14 mil páginas outra vez.
     """
     arq = CACHE / f"{id_}.json"
     if arq.exists():
-        return json.loads(arq.read_text(encoding="utf-8"))
+        dados = json.loads(arq.read_text(encoding="utf-8"))
+        if dados.get("versao") == VERSAO_CACHE:
+            return dados
     r = baixar(link)
     soup = BeautifulSoup(r.text, "html.parser")
-    dados = {"texto": extrair_texto(soup), "relacionamentos": extrair_relacionamentos(soup)}
+    dados = {
+        "versao": VERSAO_CACHE,
+        "relacionamentos": extrair_relacionamentos(soup),
+        "anexos": extrair_anexos(soup),
+        "texto": extrair_texto(soup),  # por último: marcar_riscado altera o soup
+    }
     CACHE.mkdir(exist_ok=True)
     arq.write_text(json.dumps(dados, ensure_ascii=False), encoding="utf-8")
     time.sleep(PAUSA)
@@ -370,7 +440,7 @@ def processar_texto(texto):
     m = RE_RODAPE.search(texto)
     corpo = texto[:m.start()] if m else texto  # corta tudo a partir do rodapé
     data_assinatura = None
-    a = RE_ASSINATURA.search(corpo)
+    a = RE_ASSINATURA.search(sem_riscado(corpo))  # ignora datas em trechos riscados
     if a:
         dia, mes, ano = a.groups()
         mes_n = MESES.get(mes.upper())
@@ -380,11 +450,15 @@ def processar_texto(texto):
 
 
 def separar_artigos(texto):
-    """Divide o texto da lei em artigos: [{"ordem": 1, "artigo": "Art. 1º", "texto": "Art. 1º ..."}, ...]
+    """Divide o texto da lei em artigos:
+        [{"ordem": 1, "artigo": "Art. 1º", "texto": "Art. 1º ...", "texto_riscado": None, "revogado": False}, ...]
 
     - "ordem" é a posição do artigo e é ÚNICA dentro da lei (use-a como chave no banco).
-    - "artigo" (o rótulo) pode se repetir: leis que alteram outras citam o artigo novo entre aspas
-      ('"Art. 23 ..."') e ele aparece como mais um "Art. 23".
+    - "texto" é só a redação VIGENTE (sem o riscado). Fica "" se o artigo inteiro está riscado.
+    - "texto_riscado" é a redação antiga, que não vale mais (None se não houver).
+    - "revogado" é True quando o artigo inteiro está riscado.
+    - "artigo" (o rótulo) pode se repetir. O caso mais comum é o texto compilado: o "Art. 3º" antigo
+      (riscado, revogado=True) seguido do "Art. 3º" com a redação nova.
     """
     # Algumas leis vieram com o texto todo numa linha só. Quebra a linha antes de "Art. N" quando
     # ele vem depois de ".", ":" ou ";" (início de frase). (?<=...) e (?=...) olham antes/depois sem consumir.
@@ -394,9 +468,18 @@ def separar_artigos(texto):
     partes = RE_ARTIGO.split(texto)
     artigos = []
     for i in range(1, len(partes), 2):
-        rotulo = re.sub(r"\s+", " ", partes[i]).strip().rstrip(".")
+        rotulo = re.sub(r"\s+", " ", partes[i].replace("⟦", "")).strip().rstrip(".")
         corpo = partes[i + 1] if i + 1 < len(partes) else ""
-        artigos.append({"ordem": len(artigos) + 1, "artigo": rotulo, "texto": (partes[i] + corpo).strip()})
+        completo = (partes[i] + corpo).strip()
+        riscado = [t[1:-1].strip() for t in RE_RISCADO.findall(completo)]  # tira o ⟦ e o ⟧
+        vigente = sem_riscado(completo).strip()
+        artigos.append({
+            "ordem": len(artigos) + 1,
+            "artigo": rotulo,
+            "texto": vigente,
+            "texto_riscado": "\n".join(riscado) or None,
+            "revogado": not vigente,
+        })
     return artigos
 
 
@@ -410,30 +493,45 @@ def montar_registro(item):
     "id" vem do fim do link ("296902") e é o identificador ÚNICO — use como chave primária.
     "chave"/"numero" NÃO são únicos: existem leis diferentes com o mesmo número (ex.: duas Leis nº 48 de 1949).
     "altera" e "revogada_por" aqui são provisórios: calcular_vigencia (ETAPA 5) monta a versão final.
+
+    Campos de rastreabilidade (não inventam dados; dizem de onde cada informação veio):
+      data_lei_fonte    -> "titulo", "assinatura", "anexo" ou None
+      data_lei_original -> data encontrada mas impossível (ex.: "2010-02-29"), guardada para revisão
+      ementa_fonte      -> "api", "texto" (súmula tirada do texto) ou None (ementa = None)
+      revogacao_nota    -> anotação original "(REVOGADA pelo ...)", inclusive quando o revogador
+                           não é identificável (decreto, erro de digitação na fonte)
     """
     numero, data_lei, ano, complementar = parse_titulo(item["titulo"])
     ementa = limpar_ementa(item["ementa"])
     link = item["link"].split("#")[0]  # tira o "#pesquisa" do fim
     minha_chave = chave(numero, complementar) if numero else None
     revogada = revogacao_na_ementa(ementa)
+    nota = RE_ANOTACAO_REVOGADA.search(ementa)
+    data_ok = data_valida(data_lei)
     return {
         "id": link.rstrip("/").split("/")[-1],
         "chave": minha_chave,
         "tipo": "Lei Complementar" if complementar else "Lei",
         "numero": numero,
-        "data_lei": data_lei,
+        "data_lei": data_lei if data_ok else None,
+        "data_lei_fonte": "titulo" if data_ok else None,
+        "data_lei_original": data_lei if data_lei and not data_ok else None,
         "ano": ano,
         "titulo": limpar(item["titulo"]).strip(),
-        "ementa": ementa,
+        "ementa": ementa or None,
+        "ementa_fonte": "api" if ementa else None,
         "publicado_site": item["data"],
         "link": link,
         "situacao": "revogada" if revogada is not None else "vigente",
+        "revogacao_nota": nota.group(0) if nota else None,
+        "complementa_id": None,  # preenchido em calcular_vigencia para "Promulgação de partes vetadas"
         "altera": [c for c in altera_pela_ementa(ementa) if c != minha_chave],  # ignora citar a si mesma
         "alterada_por": [],
         "revoga": [],
         "revogada_por": revogada or [],
         "fonte_relacoes": "ementa",  # vira "cml" quando lermos as relações oficiais (adicionar_texto)
         "relacionamentos": [],
+        "anexos": [],
         "artigos": [],
     }
 
@@ -450,16 +548,30 @@ def adicionar_texto(registro):
     registro["artigos"] = separar_artigos(corpo)
     registro["texto_disponivel"] = bool(registro["artigos"])  # False = só tem PDF ou é inexistente
     registro["relacionamentos"] = dados["relacionamentos"]
+    registro["anexos"] = dados.get("anexos", [])
     registro["fonte_relacoes"] = "cml"
+    # Impressão digital do texto baixado: numa coleta futura, hash diferente = a página da lei mudou
+    registro["hash_texto"] = hashlib.sha256(dados["texto"].encode("utf-8")).hexdigest()
     if "LEI INEXISTENTE" in corpo.upper():
         registro["situacao"] = "inexistente"  # número que ficou vago
+    if RE_PROMULGACAO_VETO.search(corpo[:800]):  # só no começo: leis podem citar promulgações no fim
+        registro["tipo"] = "Promulgação de partes vetadas"
+    if not registro["ementa"]:
+        # A API devolveu a ementa vazia: tenta a "SÚMULA:" do próprio texto
+        s = RE_SUMULA.search(sem_riscado(corpo)[:3000])
+        if s:
+            registro["ementa"] = re.sub(r"\s+", " ", s.group(1)).strip()
+            registro["ementa_fonte"] = "texto"
     if not registro["data_lei"]:
         # Só aceita a data se o ano bater com o do título. Evita pegar a data errada,
         # como a de uma anotação "(REVOGADA pela Lei ..., de 29 de outubro de 2026)".
-        for data in (data_assinatura, data_anexo):
+        # Data impossível (ex.: 29/02/2010) não entra: fica em data_lei_original para revisão.
+        for fonte, data in (("assinatura", data_assinatura), ("anexo", data_anexo)):
             if data and (not registro["ano"] or data[:4] == registro["ano"]):
-                registro["data_lei"] = data
-                break
+                if data_valida(data):
+                    registro["data_lei"], registro["data_lei_fonte"] = data, fonte
+                    break
+                registro["data_lei_original"] = registro["data_lei_original"] or data
     return registro
 
 
@@ -468,6 +580,7 @@ def adicionar_texto(registro):
 #
 # Regras da "situacao":
 #   revogada               -> a ementa tem a anotação oficial "(REVOGADA pelo ...)"
+#                             (ou é promulgação de partes vetadas de uma lei revogada)
 #   inexistente            -> o texto diz "LEI INEXISTENTE" (definido em adicionar_texto)
 #   vigente_com_alteracoes -> não revogada, mas foi alterada ou teve PARTE revogada
 #   vigente                -> nenhum dos casos acima
@@ -499,7 +612,14 @@ def resolver_id(c, lei, por_chave, alvo_mais_novo):
 
 
 def adicionar_relacao(lei, tipo, id_, c):
-    """Acrescenta {"tipo", "id", "chave"} em lei["relacoes"], sem deixar entrar repetida."""
+    """Acrescenta {"tipo", "id", "chave"} em lei["relacoes"], sem deixar entrar repetida.
+
+    Descarta relação da lei com ELA MESMA: em ~27 páginas a própria Câmara lista a lei como
+    "Revoga: ela mesma" (ex.: Lei 9.282), e a anotação da Lei 9.265 diz que ela foi revogada
+    "pela Lei nº 9.265" (número errado na fonte). A lista crua "relacionamentos" continua como veio.
+    """
+    if (id_ and id_ == lei["id"]) or (not id_ and c == lei["chave"]):
+        return
     for r in lei["relacoes"]:
         if r["tipo"] == tipo and ((id_ and r["id"] == id_) or (not id_ and r["chave"] == c)):
             return
@@ -567,12 +687,78 @@ def calcular_vigencia(leis):
         # "Revogada por" sem a anotação de REVOGADA na ementa = revogação parcial (só alguns dispositivos)
         if lei["situacao"] == "vigente" and (lei["alterada_por"] or lei["revogada_por"]):
             lei["situacao"] = "vigente_com_alteracoes"
+
+    # 5) Promulgação de partes vetadas: liga à lei principal (mesmo número, outro id).
+    #    Ex.: id 249902 complementa a Lei 13.960 (id 242406). Os artigos dela FAZEM PARTE da lei principal,
+    #    e ela segue a situação da principal se esta tiver sido revogada.
+    for lei in leis:
+        if lei["tipo"] != "Promulgação de partes vetadas":
+            continue
+        principais = [x for x in por_chave.get(lei["chave"], []) if x["id"] != lei["id"] and x["tipo"] != lei["tipo"]]
+        principais.sort(key=lambda x: x["ano"] != lei["ano"])  # prefere a do mesmo ano
+        if principais:
+            lei["complementa_id"] = principais[0]["id"]
+            if principais[0]["situacao"] == "revogada":
+                lei["situacao"] = "revogada"
     return leis
 
 
 # =============================================================================
 # ETAPA 6 — JUNTAR TUDO E SALVAR (main)
 # =============================================================================
+
+def commit_do_script():
+    """Commit do git em que o script estava ao gerar o arquivo (+ aviso se tinha alterações não commitadas)."""
+    try:
+        pasta = Path(__file__).parent
+        commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=pasta,
+                                capture_output=True, text=True, check=True).stdout.strip()
+        sujo = subprocess.run(["git", "status", "--porcelain", "--", Path(__file__).name], cwd=pasta,
+                              capture_output=True, text=True).stdout.strip()
+        return commit + ("+alteracoes_locais" if sujo else "")
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
+def gerar_meta(leis, saida, args):
+    """Gera <saida>.meta.json (ex.: leis.meta.json) descrevendo como o leis.json foi produzido:
+    versão do formato, quando foi gerado, quando os textos foram baixados, commit do script, totais
+    e o hash SHA-256 do arquivo (para conferir se o leis.json é exatamente o que foi gerado)."""
+    caminho = Path(saida)
+    datas_cache = [(CACHE / f"{l['id']}.json").stat().st_mtime for l in leis
+                   if "hash_texto" in l and (CACHE / f"{l['id']}.json").exists()]
+
+    def iso(ts):
+        return datetime.datetime.fromtimestamp(ts).astimezone().isoformat(timespec="seconds")
+
+    artigos = [a for l in leis for a in l["artigos"]]
+    meta = {
+        "versao_formato": VERSAO_FORMATO,
+        "gerado_em": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
+        "textos_baixados_entre": [iso(min(datas_cache)), iso(max(datas_cache))] if datas_cache else None,
+        "fonte": {"api": API, "call": "legislacoes", "tipo": "Leis"},
+        "script": {"arquivo": "coleta_leis.py", "commit": commit_do_script(),
+                   "opcoes": {"texto": args.texto, "paginas": args.paginas}},
+        "totais": {
+            "leis": len(leis),
+            "por_situacao": dict(Counter(l["situacao"] for l in leis)),
+            "por_tipo": dict(Counter(l["tipo"] for l in leis)),
+            "artigos": len(artigos),
+            "artigos_revogados": sum(a["revogado"] for a in artigos),
+            "artigos_com_texto_riscado": sum(bool(a["texto_riscado"]) for a in artigos),
+            "relacoes": sum(len(l["relacoes"]) for l in leis),
+            "relacionamentos_cml": sum(len(l["relacionamentos"]) for l in leis),
+            "sem_data_lei": sum(not l["data_lei"] for l in leis),
+            "sem_texto": sum(not l.get("texto_disponivel") for l in leis),
+            "sem_ementa": sum(not l["ementa"] for l in leis),
+        },
+        "arquivo": {"nome": caminho.name, "bytes": caminho.stat().st_size,
+                    "sha256": hashlib.sha256(caminho.read_bytes()).hexdigest()},
+    }
+    arq_meta = caminho.with_suffix(".meta.json")
+    arq_meta.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    return arq_meta
+
 
 def main():
     # Opções de linha de comando (python coleta_leis.py --help mostra todas)
@@ -606,6 +792,9 @@ def main():
     resumo = dict(Counter(l["situacao"] for l in leis))
     erros = sum("erro_texto" in l for l in leis)
     print(f"{len(leis)} leis salvas em {args.saida} -> {resumo}" + (f" ({erros} sem texto)" if erros else ""))
+
+    # Arquivo de metadados ao lado do leis.json (não muda a estrutura do leis.json, que continua uma lista)
+    print(f"metadados em {gerar_meta(leis, args.saida, args)}")
 
 
 # Só roda main() quando o arquivo é executado direto (python coleta_leis.py),

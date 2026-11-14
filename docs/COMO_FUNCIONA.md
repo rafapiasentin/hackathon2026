@@ -218,6 +218,19 @@ texto = texto[:texto.find("Protocolos desta Publicação")]
 
 A `limpar()` troca o `\xa0`, um espaço especial que o site usa, por espaço normal.
 
+### `marcar_riscado()`: a redação antiga riscada
+
+As páginas mostram o **texto compilado**. Quando um artigo muda, a redação antiga continua na página, **riscada** (`<strike>`, `<s>`, `<del>` ou estilo `line-through`), e a nova vem logo depois. Sem tratamento, a redação antiga entrava no texto como se valesse.
+
+```python
+riscados = soup.select("strike, s, del") + soup.find_all(style=RE_LINE_THROUGH)
+for el in riscados:
+    linhas = [l.strip() for l in el.get_text("\n").splitlines()]
+    el.replace_with("\n" + "\n".join(f"⟦{l}⟧" for l in linhas if l) + "\n")
+```
+
+Cada linha riscada vira `⟦...⟧`. Na Etapa 4, `separar_artigos` separa o que está entre `⟦⟧` (redação antiga) do resto (redação vigente).
+
 ### `extrair_relacionamentos()`
 
 No HTML, cada relação é um link assim:
@@ -237,12 +250,18 @@ for a in soup.select("#menu_opcao_proposicao_relacionamentos a.menu-opcoes__item
 
 O `soup.select(...)` usa **seletores CSS**: `#id a.classe` quer dizer "links com essa classe dentro do elemento com esse id". Os rótulos que aparecem são Altera, Alterada por, Revoga, Revogada por, Cita, Citada por, Sanção, Promulgação e Vínculo.
 
+### `extrair_anexos()`
+
+Pega os links dos PDFs da seção "Anexos". É o único conteúdo das leis antigas que não têm texto em HTML.
+
 ### `baixar_pagina()`: o cache
 
 ```python
 arq = CACHE / f"{id_}.json"
 if arq.exists():                    # já baixei antes? usa o arquivo salvo
-    return json.loads(arq.read_text(encoding="utf-8"))
+    dados = json.loads(arq.read_text(encoding="utf-8"))
+    if dados.get("versao") == VERSAO_CACHE:   # ...desde que seja do formato atual
+        return dados
 r = baixar(link)
 ...
 arq.write_text(json.dumps(dados, ensure_ascii=False), encoding="utf-8")   # salva
@@ -251,6 +270,8 @@ arq.write_text(json.dumps(dados, ensure_ascii=False), encoding="utf-8")   # salv
 Cada lei vira `cache_textos/<id>.json`. Isso permite:
 1. **retomar** a coleta se ela cair no meio;
 2. **mudar o tratamento** do texto (Etapas 4 e 5) e gerar o `leis.json` de novo em ~5 min, sem baixar as 14 mil páginas outra vez.
+
+> **`VERSAO_CACHE`:** se você mudar o que é **extraído da página** (como foi ao passar a marcar o riscado), aumente esse número no topo do script. Os arquivos de cache antigos são baixados de novo automaticamente.
 
 ### Três downloads ao mesmo tempo
 
@@ -291,7 +312,9 @@ for data in (data_assinatura, data_anexo):
         break
 ```
 
-A regra foi testada nas 425 leis que já têm data no título: acertou 418 (~98%). As leis sem data caíram de 9.879 para 837, e todas têm pelo menos o `ano`.
+A regra foi testada nas 425 leis que já têm data no título: acertou 418 (~98%). Todas as leis têm pelo menos o `ano`.
+
+**Datas impossíveis.** O texto da Lei 10.887 diz "Londrina, 29 de fevereiro de 2010", mas 2010 não foi bissexto. Toda data passa por `data_valida()`, que usa o calendário do Python. Uma data impossível **não** entra em `data_lei`: ela fica guardada em `data_lei_original` para revisão, e o script tenta a próxima fonte (o anexo). O campo `data_lei_fonte` diz de onde a data veio (`titulo`, `assinatura` ou `anexo`).
 
 ### `separar_artigos()`
 
@@ -303,14 +326,28 @@ RE_ARTIGO = re.compile(r"(?m)^\s*(Art\.\s*\d+[º°o]?[A-Z\-]*\.?)")   # "Art. 1�
 - Algumas leis vieram com o texto todo numa linha só. Antes de separar, o script quebra a linha antes de "Art. N" quando ele vem depois de ".", ":" ou ";".
 - `RE_ARTIGO.split(texto)` devolve `[antes, "Art. 1º", corpo1, "Art. 2º", corpo2, ...]`, e por isso o laço anda de 2 em 2.
 
-Cada artigo vira `{"ordem": 1, "artigo": "Art. 1º", "texto": "Art. 1º ..."}`.
+Cada artigo vira:
 
-> **Por que `ordem`?** O rótulo pode se repetir: uma lei que altera outra cita o artigo novo entre aspas (`"Art. 23 ..."`), e aparecem dois "Art. 23". A `ordem` é sempre única dentro da lei e deve ser usada como chave no banco.
+```json
+{ "ordem": 3, "artigo": "Art. 3º", "texto": "", "texto_riscado": "Art. 3º As obras deverão ser iniciadas dentro do prazo de um ano...", "revogado": true }
+{ "ordem": 4, "artigo": "Art. 3º", "texto": "Art. 3º As obras deverão ser iniciadas até o dia 30.09.75...", "texto_riscado": null, "revogado": false }
+```
+
+(Exemplo real da Lei 1.457: o "Art. 3º" antigo, riscado, e o "Art. 3º" com a redação nova.)
+
+- `texto`: só a redação **vigente**. Fica `""` se o artigo inteiro está riscado.
+- `texto_riscado`: a redação antiga, que não vale mais.
+- `revogado`: `true` quando o artigo inteiro está riscado.
+
+> **Por que `ordem`?** O rótulo pode se repetir, e o caso mais comum é justamente esse: o artigo antigo riscado seguido do novo. A `ordem` é sempre única dentro da lei e deve ser usada como chave no banco.
 
 ### Casos especiais (`adicionar_texto()`)
 
 - `texto_disponivel = False` quando a lei só tem PDF (18 leis) ou é inexistente (5).
 - `situacao = "inexistente"` quando o texto diz "LEI INEXISTENTE" (número que ficou vago).
+- **Ementa vazia na API:** o script procura a "SÚMULA:" no próprio texto (`ementa_fonte = "texto"`). Se não houver, `ementa = null`; nada é inventado.
+- **Promulgação de partes vetadas:** quando o prefeito veta trechos e a Câmara derruba o veto, esses trechos são publicados à parte, com o **mesmo número** da lei ("...PROMULGO, NOS TERMOS DO § 7º DO ARTIGO 31 DA LEI ORGÂNICA..., OS SEGUINTES DISPOSITIVOS DA LEI MUNICIPAL Nº 13960"). O script marca `tipo = "Promulgação de partes vetadas"`, e a Etapa 5 liga o registro à lei principal (`complementa_id`).
+- `hash_texto`: SHA-256 do texto baixado. Numa coleta futura, um hash diferente indica que a página da lei mudou.
 
 ---
 
@@ -334,14 +371,14 @@ Cada lei ganha `relacoes`, uma lista de `{"tipo", "id", "chave"}`:
 3. **Plano B** (sem `--texto`): as alterações deduzidas da ementa; o lado inverso (`alterada_por`) é preenchido automaticamente.
 
 Funções de apoio:
-- `adicionar_relacao()` não deixa entrar a mesma relação duas vezes.
+- `adicionar_relacao()` não deixa entrar a mesma relação duas vezes e **descarta a relação de uma lei com ela mesma**. Em ~27 páginas a própria Câmara lista a lei como "Revoga: ela mesma" (ex.: Lei 9.282), e a anotação da Lei 9.265 diz que ela foi revogada "pela Lei nº 9.265" (número errado na fonte). A lista crua `relacionamentos` continua como veio.
 - `resolver_id()` trata números repetidos: quando "48" corresponde a duas leis, escolhe pela data, sabendo que quem revoga é **mais nova** que a lei revogada.
 
 ### A situação
 
 | Situação | Quando |
 |---|---|
-| `revogada` | a ementa tem a anotação oficial "(REVOGADA pelo ...)" |
+| `revogada` | a ementa tem a anotação oficial "(REVOGADA pelo ...)", ou é promulgação de partes vetadas de uma lei revogada |
 | `inexistente` | o texto diz "LEI INEXISTENTE" |
 | `vigente_com_alteracoes` | não está revogada, mas foi alterada ou teve **parte** revogada |
 | `vigente` | nenhum dos casos acima |
@@ -361,6 +398,8 @@ Funções de apoio:
 
 Do outro lado, a 14.294 fica `vigente`, com `revoga: ["11471"]` e 225 artigos.
 
+A anotação original fica em `revogacao_nota`. Ela é a única evidência quando o revogador não é identificável: a 13.905 foi revogada por um **decreto**, e a anotação da 6.884 veio quebrada da fonte ("Lei nº de de de 20").
+
 ---
 
 ## 7. Etapa 6: juntar tudo (`main`)
@@ -371,7 +410,24 @@ if args.texto:
     pool.map(adicionar_texto, leis)                           # Etapas 3 e 4 (3 em paralelo)
 leis = calcular_vigencia(leis)                                # Etapa 5
 json.dump(leis, f, ensure_ascii=False, indent=2)              # salva o leis.json
+gerar_meta(leis, args.saida, args)                            # salva o leis.meta.json
 ```
+
+O `leis.meta.json` descreve como o arquivo foi produzido, sem mudar a estrutura do `leis.json`:
+
+```json
+{
+  "versao_formato": "2.0",
+  "gerado_em": "2026-11-14T15:20:00-03:00",
+  "textos_baixados_entre": ["...", "..."],
+  "fonte": { "api": "https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php", "call": "legislacoes", "tipo": "Leis" },
+  "script": { "arquivo": "coleta_leis.py", "commit": "e2b74d6", "opcoes": { "texto": true, "paginas": null } },
+  "totais": { "leis": 14308, "artigos": "...", "artigos_revogados": "...", "relacoes": "..." },
+  "arquivo": { "nome": "leis.json", "bytes": "...", "sha256": "..." }
+}
+```
+
+Para conferir se um `leis.json` é exatamente o que foi gerado, compare o SHA-256 dele com o do meta. Se o `commit` terminar em `+alteracoes_locais`, o script tinha mudanças não commitadas quando gerou o arquivo.
 
 | Comando | O que faz | Tempo |
 |---|---|---|
@@ -395,13 +451,20 @@ json.dump(leis, f, ensure_ascii=False, indent=2)              # salva o leis.jso
 | Data errada ou faltando | conferência do `leis.json` | assinatura ou anexo, conferindo o ano; validado em 425 leis |
 | Rodapé do site no texto | conferência | `RE_RODAPE` corta o texto ali |
 | Texto numa linha só | 26 leis sem artigos | quebra a linha antes de "Art. N" |
+| Redação antiga riscada entrava como válida | 633 leis com rótulo de artigo repetido | `marcar_riscado`: `texto` vigente, `texto_riscado` e `revogado` por artigo |
+| Data impossível (29/02/2010) | revisão do colega no `leis.json` | `data_valida`; fica em `data_lei_original` |
+| Relações de uma lei com ela mesma | 27 casos na fonte | descartadas em `relacoes`, mantidas em `relacionamentos` |
+| Ementas vazias na API | 3 casos | súmula tirada do texto; senão `null` |
+| "Lei 13.960" aparecendo duas vezes | chave repetida | é promulgação de partes vetadas; `complementa_id` |
+| Revogada sem revogador identificável | decreto / erro na fonte | `revogacao_nota` guarda a anotação original |
+| Sem rastreabilidade da coleta | revisão do colega | `leis.meta.json` e `hash_texto` |
 
 ---
 
 ## 9. Como isso se conecta ao resto do projeto
 
 1. **Banco (Peewee + Postgres):** carregar o `leis.json` em três tabelas: `lei` (chave `id`), `artigo` (chave `lei_id + ordem`) e `relacao` (vem do campo `relacoes`). Detalhes no [README](../README.md#sugestão-de-tabelas-postgres).
-2. **Busca:** encontrar os artigos mais parecidos com a pergunta, **filtrando `situacao IN ('vigente', 'vigente_com_alteracoes')`**. É aqui que o cálculo de vigência evita respostas baseadas em leis revogadas.
+2. **Busca:** encontrar os artigos mais parecidos com a pergunta, **filtrando leis com `situacao IN ('vigente', 'vigente_com_alteracoes')` e artigos com `revogado = false`**, usando só o campo `texto` (redação vigente). É aqui que o cálculo de vigência evita respostas baseadas em leis ou redações revogadas.
 3. **Chatbot:** a IA recebe só esses artigos e responde citando lei, artigo e link da Câmara.
 
 ---
@@ -421,7 +484,13 @@ Rode o mesmo comando de novo. As leis já baixadas estão no cache e são pulada
 É o firewall do site da Câmara bloqueando. Tente de outra rede ou peça liberação à CML.
 
 **Por que algumas leis estão com `data_lei: null`?**
-São 837 leis antigas sem data no título nem no texto. O `ano` está sempre preenchido.
+São leis antigas sem data no título nem no texto, ou com data impossível na fonte (veja `data_lei_original`). O `ano` está sempre preenchido.
+
+**Mudei o que o script extrai da página. O cache antigo ainda serve?**
+Não: aumente `VERSAO_CACHE` no topo do script, e os arquivos antigos serão baixados de novo na próxima coleta (~1h10).
+
+**Como o chatbot sabe que uma redação mudou?**
+O artigo antigo vem com `revogado: true` e o texto em `texto_riscado`; o novo vem logo depois, com o mesmo rótulo e `revogado: false`.
 
 **Onde adiciono outro tipo de legislação (Lei Orgânica, leis complementares)?**
 `listar_leis(tipo=...)` já aceita o tipo da API. Falta descobrir o nome exato de cada tipo na API e testar se os títulos seguem os mesmos formatos.

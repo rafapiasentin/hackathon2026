@@ -9,7 +9,8 @@ Projeto do Hackathon Smart Cities Londrina 2026: um assistente de consulta à le
 | Arquivo | O que é |
 |---|---|
 | `coleta_leis.py` | Baixa as leis da API da Câmara Municipal de Londrina (CML), extrai texto, artigos e relações "altera/revoga" e salva em `leis.json` |
-| `leis.zip` | `leis.json` da coleta completa de 14/11/2026, pronto para usar (13 MB; descompactado, 72 MB) |
+| `leis.zip` | `leis.json` da coleta completa, pronto para usar |
+| `leis.meta.json` | Metadados do `leis.json`: quando foi gerado, commit do script, totais e hash SHA-256 |
 | `docs/COMO_FUNCIONA.md` | Guia passo a passo do `coleta_leis.py`, com os trechos de código explicados e perguntas frequentes |
 | `ATUALIZACAO.md` | Resumo para o grupo: o que foi feito e próximos passos |
 | `.env.example` | Modelo do arquivo de configuração com o token da API |
@@ -69,7 +70,8 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
 
 ### Página de cada lei (`link`)
 
-- Traz o texto completo em HTML (não precisa de PDF).
+- Traz o texto completo em HTML (não precisa de PDF). É o **texto compilado**: a redação antiga aparece **riscada** (`<strike>`) ao lado da redação nova. O script marca o riscado e separa a redação vigente da antiga.
+- Leis antigas podem ter só um PDF anexado; o link fica em `anexos`.
 - Traz a seção oficial **"Relacionamentos desta Matéria"**, com os rótulos `Altera`, `Alterada por`, `Revoga`, `Revogada por`, `Cita`, `Citada por`, `Sanção`, `Promulgação` e `Vínculo`. Cada item aponta para o `id` da outra matéria.
 - Atenção: `Revogada por` inclui **revogação parcial**. A Lei 11.471 aparece "Revogada por" a 13.529/2022, que só revogou os §§ 1º e 2º do art. 23. A revogação total é só a da 14.294/2026, e é ela que aparece anotada na ementa.
 
@@ -87,8 +89,14 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
   "ementa": "Institui o Código Ambiental do Município de Londrina.",
   "publicado_site": "2026-11-04 18:44:30",
   "link": "https://www.cml.pr.gov.br/proposicoes/0/0/0/0/296902",
+  "data_lei_fonte": "titulo",
+  "data_lei_original": null,
+  "ementa_fonte": "api",
   "situacao": "vigente",
+  "revogacao_nota": null,
+  "complementa_id": null,
   "texto_disponivel": true,
+  "hash_texto": "9f2c…",
   "altera": [],
   "alterada_por": [],
   "revoga": ["11471"],
@@ -98,32 +106,57 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
   ],
   "fonte_relacoes": "cml",
   "relacionamentos": [
-    { "tipo": "Revoga", "id": "35210", "descricao": "LEI ORDINÁRIA Nº 11471/2012 Institui o Código Ambiental ..." }
+    { "tipo": "Revoga", "data": "05/01/2012 00:00", "id": "35210", "descricao": "LEI ORDINÁRIA Nº 11471/2012 Institui o Código Ambiental ..." }
   ],
-  "artigos": [{ "ordem": 1, "artigo": "Art. 1º", "texto": "Art. 1º ..." }]
+  "anexos": [],
+  "artigos": [
+    { "ordem": 1, "artigo": "Art. 1º", "texto": "Art. 1º ...", "texto_riscado": null, "revogado": false }
+  ]
 }
 ```
 
 - `id` é o identificador da CML e é único. `chave` é o número legível: `14294`, `520-A` ou, para lei complementar, `LC-12`. Existem 4 casos de leis diferentes com o mesmo número (por exemplo, duas Leis nº 48 de 1949).
 - `altera`, `alterada_por`, `revoga` e `revogada_por` são listas de `chave`, para leitura humana.
 - `relacoes` traz as mesmas relações **por `id`**, para o banco: `tipo` é `altera`, `alterada_por`, `revoga` ou `revogada_por`. `id` é `null` quando a lei citada não está no arquivo (por exemplo, uma lei complementar).
-- `artigos[].ordem` é a posição do artigo no texto e é única dentro da lei. O rótulo `artigo` pode se repetir, porque leis que alteram outras citam o artigo novo entre aspas.
-- `relacionamentos` é a lista crua da seção oficial da CML, com todos os rótulos (inclusive `Cita`, `Sanção`, `Vínculo`).
+- `relacionamentos` é a lista crua da seção oficial da CML, com todos os rótulos (inclusive `Cita`, `Sanção`, `Vínculo`). As relações da lei com ela mesma, que existem na fonte por erro, ficam aqui mas **não** entram em `relacoes`.
+- `tipo` é `Lei` ou `Promulgação de partes vetadas`: trechos vetados pelo prefeito que a Câmara promulgou depois, publicados à parte com o **mesmo número** da lei. Nesse caso, `complementa_id` aponta para a lei principal, e os artigos fazem parte dela.
 - `situacao` pode ser `vigente`, `vigente_com_alteracoes`, `revogada` ou `inexistente` (número que ficou vago: "LEI INEXISTENTE").
-- `data_lei` pode ser `null` (837 leis antigas sem data no título nem no texto); `ano` está sempre preenchido.
-- `texto_disponivel` é `false` quando a lei só tem PDF anexado (18 leis) ou é inexistente (5).
+- `revogacao_nota` guarda a anotação original "(REVOGADA pelo ...)". Serve de evidência quando o revogador não é identificável (decreto ou erro de digitação na fonte).
+- `data_lei` só recebe datas que existem no calendário, e pode ser `null`. `data_lei_fonte` diz de onde veio: `titulo`, `assinatura` ou `anexo`. `data_lei_original` guarda uma data impossível encontrada na fonte (ex.: `2010-02-29`) para revisão. `ano` está sempre preenchido.
+- `ementa` é `null` quando não existe; `ementa_fonte` é `api`, `texto` (súmula tirada do texto quando a API veio vazia) ou `null`.
+- `texto_disponivel` é `false` quando a lei só tem PDF anexado ou é inexistente. `anexos` traz os links dos PDFs.
+- `hash_texto` é o SHA-256 do texto baixado: numa coleta futura, um hash diferente indica que a página da lei mudou.
 - `fonte_relacoes` é `cml` quando as relações vieram da seção oficial e `ementa` quando foram deduzidas da ementa (coleta sem `--texto`).
-- `relacionamentos` e `artigos` só são preenchidos com `--texto`.
+- `relacionamentos`, `anexos`, `artigos` e `hash_texto` só são preenchidos com `--texto`.
+
+### Artigos e texto riscado
+
+As páginas mostram o **texto compilado**: quando um artigo muda, a redação antiga continua lá, riscada, e a nova vem logo depois. Cada artigo traz:
+
+- `ordem`: posição do artigo no texto, **única dentro da lei** (use como chave no banco).
+- `texto`: só a redação **vigente** (sem o riscado). Fica `""` se o artigo inteiro está riscado.
+- `texto_riscado`: a redação antiga, que não vale mais (`null` se não houver).
+- `revogado`: `true` quando o artigo inteiro está riscado.
+- `artigo`: o rótulo ("Art. 3º"). **Pode se repetir**: o "Art. 3º" antigo (riscado, `revogado: true`) seguido do "Art. 3º" com a redação nova.
+
+> Para o chatbot: indexe e mostre só `texto` de artigos com `revogado = false`. O `texto_riscado` serve para responder "como era antes".
+
+### Metadados (`leis.meta.json`)
+
+Arquivo gerado ao lado do `leis.json`, sem mudar a estrutura dele (que continua sendo uma lista). Traz `versao_formato`, `gerado_em`, `textos_baixados_entre`, a fonte, o `commit` do script, os totais e o `sha256` do `leis.json`, que permite conferir se o arquivo é exatamente o que foi gerado.
 
 ### Sugestão de tabelas (Postgres)
 
 | Tabela | Colunas principais | Chave |
 |---|---|---|
 | `lei` | `id`, `chave`, `numero`, `data_lei`, `ano`, `titulo`, `ementa`, `link`, `situacao` | `id` |
-| `artigo` | `lei_id`, `ordem`, `artigo`, `texto` | `(lei_id, ordem)` |
+| `artigo` | `lei_id`, `ordem`, `artigo`, `texto`, `texto_riscado`, `revogado` | `(lei_id, ordem)` |
 | `relacao` | `lei_origem_id`, `lei_destino_id` (aceita nulo), `chave_destino`, `tipo` | — |
+| `relacionamento_cml` | `lei_id`, `tipo`, `data`, `id_destino`, `descricao` (lista crua, inclui Sanção, Cita, Vínculo) | — |
 
-Não use `chave`/`numero` como chave primária: existem leis diferentes com o mesmo número. Para a busca, filtre `situacao IN ('vigente', 'vigente_com_alteracoes')`.
+- Não use `chave`/`numero` como chave primária nem com `UNIQUE`: existem leis diferentes com o mesmo número.
+- `data_lei` deve aceitar nulo; `ano` nunca é nulo.
+- Para a busca, filtre leis com `situacao IN ('vigente', 'vigente_com_alteracoes')` e artigos com `revogado = false`, e não indexe leis com `texto_disponivel = false`.
 
 ## Como a vigência é calculada
 
@@ -137,8 +170,9 @@ Resultado da coleta completa (14/11/2026): **14.308 leis**, **74.631 artigos** e
 ## Limitações conhecidas
 
 - Sem `--texto`, as alterações são deduzidas da ementa e podem ter falsos positivos ou negativos. Com `--texto`, valem as relações oficiais da CML.
-- A situação é da lei inteira. O sistema ainda não sabe **quais artigos** foram alterados ou revogados parcialmente.
-- Em 3 leis revogadas, `revogada_por` fica vazio: uma cita um decreto como revogador e duas têm erro de digitação na anotação da CML (por exemplo, "Lei nº de 10.037").
+- Artigos revogados por inteiro são identificados pelo texto riscado (`revogado`). Trechos menores riscados (um inciso, um parágrafo) ficam em `texto_riscado` do artigo.
+- Algumas leis revogadas ficam com `revogada_por` vazio, porque o revogador é um decreto ou a anotação da CML tem erro de digitação. A anotação original fica em `revogacao_nota`.
+- A fonte tem erros que o script não corrige, só sinaliza: datas impossíveis (`data_lei_original`) e relações de uma lei com ela mesma (ficam só em `relacionamentos`).
 - 18 leis só têm o texto em PDF anexado, que ainda não é lido.
 - Requisições com `curl` são bloqueadas pelo site (406 Not Acceptable). O script em Python funciona normalmente; se ele receber 406, mostra um aviso.
 

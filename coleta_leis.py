@@ -2,14 +2,15 @@
 
 Uso:
     python coleta_leis.py --paginas 2 --texto   # teste: 100 leis com texto
-    python coleta_leis.py                        # lista completa, só ementas
-    python coleta_leis.py --texto                # tudo com texto (horas; retoma de onde parou)
+    python coleta_leis.py                        # lista completa, só ementas (~5 min)
+    python coleta_leis.py --texto                # tudo com texto e relacionamentos (retoma de onde parou)
 """
 import argparse
 import json
 import os
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import requests
@@ -29,13 +30,24 @@ MESES = {
     "JULHO": 7, "AGOSTO": 8, "SETEMBRO": 9, "OUTUBRO": 10, "NOVEMBRO": 11, "DEZEMBRO": 12,
 }
 
-RE_TITULO = re.compile(
-    r"LEI\s+(COMPLEMENTAR\s+)?N\.?\s*[º°o]?\s*([\d\.]+),?\s+DE\s+(\d{1,2})[º°o]?\s+DE\s+(\w+)\s+DE\s+(\d{4})", re.I)
-RE_REF_LEI = re.compile(r"Lei\s+(Complementar\s+)?(?:Municipal\s+)?n[º°o\.]*\s*([\d\.]*\d)", re.I)
+# "LEI N.º 14294, DE 29 DE OUTUBRO DE 2026" ou "LEI ORDINÁRIA Nº 11341/2011"
+RE_NUMERO = re.compile(r"\bN[\.º°o\s]*\s*(\d[\d\.]*\d|\d)(?:\s*-?\s*([A-Z])\b)?", re.I)
+RE_DATA_EXTENSO = re.compile(r"\bDE\s+(\d{1,2})\s*[º°o]?\s+DE\s+([A-ZÇa-zç]+)\s+DE\s+(\d{4})", re.I)
+RE_ANO_BARRA = re.compile(r"/\s*(\d{4})\b")
+RE_REF_LEI = re.compile(r"Lei\s+(Complementar\s+)?(?:Municipal\s+)?(?:n[º°o\.]*\s*)?(\d[\d\.]*\d|\d)", re.I)
 RE_VERBO_ALTERA = re.compile(
     r"^\s*(Altera|Introduz altera|Insere|Acrescenta|D[áa] nova reda|Modifica|Inclui .* na Lei|Revoga)", re.I)
-RE_REVOGA = re.compile(r"revoga(?:m|das?|dos?)?\b(.{0,400})", re.I | re.S)
+# Anotação oficial da CML na ementa de lei revogada por inteiro:
+# "(REVOGADA pelo art. 270. da Lei nº 12.236, de 29 de janeiro de 2015)"
+RE_ANOTACAO_REVOGADA = re.compile(r"\(\s*REVOGAD[AO]\b([^()]*)\)", re.I)
 RE_ARTIGO = re.compile(r"(?m)^\s*(Art\.\s*\d+[º°o]?[A-Z\-]*\.?)")
+
+# Rótulos da seção "Relacionamentos desta Matéria" que interessam
+RELACOES = {
+    "Altera": "altera", "Alterada por": "alterada_por",
+    "Revoga": "revoga", "Revogada por": "revogada_por",
+    "Cita": "cita", "Citada por": "citada_por",
+}
 
 
 def limpar(s):
@@ -43,7 +55,7 @@ def limpar(s):
 
 
 def chave(numero, complementar=False):
-    """Identificador único: '14294' para lei ordinária, 'LC-12' para complementar."""
+    """Identificador legível: '14294' para lei ordinária, 'LC-12' para complementar."""
     numero = numero.replace(".", "").strip()
     return f"LC-{numero}" if complementar else numero
 
@@ -52,13 +64,22 @@ def refs_leis(trecho):
     return {chave(num, bool(comp)) for comp, num in RE_REF_LEI.findall(trecho)}
 
 
+def parse_data(texto):
+    m = RE_DATA_EXTENSO.search(texto)
+    if not m:
+        return None
+    dia, mes, ano = m.groups()
+    mes_n = MESES.get(mes.upper())
+    return f"{ano}-{mes_n:02d}-{int(dia):02d}" if mes_n else None
+
+
 # ---------- API ----------
 
 def chamar_api(call, **params):
     r = requests.get(API, params={"keysoft": TOKEN, "call": call, **params}, headers=HEADERS, timeout=60)
     if r.status_code == 406:
         raise SystemExit("O site respondeu 406 (bloqueio do firewall). Rode a partir de outra rede "
-                         "ou peça liberação/contato à CML.")
+                         "ou peça liberação à CML.")
     r.raise_for_status()
     return r.json()
 
@@ -70,7 +91,7 @@ def listar_leis(tipo="Leis", max_paginas=None):
         if not dados:
             break
         leis.extend(dados)
-        print(f"página {pagina}: {len(dados)} leis (total {len(leis)})")
+        print(f"página {pagina}: {len(dados)} leis (total {len(leis)})", flush=True)
         if max_paginas and pagina >= max_paginas:
             break
         pagina += 1
@@ -81,27 +102,43 @@ def listar_leis(tipo="Leis", max_paginas=None):
 # ---------- parsing ----------
 
 def parse_titulo(titulo):
-    m = RE_TITULO.search(limpar(titulo))
-    if not m:
-        return None, None, False
-    complementar, num, dia, mes, ano = m.groups()
-    mes_n = MESES.get(mes.upper())
-    data = f"{ano}-{mes_n:02d}-{int(dia):02d}" if mes_n else None
-    return num.replace(".", ""), data, bool(complementar)
+    """Retorna (numero, data_lei, ano, complementar)."""
+    titulo = limpar(titulo)
+    m = RE_NUMERO.search(titulo)
+    numero = None
+    if m:
+        numero = m.group(1).replace(".", "") + (f"-{m.group(2).upper()}" if m.group(2) else "")
+    data = parse_data(titulo)
+    if data:
+        ano = data[:4]
+    else:
+        a = RE_ANO_BARRA.search(titulo)
+        ano = a.group(1) if a else None
+    return numero, data, ano, "COMPLEMENTAR" in titulo.upper()
 
 
 def limpar_ementa(ementa):
     return re.sub(r"^\s*S[ÚU]MULA:\s*", "", limpar(ementa), flags=re.I).strip()
 
 
+def revogacao_na_ementa(ementa):
+    """Se a CML anotou a lei como revogada, devolve as chaves de quem revogou ([] se nenhuma citada).
+    Devolve None se não há anotação."""
+    m = RE_ANOTACAO_REVOGADA.search(ementa)
+    if not m:
+        return None
+    return sorted(refs_leis(m.group(1)))
+
+
 def altera_pela_ementa(ementa):
+    ementa = RE_ANOTACAO_REVOGADA.sub("", ementa)
     if not RE_VERBO_ALTERA.search(ementa):
         return []
     return sorted(refs_leis(ementa))
 
 
-def extrair_texto(html):
-    texto = limpar(BeautifulSoup(html, "html.parser").get_text("\n"))
+def extrair_texto(soup):
+    texto = limpar(soup.get_text("\n"))
     inicio = texto.find("pasta digital")
     if inicio != -1:
         texto = texto[inicio + len("pasta digital"):]
@@ -111,18 +148,36 @@ def extrair_texto(html):
     return "\n".join(l.strip() for l in texto.splitlines() if l.strip())
 
 
-def baixar_texto(id_, link):
-    """Baixa o texto da lei, usando cache em disco para poder retomar."""
-    arq = CACHE / f"{id_}.txt"
+def extrair_relacionamentos(soup):
+    """Lê a seção oficial 'Relacionamentos desta Matéria' da página da lei."""
+    rels = []
+    for a in soup.select("#menu_opcao_proposicao_relacionamentos a.menu-opcoes__items"):
+        forte = a.find("strong")
+        if not forte:
+            continue
+        cabecalho = forte.get_text(" ", strip=True)  # "05/01/2012 00:00 - Revoga:"
+        tipo = cabecalho.split(" - ", 1)[-1].rstrip(":").strip()
+        rels.append({
+            "tipo": tipo,
+            "id": a.get("href", "").rstrip("/").split("/")[-1],
+            "descricao": limpar(a.get_text(" ", strip=True)[len(cabecalho):]).strip(),
+        })
+    return rels
+
+
+def baixar_pagina(id_, link):
+    """Baixa texto e relacionamentos da lei, com cache em disco para poder retomar."""
+    arq = CACHE / f"{id_}.json"
     if arq.exists():
-        return arq.read_text(encoding="utf-8")
+        return json.loads(arq.read_text(encoding="utf-8"))
     r = requests.get(link, headers=HEADERS, timeout=60)
     r.raise_for_status()
-    texto = extrair_texto(r.text)
+    soup = BeautifulSoup(r.text, "html.parser")
+    dados = {"texto": extrair_texto(soup), "relacionamentos": extrair_relacionamentos(soup)}
     CACHE.mkdir(exist_ok=True)
-    arq.write_text(texto, encoding="utf-8")
+    arq.write_text(json.dumps(dados, ensure_ascii=False), encoding="utf-8")
     time.sleep(PAUSA)
-    return texto
+    return dados
 
 
 def separar_artigos(texto):
@@ -135,89 +190,115 @@ def separar_artigos(texto):
     return artigos
 
 
-def revoga_pelo_texto(texto):
-    chaves = set()
-    for trecho in RE_REVOGA.findall(texto):
-        trecho = re.split(r"\n(?=Art\.)|\.\s*\n", trecho)[0]
-        chaves |= refs_leis(trecho)
-    return sorted(chaves)
-
-
 # ---------- montagem ----------
 
-def montar_registro(item, com_texto):
-    numero, data_lei, complementar = parse_titulo(item["titulo"])
+def montar_registro(item):
+    numero, data_lei, ano, complementar = parse_titulo(item["titulo"])
     ementa = limpar_ementa(item["ementa"])
     link = item["link"].split("#")[0]
-    id_ = link.rstrip("/").split("/")[-1]
     minha_chave = chave(numero, complementar) if numero else None
-    registro = {
-        "id": id_,
+    revogada = revogacao_na_ementa(ementa)
+    return {
+        "id": link.rstrip("/").split("/")[-1],
         "chave": minha_chave,
         "tipo": "Lei Complementar" if complementar else "Lei",
         "numero": numero,
         "data_lei": data_lei,
-        "ano": data_lei[:4] if data_lei else None,
+        "ano": ano,
         "titulo": limpar(item["titulo"]).strip(),
         "ementa": ementa,
         "publicado_site": item["data"],
         "link": link,
+        "situacao": "revogada" if revogada is not None else "vigente",
         "altera": [c for c in altera_pela_ementa(ementa) if c != minha_chave],
-        "revoga": [],
-        "situacao": "vigente",
-        "revogada_por": [],
         "alterada_por": [],
+        "revoga": [],
+        "revogada_por": revogada or [],
+        "fonte_relacoes": "ementa",
+        "relacionamentos": [],
         "artigos": [],
     }
-    if com_texto:
-        try:
-            texto = baixar_texto(id_, link)
-            registro["artigos"] = separar_artigos(texto)
-            registro["revoga"] = [c for c in revoga_pelo_texto(texto) if c != minha_chave]
-        except requests.RequestException as e:
-            registro["erro_texto"] = str(e)
+
+
+def adicionar_texto(registro):
+    try:
+        dados = baixar_pagina(registro["id"], registro["link"])
+    except requests.RequestException as e:
+        registro["erro_texto"] = str(e)
+        return registro
+    registro["artigos"] = separar_artigos(dados["texto"])
+    registro["relacionamentos"] = dados["relacionamentos"]
+    registro["fonte_relacoes"] = "cml"
+    if not registro["data_lei"]:
+        registro["data_lei"] = parse_data(dados["texto"][:800])
     return registro
 
 
 def calcular_vigencia(leis):
+    por_id = {l["id"]: l for l in leis}
     por_chave = {l["chave"]: l for l in leis if l["chave"]}
+
+    # Relações oficiais da CML (quando o texto foi baixado) substituem as deduzidas pela ementa
     for lei in leis:
-        for c in lei["revoga"]:
-            alvo = por_chave.get(c)
+        if lei["fonte_relacoes"] != "cml":
+            continue
+        for campo in ("altera", "alterada_por", "revoga"):
+            lei[campo] = []
+        for rel in lei["relacionamentos"]:
+            campo = RELACOES.get(rel["tipo"])
+            if campo not in ("altera", "alterada_por", "revoga", "revogada_por"):
+                continue
+            alvo = por_id.get(rel["id"])
             if alvo:
-                alvo["situacao"] = "revogada"
-                alvo["revogada_por"].append(lei["chave"])
+                c = alvo["chave"]
+            elif rel["descricao"].upper().startswith("LEI"):  # lei fora do arquivo: tira o número da descrição
+                numero, _, _, complementar = parse_titulo(rel["descricao"][:80])
+                c = chave(numero, complementar) if numero else None
+            else:
+                c = None
+            if c and c not in lei[campo]:
+                lei[campo].append(c)
+
+    # Completa o lado inverso das relações deduzidas pela ementa
+    for lei in leis:
+        if lei["fonte_relacoes"] == "cml":
+            continue
         for c in lei["altera"]:
             alvo = por_chave.get(c)
-            if alvo:
+            if alvo and alvo["fonte_relacoes"] != "cml" and lei["chave"] not in alvo["alterada_por"]:
                 alvo["alterada_por"].append(lei["chave"])
+
+    # "Revogada por" sem a anotação de REVOGADA na ementa = revogação parcial (só alguns dispositivos)
     for lei in leis:
-        if lei["situacao"] == "vigente" and lei["alterada_por"]:
+        if lei["situacao"] == "vigente" and (lei["alterada_por"] or lei["revogada_por"]):
             lei["situacao"] = "vigente_com_alteracoes"
     return leis
 
 
 def main():
+    global PAUSA
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--paginas", type=int, help="máximo de páginas da API (50 leis cada)")
-    ap.add_argument("--texto", action="store_true", help="baixa também o texto de cada lei")
+    ap.add_argument("--texto", action="store_true", help="baixa texto e relacionamentos de cada lei")
+    ap.add_argument("--paralelo", type=int, default=3, help="downloads simultâneos de texto (padrão 3)")
     ap.add_argument("--saida", default="leis.json")
     args = ap.parse_args()
     if not TOKEN:
         raise SystemExit("Defina CML_TOKEN no arquivo .env")
 
-    brutos = listar_leis(max_paginas=args.paginas)
-    leis = []
-    for i, item in enumerate(brutos, 1):
-        leis.append(montar_registro(item, args.texto))
-        if args.texto and i % 50 == 0:
-            print(f"textos: {i}/{len(brutos)}")
+    leis = [montar_registro(item) for item in listar_leis(max_paginas=args.paginas)]
+    if args.texto:
+        with ThreadPoolExecutor(max_workers=args.paralelo) as pool:
+            for i, _ in enumerate(pool.map(adicionar_texto, leis), 1):
+                if i % 100 == 0:
+                    print(f"textos: {i}/{len(leis)}", flush=True)
     leis = calcular_vigencia(leis)
 
     with open(args.saida, "w", encoding="utf-8") as f:
         json.dump(leis, f, ensure_ascii=False, indent=2)
     resumo = {s: sum(l["situacao"] == s for l in leis) for s in ("vigente", "vigente_com_alteracoes", "revogada")}
-    print(f"{len(leis)} leis salvas em {args.saida} -> {resumo}")
+    erros = sum("erro_texto" in l for l in leis)
+    print(f"{len(leis)} leis salvas em {args.saida} -> {resumo}" + (f" ({erros} sem texto)" if erros else ""))
 
 
 if __name__ == "__main__":

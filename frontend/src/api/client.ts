@@ -133,7 +133,9 @@ async function respostaDaLei(ref: Referencia): Promise<Resposta> {
   const fontes: Fonte[] = [comoFonte(resumo)];
   let texto: string;
 
-  if (resumo.situacao === "revogada") {
+  if (resumo.vigencia_verificada === false) {
+    texto = `Consulta documental: a revisão institucional de vigência da ${nome} ainda está pendente. A situação informada no catálogo da Câmara é “${resumo.situacao}”. Resumo oficial: ${ementa}`;
+  } else if (resumo.situacao === "revogada") {
     const por = relacoes.filter((r) => r.tipo === "revogada_por");
     texto = por.length
       ? `A ${nome} consta como revogada na fonte. Leis relacionadas à revogação: ${lista("revogada_por")}. Esses vínculos podem incluir revogações parciais e não comprovam, sozinhos, qual norma a substitui integralmente. Resumo oficial da lei antiga: ${ementa}`

@@ -84,6 +84,9 @@ export function Lei() {
 
       <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">{nomeLei(lei.chave, lei.ano)}</h1>
       <p className="mt-3 text-xl leading-relaxed">{resumo}</p>
+      {lei.vigencia_verificada === false && (
+        <p className="mt-3 text-sm text-muted">Consulta documental: situação informada pela Câmara. Revisão institucional de vigência pendente.</p>
+      )}
 
       <div className="mt-4 flex flex-wrap gap-2">
         {voz.suportado && (

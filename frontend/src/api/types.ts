@@ -28,6 +28,7 @@ export interface LeiResumo {
   situacao: Situacao;
   link: string;
   exemplo?: boolean;
+  vigencia_verificada?: boolean;
 }
 
 export interface Lei extends LeiResumo {

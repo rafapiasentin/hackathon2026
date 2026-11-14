@@ -9,15 +9,19 @@
 - Baixa o **texto completo** de cada lei, separado **artigo por artigo**.
 - Lê as **relações oficiais da Câmara**: o que cada lei altera ou revoga, e por quais leis foi alterada ou revogada.
 - Se cair no meio, é só rodar de novo: continua de onde parou. A coleta completa leva cerca de 1h10.
+- **Coleta completa já feita (14/11/2026):** 14.308 leis, 74.630 artigos e 9.612 relações, sem nenhuma falha.
+- **Texto riscado tratado:** as páginas mostram a redação antiga riscada ao lado da nova. Agora cada artigo traz só a redação vigente em `texto`; a antiga vai para `texto_riscado` (1.492 artigos revogados por inteiro, em 633 leis).
+- **Problemas da fonte documentados:** 1.490 leis tinham algum problema nos dados da Câmara. Cada caso e a solução estão no README e, lei por lei, em `docs/PROBLEMAS_NOS_DADOS.md`.
 
 ### 2. Vigência: qual lei vale hoje
 Este é o ponto central do projeto, e já funciona:
 
 | Situação | Quantidade |
 |---|---|
-| Vigentes | ~12.300 |
-| Vigentes com alterações | ~700 |
+| Vigentes | 11.974 |
+| Vigentes com alterações | 1.031 |
 | Revogadas | 1.298 |
+| Inexistentes (número vago) | 5 |
 
 Exemplo da demo: a **Lei 14.294/2026** (novo Código Ambiental) **revogou a Lei 11.471/2012**. O sistema já marca a antiga como revogada e aponta para a nova. Se alguém perguntar sobre regra ambiental, a resposta tem que usar a de 2026.
 
@@ -42,7 +46,7 @@ O formato completo está no `README.md`. Em resumo:
 - O campo `relacoes` de cada lei já vem pronto para a tabela `relacao`: `{"tipo": "revoga", "id": "35210", "chave": "11471"}`.
 - Para busca por significado, a biblioteca `pgvector` para Python tem campo próprio para Peewee: `pgvector.peewee.VectorField`.
 
-O `leis.json` **não fica no GitHub**: deve ter uns 100 MB e qualquer um pode gerá-lo de novo. Peça o arquivo zipado ou rode:
+O `leis.json` pronto está no repositório como **`leis.zip`** (com o `leis.meta.json` dentro). É só baixar e descompactar. Confira o SHA-256 e os totais com o `leis.meta.json` (código no README). Para gerar de novo com dados atualizados, rode:
 
 ```bash
 pip install requests beautifulsoup4 python-dotenv

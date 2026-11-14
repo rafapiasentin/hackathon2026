@@ -1,5 +1,16 @@
 # Front: Londrina Conecta
 
+## GitHub Pages
+
+Endereço: https://rafapiasentin.github.io/hackathon2026/
+
+A publicação é feita pelo workflow `.github/workflows/pages.yml`, em pushes
+da `main` que alterem o front. O build `--mode pages` usa o prefixo do
+repositório e rotas com `#`, permitindo abrir e atualizar subpáginas.
+Essa versão é uma demonstração identificada com dados de exemplo, pois a API
+PostgreSQL ainda roda localmente. A configuração local de API não é incluída no
+build público.
+
 Site onde o cidadão pergunta sobre as leis de Londrina e recebe a resposta com base **só nas leis em vigor**.
 
 Feito com React + Vite + TypeScript, Tailwind CSS e Motion (animações). Visual inspirado no padrão gov.br.

@@ -127,7 +127,7 @@ export function Validador() {
 
   const abrirExemplo = useCallback(
     async (arquivo: string) => {
-      const r = await fetch(`/exemplos/${arquivo}`);
+      const r = await fetch(`${import.meta.env.BASE_URL}exemplos/${arquivo}`);
       processar(await r.blob(), arquivo);
     },
     [processar],
@@ -289,7 +289,7 @@ export function Validador() {
                 {e.rotulo} <span className="text-muted">· {e.detalhe}</span>
               </button>
               <a
-                href={`/exemplos/${e.arquivo}`}
+                href={`${import.meta.env.BASE_URL}exemplos/${e.arquivo}`}
                 target="_blank"
                 rel="noreferrer"
                 className="border-l border-border px-2 py-1.5 text-muted hover:text-primary"

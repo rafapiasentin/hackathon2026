@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import { MotionConfig } from "motion/react";
 import "./index.css";
 import { Layout } from "./components/Layout";
@@ -13,11 +13,13 @@ import { Comparar } from "./pages/Comparar";
 import { CamaraLayout } from "./camara/CamaraLayout";
 import { CamaraInicio } from "./camara/CamaraInicio";
 
+const Router = import.meta.env.MODE === "pages" ? HashRouter : BrowserRouter;
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {/* reducedMotion="user": quem pediu menos movimento no sistema não vê animações */}
     <MotionConfig reducedMotion="user">
-      <BrowserRouter>
+      <Router>
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Inicio />} />
@@ -41,7 +43,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="comparar/:antiga/:nova" element={<Comparar />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </Router>
     </MotionConfig>
   </StrictMode>,
 );

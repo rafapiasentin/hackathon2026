@@ -28,8 +28,10 @@ def test_recuperacao_acervo_real(caso):
     assert not chaves.intersection(caso['leis_inadequadas'])
     if caso['leis_relacionadas']:
         assert chaves.intersection(caso['leis_relacionadas'])
-    else:
+    elif caso['estado'] != 'trechos_relacionados':
         assert not resposta['fontes']
+    if caso['estado'] == 'trechos_relacionados':
+        assert resposta['fontes']
     if caso.get('nao_concluir_horario'):
         assert 'Não há evidência suficiente' in resposta['resposta']
     with db.connection_context():

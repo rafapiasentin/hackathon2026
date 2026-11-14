@@ -4,11 +4,11 @@ import re
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from peewee import DatabaseError, Expression, SQL, fn
+from peewee import Case, DatabaseError, Expression, SQL, fn
 from pydantic import BaseModel, Field
 
 from banco import Artigo, Carga, Lei, PublicacaoLei, Relacao, artigos_para_chatbot, conectar
-from busca_documental import VERSAO_BUSCA, avaliar, planejar
+from busca_documental import VERSAO_BUSCA, avaliar, planejar, termos_grupo
 
 AVISO = ('Consulta documental local: a situação foi informada pela Câmara; '
          'a revisão institucional de vigência ainda está pendente. '
@@ -125,13 +125,24 @@ def create_app(db=None, catalogo_local=None):
         pergunta = corpo.pergunta.strip()
         if not pergunta:
             raise HTTPException(422, 'Informe uma pergunta.')
-        plano = planejar(pergunta)
+        def frequencias(grupos):
+            # Frequência documental, somente leitura e com o mesmo escopo
+            # de publicação da busca; não altera vigência ou governança.
+            consulta = (Artigo.select().join(Lei).where(
+                Lei.situacao.in_(['vigente', 'vigente_com_alteracoes']),
+                Artigo.revogado == False, Artigo.texto != '')) if local else artigos_para_chatbot()
+            return [consulta.where(Expression(VETOR_ARTIGO, '@@',
+                fn.to_tsquery('portuguese', termos_grupo(g, True)))).count() for g in grupos]
+        with db.connection_context():
+            plano = planejar(pergunta, frequencias=frequencias)
         if plano.esclarecimento:
             return dict(resposta=plano.esclarecimento, fontes=[], ignoradas=[], modo='documental',
                         evidencia=dict(estado='precisa_contexto', versao_busca=VERSAO_BUSCA))
         termos = plano.termos_sql
         if not termos:
-            return dict(resposta='Informe o assunto ou busque uma lei pelo número.', fontes=[], ignoradas=[], modo='documental')
+            return dict(resposta='Informe um assunto de legislação municipal ou busque uma lei pelo número.',
+                        fontes=[], ignoradas=[], modo='documental',
+                        evidencia=dict(estado='insuficiente', versao_busca=VERSAO_BUSCA))
         with db.connection_context():
             tsquery = fn.to_tsquery('portuguese', termos)
             if local:
@@ -143,7 +154,13 @@ def create_app(db=None, catalogo_local=None):
                 consulta = artigos_para_chatbot()
             consulta = consulta.where(Expression(VETOR_ARTIGO, '@@', tsquery))
             # PostgreSQL gera candidatos; a relevância precisa passar pelo contrato de conceitos.
-            candidatos = list(consulta.order_by(fn.ts_rank_cd(VETOR_ARTIGO, tsquery, 2).desc(),
+            # Complementos só ordenam: nunca ampliam ou restringem o conjunto
+            # obrigatório, mas precisam pontuar antes do corte de 100 candidatos.
+            cobertura = SQL('(0 + 0)')
+            for grupo in plano.complementares:
+                cobertura += Case(None, [(Expression(VETOR_ARTIGO, '@@',
+                    fn.to_tsquery('portuguese', termos_grupo(grupo, True))), 1)], 0)
+            candidatos = list(consulta.order_by(cobertura.desc(), fn.ts_rank_cd(VETOR_ARTIGO, tsquery, 2).desc(),
                                                 Lei.ano.desc(), Artigo.lei, Artigo.ordem).limit(100))
             aceitos = []
             for artigo in candidatos:

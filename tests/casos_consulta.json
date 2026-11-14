@@ -29,5 +29,52 @@
     "leis_relacionadas": [],
     "leis_inadequadas": [],
     "estado": "insuficiente"
-  }
+  },
+  {
+    "pergunta": "tem alguma lei sobre cortar arvores na calçada ?",
+    "leis_relacionadas": ["11996", "14294", "14279"],
+    "leis_inadequadas": ["11471"],
+    "estado": "trechos_relacionados"
+  },
+  {
+    "pergunta": "posso cortar uma árvore na frente de casa?",
+    "leis_relacionadas": ["11996", "14294", "14279"],
+    "leis_inadequadas": ["11471"],
+    "estado": "trechos_relacionados"
+  },
+  {
+    "pergunta": "posso podar a árvore em frente de casa?",
+    "leis_relacionadas": ["11996", "14294", "14279"],
+    "leis_inadequadas": ["11471"],
+    "estado": "trechos_relacionados"
+  },
+  {
+    "pergunta": "corte de árvore em logradouro público",
+    "leis_relacionadas": ["14279"],
+    "leis_inadequadas": ["11471"],
+    "estado": "trechos_relacionados"
+  },
+  {
+    "pergunta": "existe alguma regra para descarte de lixo?",
+    "leis_relacionadas": [],
+    "leis_inadequadas": [],
+    "estado": "trechos_relacionados"
+  },
+  {"pergunta": "meu vizinho faz festa com som alto em casa", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "som alto no carro estacionado na rua", "leis_relacionadas": [], "leis_inadequadas": ["11747", "7288", "4861", "11699", "11473"], "estado": "trechos_relacionados"},
+  {"pergunta": "barulho de obra de madrugada", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "bar com música alta até tarde", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "onde descartar entulho?", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "multa por jogar lixo no fundo de vale", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "cachorro solto na rua", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "queimada em terreno baldio", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "isenção de IPTU para aposentado", "leis_relacionadas": ["6009", "6407", "6821", "8673"], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "vendedor ambulante precisa de licença?", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "estacionamento rotativo", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "calçada quebrada responsabilidade", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "terreno baldio sujo", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "fumar em lugar fechado", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "trechos_relacionados"},
+  {"pergunta": "qual a capital da França?", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "insuficiente"},
+  {"pergunta": "asdfgh qwerty", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "insuficiente"},
+  {"pergunta": "som alto", "leis_relacionadas": [], "leis_inadequadas": [], "estado": "precisa_contexto"}
 ]

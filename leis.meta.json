@@ -1,0 +1,47 @@
+{
+  "versao_formato": "2.0",
+  "gerado_em": "2026-11-14T15:11:23-03:00",
+  "textos_baixados_entre": [
+    "2026-11-14T13:59:46-03:00",
+    "2026-11-14T15:11:16-03:00"
+  ],
+  "fonte": {
+    "api": "https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php",
+    "call": "legislacoes",
+    "tipo": "Leis"
+  },
+  "script": {
+    "arquivo": "coleta_leis.py",
+    "commit": "f9be9d4",
+    "opcoes": {
+      "texto": true,
+      "paginas": null
+    }
+  },
+  "totais": {
+    "leis": 14308,
+    "por_situacao": {
+      "vigente": 11974,
+      "vigente_com_alteracoes": 1031,
+      "revogada": 1298,
+      "inexistente": 5
+    },
+    "por_tipo": {
+      "Lei": 14307,
+      "Promulgação de partes vetadas": 1
+    },
+    "artigos": 74630,
+    "artigos_revogados": 1492,
+    "artigos_com_texto_riscado": 2963,
+    "relacoes": 9612,
+    "relacionamentos_cml": 29113,
+    "sem_data_lei": 837,
+    "sem_texto": 23,
+    "sem_ementa": 2
+  },
+  "arquivo": {
+    "nome": "leis.json",
+    "bytes": 81714242,
+    "sha256": "459d6a82532a029337b41ae35e335286dc7c024e7472811b5035c3676bbb7bb4"
+  }
+}

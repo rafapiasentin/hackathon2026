@@ -11,6 +11,9 @@ Projeto do Hackathon Smart Cities Londrina 2026: um assistente de consulta à le
 | `coleta_leis.py` | Baixa as leis da API da Câmara Municipal de Londrina (CML), extrai texto, artigos e relações "altera/revoga" e salva em `leis.json` |
 | `leis.zip` | `leis.json` da coleta completa, pronto para usar |
 | `leis.meta.json` | Metadados do `leis.json`: quando foi gerado, commit do script, totais e hash SHA-256 |
+| `relatorio_problemas.py` | Gera o relatório das leis com problemas nos dados de origem |
+| `docs/PROBLEMAS_NOS_DADOS.md` | Cada problema encontrado na fonte, como foi resolvido e a lista de todas as leis afetadas |
+| `docs/leis_com_problemas.csv` | A mesma lista em CSV (uma linha por lei e problema), para filtrar ou carregar no banco |
 | `docs/COMO_FUNCIONA.md` | Guia passo a passo do `coleta_leis.py`, com os trechos de código explicados e perguntas frequentes |
 | `ATUALIZACAO.md` | Resumo para o grupo: o que foi feito e próximos passos |
 | `.env.example` | Modelo do arquivo de configuração com o token da API |
@@ -30,7 +33,8 @@ cp .env.example .env    # depois coloque o token real da CML no .env
 ```bash
 python coleta_leis.py --paginas 2 --texto   # teste rápido: 100 leis com texto (~1 min)
 python coleta_leis.py                        # lista completa, só ementas (~5 min)
-python coleta_leis.py --texto                # tudo com texto e relações oficiais (~1h10)
+python coleta_leis.py --texto                # tudo com texto e relações oficiais (~1h10; ~50 min com --paralelo 5)
+python relatorio_problemas.py                # depois da coleta: atualiza docs/PROBLEMAS_NOS_DADOS.md
 ```
 
 | Opção | Efeito |
@@ -165,7 +169,27 @@ Arquivo gerado ao lado do `leis.json`, sem mudar a estrutura dele (que continua 
 3. **Vigente com alterações:** a lei não está revogada, mas tem `alterada_por` ou `revogada_por` (revogação parcial).
 4. **Vigente:** nenhum dos casos acima.
 
-Resultado da coleta completa (14/11/2026): **14.308 leis**, **74.631 artigos** e **9.639 relações**, com 11.974 vigentes, 1.031 vigentes com alterações, 1.298 revogadas e 5 inexistentes. O caso da demo sai certo: a 11.471 fica `revogada`, com `revogada_por: ["14294", "13529"]` (revogação total pela 14.294 e parcial pela 13.529).
+Resultado da coleta completa (14/11/2026, `leis.meta.json`): **14.308 leis**, **74.630 artigos** (1.492 revogados por inteiro e 1.471 com algum trecho riscado) e **9.612 relações**, com 11.974 vigentes, 1.031 vigentes com alterações, 1.298 revogadas e 5 inexistentes. O caso da demo sai certo: a 11.471 fica `revogada`, com `revogada_por: ["14294", "13529"]` (revogação total pela 14.294 e parcial pela 13.529).
+
+## Problemas encontrados nos dados (e como foram resolvidos)
+
+Os dados de origem (site e API da Câmara) têm problemas. O script **não corrige a fonte nem inventa dados**: ele trata cada caso e registra de onde veio cada informação. Na coleta de 14/11/2026, **1.490 das 14.308 leis** tinham pelo menos um problema. Uma lei pode estar em mais de uma categoria.
+
+| Problema | Leis | O que aconteceu na fonte | Como resolvemos |
+|---|---|---|---|
+| Redação antiga riscada | 633 | A página mostra o **texto compilado**: quando um artigo muda, a redação antiga continua lá, riscada, e a nova vem depois. O script antigo pegava as duas como válidas. São 1.492 artigos revogados por inteiro e 1.471 com algum trecho riscado. | Cada trecho riscado é separado: `texto` traz só a redação vigente, `texto_riscado` a antiga, e `revogado = true` quando o artigo inteiro está riscado. Ex.: Lei 1.457/1969, art. 3º. |
+| Lei sem data | 837 | Título antigo só com o ano (`LEI ORDINÁRIA Nº 1234/1965`) e texto sem assinatura datada nem anexo. | `data_lei = null`, sem inventar. O `ano` está sempre preenchido. |
+| Data impossível | 1 | O texto da Lei 10.887 diz "29 de fevereiro de 2010" (2010 não foi bissexto). | Fica em `data_lei_original` para revisão; a data usada (29/03/2010) veio do anexo (`data_lei_fonte = "anexo"`). |
+| Relação da lei com ela mesma | 25 | Nos "Relacionamentos", a Câmara lista a lei como "Revoga" / "Altera" / "Revogada por" ela mesma (27 relações). | Descartadas em `relacoes`; continuam na lista crua `relacionamentos`. |
+| Anotação de revogação cita a própria lei | 2 | Ex.: a Lei 9.265 diz "(REVOGADA pelo Art. 14 da Lei nº 9.265 de 8 de dezembro de 2018)": número errado na fonte. | A lei continua `revogada`, o número errado não vira relação, a anotação fica em `revogacao_nota`. O revogador correto (Lei 12.232), listado pela Câmara nos Relacionamentos, entra em `revogada_por`. |
+| Revogada sem revogador identificável | 3 | Revogada por **decreto** (Lei 13.905), anotação quebrada na fonte (Lei 6.884: "Lei nº de de de 20") ou anotação que cita a própria lei sem outro revogador listado (Lei 6.135). | `situacao = revogada`, `revogada_por` vazio e a anotação original em `revogacao_nota`. |
+| Ementa vazia na API | 3 | A API devolveu a ementa em branco. | Usa a "SÚMULA:" do texto quando existe (`ementa_fonte = "texto"`); senão `ementa = null`. |
+| Promulgação de partes vetadas | 1 | A "Lei 13.960" aparecia duas vezes: a segunda é a promulgação, pela Câmara, dos trechos que o prefeito vetou. | `tipo = "Promulgação de partes vetadas"` e `complementa_id` apontando para a lei principal. |
+| Leis diferentes com o mesmo número | 7 | Ex.: duas Leis nº 48 de 1949, duas nº 1.041 de 1965, duas nº 1.641 de 1970. | Identificador é o `id` da Câmara; `chave`/`numero` sem `UNIQUE`. |
+| Lei só com PDF | 18 | A página não tem o texto em HTML, só um PDF anexado. | `texto_disponivel = false` e link do PDF em `anexos`. Ler os PDFs é um próximo passo. |
+| Número inexistente | 5 | A página diz "LEI INEXISTENTE" (número vago). | `situacao = "inexistente"`; fica fora da busca. |
+
+A lista completa, **lei por lei** (com link para a página oficial e o detalhe de cada caso), está em [`docs/PROBLEMAS_NOS_DADOS.md`](docs/PROBLEMAS_NOS_DADOS.md) e em [`docs/leis_com_problemas.csv`](docs/leis_com_problemas.csv). Os dois são gerados por `python relatorio_problemas.py` a partir do `leis.json`.
 
 ## Limitações conhecidas
 
@@ -173,7 +197,7 @@ Resultado da coleta completa (14/11/2026): **14.308 leis**, **74.631 artigos** e
 - Artigos revogados por inteiro são identificados pelo texto riscado (`revogado`). Trechos menores riscados (um inciso, um parágrafo) ficam em `texto_riscado` do artigo.
 - Algumas leis revogadas ficam com `revogada_por` vazio, porque o revogador é um decreto ou a anotação da CML tem erro de digitação. A anotação original fica em `revogacao_nota`.
 - A fonte tem erros que o script não corrige, só sinaliza: datas impossíveis (`data_lei_original`) e relações de uma lei com ela mesma (ficam só em `relacionamentos`).
-- 18 leis só têm o texto em PDF anexado, que ainda não é lido.
+- 18 leis só têm o texto em PDF anexado, que ainda não é lido (os links estão em `anexos`).
 - Requisições com `curl` são bloqueadas pelo site (406 Not Acceptable). O script em Python funciona normalmente; se ele receber 406, mostra um aviso.
 
 ## Próximos passos

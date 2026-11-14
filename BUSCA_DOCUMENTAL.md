@@ -88,3 +88,20 @@ sem LLM, perguntas novas podem ser recusadas por falta de vocabulário ou contex
 
 Esta evolução é testada localmente. Não modifica o endereço nem a configuração
 do GitHub Pages: https://rafapiasentin.github.io/hackathon2026/
+
+## Versão 2.2.0: responder ao que foi perguntado
+
+- **Tipo de pergunta** (`classificar_intencao`): quantidade, prazo, limite, direito, requisito, proibição, procedimento ou geral.
+  Quantidade só aceita um número que **define** o assunto ("compõe-se de 19 (dezenove) X"); frações, listas e valores
+  em dinheiro não contam. Prazo exige número com unidade (dias, meses...). Os demais tipos somam pontos quando o trecho
+  traz o sinal correspondente (isenção, requisitos, proibido, requerimento...).
+- **Ranqueamento:** a lei cujo assunto (ementa) é o tema pesquisado ganha pontos (`pontos_ementa`); leis administrativas
+  e orçamentárias (crédito, denominação, doação, PPA, LDO, LOA, renúncia fiscal) valem 30% (`administrativa`). Só entram
+  como fundamentação os trechos com pelo menos 75% da pontuação do melhor.
+- **Texto da resposta:** começa pelo dado pedido, citando lei e artigo, com a frase literal do artigo que mais responde
+  (`frase_resposta`). Em perguntas de regras sobre um tema, abre com a lei que trata do tema. Sem evidência, informa que
+  não foi possível confirmar na base.
+- **Leis que deixamos de fora:** somente revogadas com lei revogadora identificada nas relações, que seja uma das fontes
+  usadas ou uma lei vigente sobre o mesmo tema; o motivo cita a revogadora.
+- **Limitação:** a base tem apenas leis ordinárias. Uma lei antiga marcada como vigente pela Câmara pode trazer dado
+  superado por norma fora da base (ex.: Lei Orgânica); o texto encontrado não equivale a vigência verificada.

@@ -8,7 +8,8 @@ from peewee import Case, DatabaseError, Expression, SQL, fn
 from pydantic import BaseModel, Field
 
 from banco import Artigo, Carga, Lei, PublicacaoLei, Relacao, artigos_para_chatbot, conectar
-from busca_documental import VERSAO_BUSCA, avaliar, planejar, termos_grupo
+from busca_documental import (VERSAO_BUSCA, administrativa, avaliar, ementa_limpa, ementa_sobre, frase_resposta,
+                              numero_legivel, planejar, pontos_ementa, refs_numero, termos_grupo)
 
 AVISO = ('Consulta documental local: a situação foi informada pela Câmara; '
          'a revisão institucional de vigência ainda está pendente. '
@@ -166,26 +167,59 @@ def create_app(db=None, catalogo_local=None):
             for artigo in candidatos:
                 evidencia = avaliar(artigo.texto, plano)
                 if evidencia:
+                    evidencia['pontos'] += pontos_ementa(artigo.lei.ementa, plano)
+                    if administrativa(artigo.lei.ementa):
+                        evidencia['pontos'] *= 0.3
                     aceitos.append((artigo, evidencia))
             aceitos.sort(key=lambda item: (-item[1]['pontos'], -item[0].lei.ano, len(item[0].texto), item[0].lei_id, item[0].ordem))
+            corte = aceitos[0][1]['pontos'] * 0.75 if aceitos else 0
             fontes = [dict(lei_id=a.lei_id, chave=a.lei.chave, ano=str(a.lei.ano),
                            ementa=a.lei.ementa, situacao=a.lei.situacao, artigo=a.artigo,
                            trecho=e['trecho'], link=a.lei.link, vigencia_verificada=not local)
-                      for a, e in aceitos[:3]]
+                      for a, e in aceitos[:3] if e['pontos'] >= corte]
             if not fontes:
-                texto = 'Não encontrei artigos suficientes para responder na base disponível. Tente outro termo ou busque pelo número da lei.'
+                texto = ('Não foi possível confirmar essa informação na base de leis disponível. '
+                         'A base reúne as leis ordinárias de Londrina; a informação pode estar em norma ainda não incluída. '
+                         'Tente descrever o assunto com outras palavras ou busque a lei pelo número.')
             else:
-                texto = 'Encontrei estes trechos nos documentos da Câmara:\n\n' + '\n\n'.join(
-                    f'Lei {f["chave"]}/{f["ano"]}, {f["artigo"]}:\n{f["trecho"]}' for f in fontes)
+                principal = fontes[0]
+                artigo_principal = aceitos[0][0].texto
+                lei_principal = f'Lei nº {numero_legivel(principal["chave"])}/{principal["ano"]}'
+                frase = (frase_resposta(artigo_principal, plano) if len(artigo_principal) <= 4000 else
+                         frase_resposta(principal['trecho'], plano, artigo_principal.startswith(principal['trecho'])))
+                if plano.intencao == 'requisito' and ementa_sobre(principal['ementa'], plano):
+                    texto = (f'As regras sobre esse assunto estão na {lei_principal}: {ementa_limpa(principal["ementa"])}\n\n'
+                             f'Por exemplo, o {principal["artigo"]} diz: “{frase}”')
+                else:
+                    texto = f'Segundo a {lei_principal}, {principal["artigo"]}: “{frase}”'
                 if plano.intencao_horario:
                     texto = ('Estes são trechos relacionados ao assunto, não uma confirmação de horário-limite. '
                              'Não há evidência suficiente nesta consulta documental para concluir qual horário '
                              'se aplica ao seu caso.\n\n' + texto)
+            usadas = {f['lei_id'] for f in fontes}
             consulta_ignoradas = _catalogo(local).where(Lei.situacao == 'revogada', Expression(VETOR_LEI, '@@', tsquery))
-            ignoradas = [dict(lei_id=l.id, chave=l.chave, ano=str(l.ano),
-                             motivo='Consta como revogada na fonte; não usada na resposta.')
-                         for l in consulta_ignoradas.limit(30)
-                         if avaliar((l.titulo or '') + '\n' + (l.ementa or ''), plano) is not None][:5]
+            ignoradas = []
+            for l in consulta_ignoradas.limit(30) if fontes else []:
+                if avaliar((l.titulo or '') + '\n' + (l.ementa or ''), plano) is None:
+                    continue
+                revogadoras = [r for r in Relacao.select().where(Relacao.lei_origem == l.id, Relacao.tipo == 'revogada_por',
+                                                                  Relacao.lei_destino.is_null(False))]
+                if not revogadoras:
+                    continue
+                citadas = refs_numero(l.revogacao_nota or '')
+                revogadora = next((r for r in revogadoras if r.lei_destino_id in usadas), None) or \
+                    next((r for r in revogadoras if r.chave_destino in citadas), None) or revogadoras[0]
+                destino = Lei.get_or_none(Lei.id == revogadora.lei_destino_id)
+                if not destino:
+                    continue
+                if destino.id not in usadas and not (
+                        destino.situacao in ('vigente', 'vigente_com_alteracoes')
+                        and avaliar((destino.titulo or '') + '\n' + (destino.ementa or ''), plano) is not None):
+                    continue
+                ignoradas.append(dict(lei_id=l.id, chave=l.chave, ano=str(l.ano), revogada_por_id=destino.id,
+                                      motivo=f'Revogada pela Lei nº {numero_legivel(destino.chave)}/{destino.ano}.'))
+                if len(ignoradas) >= 5:
+                    break
             return dict(resposta=(aviso + '\n\n' if local else '') + texto,
                         fontes=fontes, ignoradas=ignoradas, modo='documental',
                         evidencia=dict(estado='trechos_relacionados' if fontes else 'insuficiente',

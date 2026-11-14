@@ -1,7 +1,8 @@
 """Relevância determinística: exemplos sintéticos não representam aconselhamento jurídico."""
 import pytest
 
-from busca_documental import avaliar, planejar
+from busca_documental import (administrativa, avaliar, classificar_intencao, ementa_sobre, frase_resposta,
+                              planejar, pontos_ementa)
 
 
 @pytest.mark.parametrize('pergunta,texto', [
@@ -131,3 +132,47 @@ def test_pergunta_geografica_nao_usa_nome_de_rua_como_evidencia():
     plano = planejar('qual a capital da França?')
     assert not plano.termos_sql
     assert avaliar('Rua França: denominação de logradouro.', plano) is None
+
+
+@pytest.mark.parametrize('pergunta,intencao', [
+    ('Quantos vereadores tem em Londrina?', 'quantidade'), ('qual o prazo para responder o pedido?', 'prazo'),
+    ('quem tem direito a passe escolar?', 'direito'), ('posso passear com meu cachorro sem guia?', 'proibicao'),
+    ('quais são as regras do código ambiental?', 'requisito'), ('isenção de IPTU para aposentado', 'geral'),
+])
+def test_classifica_o_tipo_de_pergunta(pergunta, intencao):
+    assert classificar_intencao(pergunta) == intencao
+
+
+@pytest.mark.parametrize('texto,aceito', [
+    ('Texto sintético: a Câmara compõe-se de 19 (dezenove) Conselheiros.', True),
+    ('Texto sintético: comissão composta de 3 (três) servidores, 2 (dois) Conselheiros.', False),
+    ('Texto sintético: aprovação de dois terços dos Conselheiros.', False),
+    ('Texto sintético: o subsídio dos Conselheiros será de R$ 10.000,00.', False),
+])
+def test_quantidade_exige_numero_que_define_o_assunto(texto, aceito):
+    assert (avaliar(texto, planejar('Quantos conselheiros existem?')) is not None) is aceito
+
+
+def test_prazo_exige_numero_com_unidade():
+    plano = planejar('qual o prazo para a poda de árvore?')
+    assert avaliar('Texto sintético: a poda de árvore será atendida em 45 (quarenta e cinco) dias.', plano)
+    assert avaliar('Texto sintético: a poda de árvore depende de autorização.', plano) is None
+
+
+def test_frase_resposta_nao_corta_no_meio_e_preserva_literalidade():
+    plano = planejar('quem tem direito a passe escolar?')
+    texto = ('Art. 3º O aluno terá direito ao fornecimento de passes escolares por mês,\npara uso '
+             'exclusivo da linha residência-escola. Parágrafo único. Texto sintético sem relação.')
+    frase = frase_resposta(texto, plano)
+    assert frase.startswith('O aluno terá direito') and 'residência-escola.' in frase
+    assert ' '.join(frase.split()) in ' '.join(texto.split())
+
+
+def test_lei_administrativa_e_assunto_da_ementa():
+    assert administrativa('Abre crédito adicional especial no orçamento.')
+    assert administrativa('Dispõe sobre as Diretrizes para a Elaboração da Lei Orçamentária.')
+    assert not administrativa('Institui o Código Ambiental do Município.')
+    plano = planejar('posso passear com meu cachorro na praça sem guia?')
+    assert pontos_ementa('Texto sintético: dispõe sobre animais em condomínios.', plano) == 0
+    assert pontos_ementa('Texto sintético: circulação de animais com guia.', plano) > 0
+    assert ementa_sobre('Institui o Código Ambiental do Município.', planejar('regras do código ambiental'))

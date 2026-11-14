@@ -36,7 +36,7 @@ jobs:
       - name: Preparar OCR português
         run: python preparar_ocr.py
       - name: Testes determinísticos dos adaptadores e busca
-        run: python -m pytest tests/test_busca_documental.py tests/test_documentos.py -q -m 'not postgres'
+        run: python -m pytest -q -m 'not postgres'
         env:
           DATABASE_URL: ''
       - name: Executar backend hospedado

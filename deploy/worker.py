@@ -41,11 +41,17 @@ def executar(acao):
         validar_meta(meta, sha, totais, obrigatorio=True)
         db = conectar()
         with db.connection_context():
-            from banco import Lei, Artigo
+            from banco import Lei, Artigo, Relacao, RelacionamentoCml, Carga
             resultado = dict(acao='validar', banco='conectado', leis=Lei.select().count(),
-                              artigos=Artigo.select().count(), sha256=sha, formato_corrigido=corrigido)
-            if resultado['leis'] != totais['leis'] or resultado['artigos'] != totais['artigos']:
+                              artigos=Artigo.select().count(), relacoes=Relacao.select().count(),
+                              relacionamentos_cml=RelacionamentoCml.select().count(),
+                              artigos_revogados=Artigo.select().where(Artigo.revogado == True).count(),
+                              sha256=sha, formato_corrigido=corrigido)
+            if any(resultado[k] != totais[k] for k in totais):
                 raise ValueError('Totais do banco diferentes do snapshot validado.')
+            carga = Carga.select().order_by(Carga.id.desc()).first()
+            if not carga or carga.sha256 != sha:
+                raise ValueError('Hash da carga diferente do snapshot validado.')
         subprocess.run([sys.executable, str(RAIZ / 'conferir_fonte.py'), '--api'], cwd=RAIZ, check=True)
     (pasta / 'resultado.json').write_text(json.dumps(resultado, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(resultado, ensure_ascii=False), flush=True)

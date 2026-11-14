@@ -154,7 +154,7 @@ export function padraoDaLei(lei: Lei): Resultado | null {
     paginas: 1,
     paragrafos: [
       { texto: lei.titulo },
-      { texto: /^(S[ÚU]MULA|EMENTA)/i.test(lei.ementa) ? lei.ementa : `SÚMULA: ${lei.ementa}` },
+      ...(lei.ementa ? [{ texto: /^(S[ÚU]MULA|EMENTA)/i.test(lei.ementa) ? lei.ementa : `SÚMULA: ${lei.ementa}` }] : []),
       ...artigos.map((a) => ({ texto: ROTULO.test(a.texto) ? a.texto : `${a.artigo} ${a.texto}` })),
     ],
   };

@@ -21,6 +21,12 @@ export const SITUACAO: Record<Situacao, { rotulo: string; explicacao: string; ic
     icone: CircleX,
     classes: "bg-danger-soft text-danger border-danger/30",
   },
+  inexistente: {
+    rotulo: "Número inexistente",
+    explicacao: "Este número ficou vago no catálogo e não identifica uma lei publicada.",
+    icone: CircleX,
+    classes: "bg-warn-soft text-warn border-warn/30",
+  },
 };
 
 export const RELACAO: Record<TipoRelacao, string> = {
@@ -48,6 +54,6 @@ export function dataLegivel(iso: string | null, ano: string) {
 }
 
 /** Tira o "SÚMULA:" que as leis novas trazem na ementa. */
-export function ementaLimpa(ementa: string) {
-  return ementa.replace(/^\s*S[ÚU]MULA:\s*/i, "");
+export function ementaLimpa(ementa: string | null | undefined) {
+  return ementa?.replace(/^\s*S[ÚU]MULA:\s*/i, "").trim() || "Ementa não disponível na fonte.";
 }

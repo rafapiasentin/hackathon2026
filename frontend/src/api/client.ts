@@ -136,9 +136,9 @@ async function respostaDaLei(ref: Referencia): Promise<Resposta> {
   if (resumo.situacao === "revogada") {
     const por = relacoes.filter((r) => r.tipo === "revogada_por");
     texto = por.length
-      ? `A ${nome} não vale mais: foi revogada pela ${lista("revogada_por")}, que é a que vale hoje. Resumo oficial da lei antiga: ${ementa}`
+      ? `A ${nome} consta como revogada na fonte. Leis relacionadas à revogação: ${lista("revogada_por")}. Esses vínculos podem incluir revogações parciais e não comprovam, sozinhos, qual norma a substitui integralmente. Resumo oficial da lei antiga: ${ementa}`
       : `A ${nome} não vale mais: ela foi revogada. Resumo oficial: ${ementa}`;
-    // Mostra também a lei que vale hoje, para a pessoa ir direto a ela
+    // Exibe as leis relacionadas sem presumir substituição integral.
     for (const r of por) {
       const nova = r.id ? await obterLei(r.id) : null;
       if (nova) fontes.push(comoFonte(nova));
@@ -146,6 +146,8 @@ async function respostaDaLei(ref: Referencia): Promise<Resposta> {
   } else if (resumo.situacao === "vigente_com_alteracoes") {
     const alteradaPor = lista("alterada_por");
     texto = `A ${nome} está em vigor, mas partes dela foram mudadas depois${alteradaPor ? ` pela ${alteradaPor}` : ""}. Resumo oficial: ${ementa}`;
+  } else if (resumo.situacao === "inexistente") {
+    texto = `O número ${numeroLegivel(resumo.chave)} consta como inexistente no catálogo da Câmara. Este registro não deve ser usado como uma lei em vigor.`;
   } else {
     texto = `A ${nome} está em vigor. Resumo oficial: ${ementa}`;
   }

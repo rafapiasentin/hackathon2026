@@ -1,6 +1,6 @@
 // Tipos que espelham o leis.json gerado pelo coleta_leis.py (ver README da raiz).
 
-export type Situacao = "vigente" | "vigente_com_alteracoes" | "revogada";
+export type Situacao = "vigente" | "vigente_com_alteracoes" | "revogada" | "inexistente";
 
 export type TipoRelacao = "altera" | "alterada_por" | "revoga" | "revogada_por";
 
@@ -14,6 +14,8 @@ export interface Artigo {
   ordem: number;
   artigo: string;
   texto: string;
+  texto_riscado?: string | null;
+  revogado?: boolean;
 }
 
 export interface LeiResumo {
@@ -22,7 +24,7 @@ export interface LeiResumo {
   ano: string;
   data_lei: string | null;
   titulo: string;
-  ementa: string;
+  ementa: string | null;
   situacao: Situacao;
   link: string;
   exemplo?: boolean;
@@ -46,7 +48,7 @@ export interface Fonte {
   lei_id: string;
   chave: string;
   ano: string;
-  ementa: string;
+  ementa: string | null;
   situacao: Situacao;
   artigo: string | null;
   trecho: string | null;

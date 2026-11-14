@@ -227,7 +227,13 @@ export function Lei() {
           >
             {lei.artigos.map((a) => (
               <li key={a.ordem} className="leading-relaxed">
-                <strong>{a.artigo}</strong> {a.texto.replace(/^Art\.\s*\d+[º°o]?\.?\s*/, "")}
+                <strong>{a.artigo}</strong> {a.revogado ? "Revogado." : a.texto.replace(/^Art\.\s*\d+[º°o]?\.?\s*/, "")}
+                {a.texto_riscado && (
+                  <details className="mt-1 text-sm text-muted">
+                    <summary className="cursor-pointer">Redação anterior — histórico</summary>
+                    <p className="mt-2"><s>{a.texto_riscado}</s></p>
+                  </details>
+                )}
               </li>
             ))}
           </motion.ol>

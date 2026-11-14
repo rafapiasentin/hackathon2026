@@ -79,6 +79,11 @@ Checklist para o pessoal do back. Com isso feito, é só colocar `VITE_API_URL` 
 
 ## Contrato com o backend
 
+Os dados finais aceitam `ementa: null`, situação `inexistente` e os campos
+`artigos[].revogado` e `artigos[].texto_riscado`. O cliente trata essas condições;
+o texto riscado é histórico e não deve ser usado como evidência vigente.
+Veja também [a revisão de integração](../docs/REVISAO_INTEGRACAO_FRONT.md).
+
 O front chama 3 rotas. Os campos seguem o `leis.json` do `coleta_leis.py` (tipos em `src/api/types.ts`).
 
 ### `POST /api/perguntar`

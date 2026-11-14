@@ -10,6 +10,7 @@ Projeto do Hackathon Smart Cities Londrina 2026: um assistente de consulta à le
 |---|---|
 | `coleta_leis.py` | Baixa as leis da API da Câmara Municipal de Londrina (CML), extrai texto, artigos e relações "altera/revoga" e salva em `leis.json` |
 | `leis.zip` | `leis.json` da coleta completa de 14/11/2026, pronto para usar (13 MB; descompactado, 72 MB) |
+| `docs/COMO_FUNCIONA.md` | Guia passo a passo do `coleta_leis.py`, com os trechos de código explicados e perguntas frequentes |
 | `ATUALIZACAO.md` | Resumo para o grupo: o que foi feito e próximos passos |
 | `.env.example` | Modelo do arquivo de configuração com o token da API |
 | `hello.py` | Arquivo de teste |

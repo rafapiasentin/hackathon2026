@@ -9,10 +9,12 @@ Projeto do Hackathon Smart Cities Londrina 2026: um assistente de consulta à le
 | Arquivo | O que é |
 |---|---|
 | `coleta_leis.py` | Baixa as leis da API da Câmara Municipal de Londrina (CML), extrai texto, artigos e relações "altera/revoga" e salva em `leis.json` |
+| `leis.zip` | `leis.json` da coleta completa de 14/11/2026, pronto para usar (13 MB; descompactado, 72 MB) |
+| `ATUALIZACAO.md` | Resumo para o grupo: o que foi feito e próximos passos |
 | `.env.example` | Modelo do arquivo de configuração com o token da API |
 | `hello.py` | Arquivo de teste |
 
-`leis.zip` traz o `leis.json` da coleta completa de 14/11/2026, pronto para usar. Não vão para o git: `.env`, `leis.json` (descompactado, 72 MB) e `cache_textos/`.
+Não vão para o git: `.env` (token), `leis.json` descompactado e `cache_textos/`.
 
 ## Como rodar
 
@@ -26,7 +28,7 @@ cp .env.example .env    # depois coloque o token real da CML no .env
 ```bash
 python coleta_leis.py --paginas 2 --texto   # teste rápido: 100 leis com texto (~1 min)
 python coleta_leis.py                        # lista completa, só ementas (~5 min)
-python coleta_leis.py --texto                # tudo com texto e relações oficiais (~2 h)
+python coleta_leis.py --texto                # tudo com texto e relações oficiais (~1h10)
 ```
 
 | Opção | Efeito |
@@ -85,6 +87,7 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
   "publicado_site": "2026-11-04 18:44:30",
   "link": "https://www.cml.pr.gov.br/proposicoes/0/0/0/0/296902",
   "situacao": "vigente",
+  "texto_disponivel": true,
   "altera": [],
   "alterada_por": [],
   "revoga": ["11471"],
@@ -105,6 +108,11 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
 - `relacoes` traz as mesmas relações **por `id`**, para o banco: `tipo` é `altera`, `alterada_por`, `revoga` ou `revogada_por`. `id` é `null` quando a lei citada não está no arquivo (por exemplo, uma lei complementar).
 - `artigos[].ordem` é a posição do artigo no texto e é única dentro da lei. O rótulo `artigo` pode se repetir, porque leis que alteram outras citam o artigo novo entre aspas.
 - `relacionamentos` é a lista crua da seção oficial da CML, com todos os rótulos (inclusive `Cita`, `Sanção`, `Vínculo`).
+- `situacao` pode ser `vigente`, `vigente_com_alteracoes`, `revogada` ou `inexistente` (número que ficou vago: "LEI INEXISTENTE").
+- `data_lei` pode ser `null` (837 leis antigas sem data no título nem no texto); `ano` está sempre preenchido.
+- `texto_disponivel` é `false` quando a lei só tem PDF anexado (18 leis) ou é inexistente (5).
+- `fonte_relacoes` é `cml` quando as relações vieram da seção oficial e `ementa` quando foram deduzidas da ementa (coleta sem `--texto`).
+- `relacionamentos` e `artigos` só são preenchidos com `--texto`.
 
 ### Sugestão de tabelas (Postgres)
 
@@ -114,12 +122,7 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
 | `artigo` | `lei_id`, `ordem`, `artigo`, `texto` | `(lei_id, ordem)` |
 | `relacao` | `lei_origem_id`, `lei_destino_id` (aceita nulo), `chave_destino`, `tipo` | — |
 
-Não use `chave`/`numero` como chave primária: existem leis diferentes com o mesmo número.
-- `situacao` pode ser `vigente`, `vigente_com_alteracoes`, `revogada` ou `inexistente` (número que ficou vago: "LEI INEXISTENTE").
-- `data_lei` pode ser `null` (837 leis antigas sem data no título nem no texto); `ano` está sempre preenchido.
-- `texto_disponivel` é `false` quando a lei só tem PDF anexado ou é inexistente (23 leis).
-- `fonte_relacoes` é `cml` quando as relações vieram da seção oficial e `ementa` quando foram deduzidas da ementa (coleta sem `--texto`).
-- `relacionamentos` e `artigos` só são preenchidos com `--texto`.
+Não use `chave`/`numero` como chave primária: existem leis diferentes com o mesmo número. Para a busca, filtre `situacao IN ('vigente', 'vigente_com_alteracoes')`.
 
 ## Como a vigência é calculada
 
@@ -135,12 +138,15 @@ Resultado da coleta completa (14/11/2026): **14.308 leis**, **74.631 artigos** e
 - Sem `--texto`, as alterações são deduzidas da ementa e podem ter falsos positivos ou negativos. Com `--texto`, valem as relações oficiais da CML.
 - A situação é da lei inteira. O sistema ainda não sabe **quais artigos** foram alterados ou revogados parcialmente.
 - Em 3 leis revogadas, `revogada_por` fica vazio: uma cita um decreto como revogador e duas têm erro de digitação na anotação da CML (por exemplo, "Lei nº de 10.037").
-- 23 leis só têm o texto em PDF anexado, que ainda não é lido.
+- 18 leis só têm o texto em PDF anexado, que ainda não é lido.
 - Requisições com `curl` são bloqueadas pelo site (406 Not Acceptable). O script em Python funciona normalmente; se ele receber 406, mostra um aviso.
 
 ## Próximos passos
 
 - [x] Verificar "Relacionamentos desta Matéria" como fonte oficial das relações
 - [x] Rodar a coleta completa com texto
+- [ ] Carregar o `leis.json` no Postgres local (Peewee), com as tabelas sugeridas acima
+- [ ] Busca por palavras em português (full-text do Postgres) e por significado (`pgvector`, um embedding por artigo)
+- [ ] Chatbot em página web: responde só com artigos de leis não revogadas, citando lei, artigo e link
 - [ ] Incluir leis complementares, Lei Orgânica e Emendas à Lei Orgânica (outros tipos da API)
-- [ ] Montar a busca e o assistente em cima do `leis.json`, filtrando leis revogadas
+- [ ] Ler o texto das 18 leis que só têm PDF

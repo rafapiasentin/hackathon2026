@@ -755,6 +755,8 @@ def gerar_meta(leis, saida, args):
         "arquivo": {"nome": caminho.name, "bytes": caminho.stat().st_size,
                     "sha256": hashlib.sha256(caminho.read_bytes()).hexdigest()},
     }
+    # Mesmo hash no nível de cima: é a chave que o carregar_leis.py (carga no Postgres) confere
+    meta["sha256_leis_json"] = meta["arquivo"]["sha256"]
     arq_meta = caminho.with_suffix(".meta.json")
     arq_meta.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     return arq_meta

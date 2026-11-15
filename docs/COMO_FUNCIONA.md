@@ -400,7 +400,7 @@ Do outro lado, a 14.294 fica `vigente`, com `revoga: ["11471"]` e 225 artigos.
 
 A anotação original fica em `revogacao_nota`. Ela é a única evidência quando o revogador não é identificável: a anotação da 6.884 veio quebrada da fonte ("Lei nº de de de 20").
 
-Decreto não revoga lei. Por isso a anotação só conta quando cita uma lei, ou quando não cita decreto nenhum. A ementa da 13.905 tem "(Vide Decreto nº 413, de 2025) (Revogado pelo Decreto 1.341, de 2026)": quem foi revogado é o Decreto 413, e a lei continua `vigente`. As notas de decreto viram vínculos lei → decreto no `coleta_decretos.py` (ver o README, seção Decretos).
+Decreto não revoga lei. Por isso a anotação só conta quando cita uma lei, ou quando não cita decreto nenhum. A ementa da 13.905 tem "(Vide Decreto nº 413, de 2025) (Revogado pelo Decreto 1.341, de 2026)": quem foi revogado é o Decreto 413, e a lei continua `vigente`. As notas de decreto viram vínculos lei → decreto no `coleta_decretos.py` (ver [DECRETOS.md](DECRETOS.md)).
 
 ---
 
@@ -466,7 +466,7 @@ Para conferir se um `leis.json` é exatamente o que foi gerado, compare o SHA-25
 
 ## 9. Como isso se conecta ao resto do projeto
 
-1. **Banco (Peewee + Postgres):** carregar o `leis.json` em três tabelas: `lei` (chave `id`), `artigo` (chave `lei_id + ordem`) e `relacao` (vem do campo `relacoes`). Detalhes no [README](../README.md#sugestão-de-tabelas-postgres).
+1. **Banco (Peewee + Postgres):** carregar o `leis.json` em três tabelas: `lei` (chave `id`), `artigo` (chave `lei_id + ordem`) e `relacao` (vem do campo `relacoes`). Detalhes em [DADOS.md](DADOS.md#sugestão-de-tabelas-postgres).
 2. **Busca:** encontrar os artigos mais parecidos com a pergunta, **filtrando leis com `situacao IN ('vigente', 'vigente_com_alteracoes')` e artigos com `revogado = false`**, usando só o campo `texto` (redação vigente). É aqui que o cálculo de vigência evita respostas baseadas em leis ou redações revogadas.
 3. **Chatbot:** a IA recebe só esses artigos e responde citando lei, artigo e link da Câmara.
 

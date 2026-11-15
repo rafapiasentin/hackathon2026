@@ -42,7 +42,7 @@ Depois de carregar as leis, carregue os decretos ligados a elas (o `decretos.jso
 Sem esse passo, a API funciona normalmente, só sem os decretos na resposta.
 
 O `leis.zip` foi reprocessado (a Lei 13.905/2024 deixou de aparecer como revogada). Um banco
-carregado com o ZIP anterior precisa ser recarregado: `carregar_leis.py leis.zip --recriar` (veja o README).
+carregado com o ZIP anterior precisa ser recarregado: `carregar_leis.py leis.zip --recriar` (veja [docs/BANCO.md](docs/BANCO.md)).
 
 ## O que testar
 

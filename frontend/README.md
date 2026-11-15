@@ -9,9 +9,8 @@ para a raiz do repositório, com `.nojekyll`, e publicado pelo Pages após o pus
 Para atualizar: `npm run build -- --mode pages`, depois
 `node scripts/exportar-pages.mjs` dentro de `frontend`, e commit dos arquivos
 gerados na raiz. O workflow apenas verifica o build, sem exigir configuração
-administrativa. O modo Pages usa o prefixo do repositório e rotas com `#`.
-Essa versão é uma demonstração identificada com dados de exemplo, pois a API
-PostgreSQL ainda roda localmente. A configuração local de API não é incluída no
+administrativa. O modo Pages usa o prefixo do repositório e rotas com `#`, e chama a API
+pública (`frontend/.env.pages`). A configuração local de API não é incluída no
 build público.
 
 Site onde o cidadão pergunta sobre as leis de Londrina e recebe a resposta com base **só nas leis em vigor**.

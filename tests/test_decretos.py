@@ -228,3 +228,15 @@ def test_pagina_da_lei_lista_decretos(api_decretos):
     assert set(titulos) == {'Decreto 466/2025', 'Decreto 404/2025', 'Decreto Legislativo 221/2007'}
     assert titulos['Decreto 404/2025']['situacao'] == 'revogado'
     assert titulos['Decreto Legislativo 221/2007']['dispositivos'] == ['Art. 99']
+
+
+@pytest.mark.postgres
+def test_decreto_sem_o_assunto_da_pergunta_nao_entra(api_decretos):
+    # O Decreto 466 é da lei principal, mas nenhum artigo dele fala de recuo: citar "mínimo" não basta.
+    from banco import Artigo
+    Artigo.create(lei='123', ordem=4, artigo='Art. 59', texto='Art. 59. O recuo mínimo das edificações segue o Anexo II.')
+    resposta = api_decretos.post('/api/perguntar', json={'pergunta': 'qual o recuo mínimo das edificações?'}).json()
+    assert resposta['fontes'][0]['artigo'] == 'Art. 59'
+    assert 'Decreto 466/2025' not in resposta['resposta']
+    decreto = next(c for c in resposta['camadas'] if c['papel'] == d.REGULAMENTADA_POR)
+    assert decreto['trecho'] is None  # continua listado como decreto da lei, sem trecho inventado

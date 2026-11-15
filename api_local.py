@@ -82,12 +82,12 @@ def decretos_para_artigo(vinculados, artigo):
 
 
 def artigo_de_decreto(decreto_ids, plano):
-    """Artigo de decreto que responde à pergunta. A súmula dá o assunto ("Consulta Prévia de Parcelamento
-    do Solo"); o próprio artigo precisa trazer ao menos um termo da pergunta."""
+    """Artigo de decreto que responde à pergunta. A súmula dá o contexto ("Consulta Prévia de Parcelamento
+    do Solo"), mas o próprio artigo precisa trazer o assunto obrigatório da pergunta: com "recuo", um artigo
+    sobre outro procedimento não entra só por citar "mínimo"."""
     if not decreto_ids:
         return None
     melhor = None
-    termos = list(plano.grupos) + list(plano.complementares)
     consulta = (ArtigoDecreto.select(ArtigoDecreto, Decreto).join(Decreto)
                 .where(ArtigoDecreto.decreto.in_(decreto_ids)).order_by(Decreto.ano.desc(), ArtigoDecreto.ordem))
     for a in consulta:
@@ -95,7 +95,7 @@ def artigo_de_decreto(decreto_ids, plano):
         if not evidencia:
             continue
         proprio = normalizar_texto(a.texto)
-        if not any(contem(proprio, s, True) for g in termos for s in g):
+        if not all(any(contem(proprio, s, True) for s in g) for g in plano.grupos):
             continue
         if melhor is None or evidencia['pontos'] > melhor[1]:
             melhor = (a, evidencia['pontos'])
@@ -294,15 +294,14 @@ def create_app(db=None, catalogo_local=None):
                              'se aplica ao seu caso.\n\n' + texto)
                 # Camadas: a lei, as leis que mudaram a redação do artigo e os decretos ligados a ela.
                 # Decretos ainda não passam pela revisão institucional: só entram no modo documental.
-                vinculados = decretos_das_leis({f['lei_id'] for f in fontes}) if local else {}
+                # Só os decretos da lei principal: o decreto de outra fonte detalharia outra regra.
+                vinculados = decretos_das_leis({principal['lei_id']}) if local else {}
                 decretos = decretos_para_artigo(vinculados.get(principal['lei_id'], []), principal['artigo'])
-                com_texto = [d['id'] for f in fontes for d in vinculados.get(f['lei_id'], [])
-                             if d['texto_disponivel'] and d['situacao'] != 'revogado'
+                com_texto = [d['id'] for d in decretos if d['texto_disponivel'] and d['situacao'] != 'revogado'
                              and d['vinculo'] in (REGULAMENTADA_POR, ANEXO_ATUALIZADO_POR)]
-                achado = artigo_de_decreto(list(dict.fromkeys(com_texto)), plano)
+                achado = artigo_de_decreto(com_texto, plano)
                 if achado:
-                    regulada = next(f for f in fontes if any(d['id'] == achado.decreto_id
-                                                             for d in vinculados.get(f['lei_id'], [])))
+                    regulada = principal
                     frase_decreto = frase_do_decreto(achado.texto, plano)
                     nome = nome_decreto(achado.decreto.tipo, achado.decreto.numero, achado.decreto.ano)
                     lei_regulada = f'Lei nº {numero_legivel(regulada["chave"])}/{regulada["ano"]}'

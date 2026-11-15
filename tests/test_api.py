@@ -66,7 +66,8 @@ def test_som_do_carro_nao_recupera_carga_descarga_ou_deixar(api):
     resposta = api.post('/api/perguntar', json={'pergunta': 'até que horas posso deixar o som do carro ligado?'}).json()
     assert resposta['fontes'] == []
     assert '22 horas' not in resposta['resposta']
-    assert 'Não encontrei' in resposta['resposta']
+    # Mensagem da busca 2.2.0 quando nada sustenta a resposta.
+    assert 'Não foi possível confirmar essa informação' in resposta['resposta']
 
 
 @pytest.mark.postgres

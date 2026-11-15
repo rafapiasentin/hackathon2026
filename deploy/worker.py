@@ -10,6 +10,21 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ))
 
 
+def atualizar_decretos(db, leis_json, pasta):
+    """Vínculos lei -> decreto (notas da Câmara) e textos de decretos_fontes.json.
+    Uma falha aqui fica registrada no resultado e não desfaz a publicação das leis."""
+    from peewee import DatabaseError
+    from carregar_decretos import importar
+    saida = pasta / 'decretos.json'
+    try:
+        subprocess.run([sys.executable, str(RAIZ / 'coleta_decretos.py'), '--leis', str(leis_json),
+                        '--saida', str(saida)], cwd=RAIZ, check=True)
+        with db.connection_context():
+            return importar(db, json.loads(saida.read_text(encoding='utf-8')))
+    except (subprocess.CalledProcessError, ValueError, OSError, DatabaseError) as exc:
+        return dict(estado='falha', erro=type(exc).__name__)
+
+
 def executar(acao):
     from banco import conectar
     from carregar_leis import ler_entrada, normalizar, validar_meta
@@ -34,6 +49,7 @@ def executar(acao):
         db = conectar()
         with db.connection_context():
             resultado = receber(db, saida, 'https://www.cml.pr.gov.br/dadosabertos')
+        resultado['decretos'] = atualizar_decretos(db, saida, pasta)
     else:
         # Valida o snapshot real e os mesmos adaptadores sem alterar o acervo público.
         leis, sha, meta = ler_entrada(RAIZ / 'leis.zip')

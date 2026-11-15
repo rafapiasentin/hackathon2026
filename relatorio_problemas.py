@@ -54,8 +54,9 @@ PROBLEMAS = {
     ),
     "revogada_sem_revogador": (
         "Revogada sem lei revogadora identificável",
-        "A anotação de revogação cita um decreto (não uma lei) ou veio quebrada da fonte "
-        "(ex.: \"Lei nº de de de 20\").",
+        "A anotação de revogação veio quebrada da fonte (ex.: \"Lei nº de de de 20\") ou cita a própria lei. "
+        "Anotações que citam só decreto não contam: decreto não revoga lei, e essas notas falam de outro "
+        "decreto citado na ementa (caso da Lei 13.905/2024, que continua vigente).",
         "`situacao = revogada` e `revogada_por` vazio. A anotação original fica em `revogacao_nota` como evidência.",
     ),
     "ementa_vazia": (

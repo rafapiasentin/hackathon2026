@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, ChevronDown, ExternalLink, FlaskConical, GitCompareArrows, Volume2, Square } from "lucide-react";
 import { obterLei } from "../api/client";
-import type { Lei as TLei, Relacao } from "../api/types";
+import type { DecretoDaLei, Lei as TLei, Relacao } from "../api/types";
 import { StatusBadge } from "../components/StatusBadge";
 import { useRota } from "../lib/rota";
 import { RELACAO, SITUACAO, dataLegivel, ementaLimpa, nomeLei, numeroLegivel } from "../lib/leis";
@@ -207,6 +207,8 @@ export function Lei() {
         </section>
       )}
 
+      {lei.decretos && lei.decretos.length > 0 && <DecretosDaLei decretos={lei.decretos} />}
+
       <section className="mt-10 border-t border-border pt-6">
         <button
           type="button"
@@ -257,5 +259,62 @@ function LinkLei({ r }: { r: Relacao }) {
       {texto}
       <ArrowRight aria-hidden="true" className="size-4" />
     </Link>
+  );
+}
+
+const VINCULO: Record<DecretoDaLei["vinculo"], string> = {
+  regulamentada_por: "Regulamenta esta lei",
+  anexo_atualizado_por: "Atualizou um anexo",
+  eficacia_suspensa_por: "Suspendeu a eficácia",
+};
+
+/** Decretos citados pela Câmara ou pela súmula do próprio decreto. Os revogados ficam no fim, riscados. */
+function DecretosDaLei({ decretos }: { decretos: DecretoDaLei[] }) {
+  const ordenados = [...decretos].sort((a, b) => Number(a.situacao === "revogado") - Number(b.situacao === "revogado"));
+  return (
+    <section className="mt-10">
+      <h2 className="text-lg font-semibold">Decretos ligados a esta lei</h2>
+      <p className="mt-1 text-sm text-muted">
+        O decreto da Prefeitura detalha como aplicar a lei (prazos, valores, documentos), sem poder contrariá-la. O
+        decreto legislativo da Câmara pode suspender a eficácia de uma lei.
+      </p>
+      <ul className="mt-4 grid gap-3">
+        {ordenados.map((d) => {
+          const revogado = d.situacao === "revogado";
+          return (
+            <li key={`${d.id}-${d.vinculo}`} className="rounded-xl bg-bg p-4">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                {d.link && !revogado ? (
+                  <a
+                    href={d.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 font-semibold text-primary underline-offset-4 hover:underline"
+                  >
+                    {d.titulo}
+                    <ExternalLink aria-hidden="true" className="size-3.5" />
+                    <span className="sr-only">(abre em nova aba)</span>
+                  </a>
+                ) : (
+                  <span className={`font-semibold ${revogado ? "text-muted line-through" : ""}`}>{d.titulo}</span>
+                )}
+                <span className="text-sm text-muted">· {VINCULO[d.vinculo]}</span>
+                {d.dispositivos.length > 0 && (
+                  <span className="text-sm text-muted">· {d.dispositivos.slice(0, 4).join(", ")}{d.dispositivos.length > 4 ? "…" : ""}</span>
+                )}
+              </div>
+              {d.ementa && <p className="mt-1 text-sm text-muted">{d.ementa}</p>}
+              <p className="mt-1 text-xs text-muted">
+                {revogado
+                  ? `Revogado${d.revogado_por ? ` pelo ${d.revogado_por}` : ""}.`
+                  : d.texto_disponivel
+                    ? "Texto incluído na base: o chat usa este decreto nas respostas."
+                    : "Citado pela Câmara; o texto ainda não está na base."}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }

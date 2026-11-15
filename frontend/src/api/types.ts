@@ -31,9 +31,29 @@ export interface LeiResumo {
   vigencia_verificada?: boolean;
 }
 
+export type TipoVinculoDecreto = "regulamentada_por" | "anexo_atualizado_por" | "eficacia_suspensa_por";
+
+/** Decreto ligado a uma lei: do prefeito (regulamenta) ou legislativo, da Câmara (pode suspender a eficácia). */
+export interface DecretoDaLei {
+  id: string;
+  titulo: string; // "Decreto 466/2025"
+  tipo: "Decreto" | "Decreto Legislativo";
+  numero: string;
+  ano: number;
+  ementa: string | null;
+  link: string | null;
+  situacao: "revogado" | "sem_registro_de_revogacao";
+  revogado_por: string | null;
+  texto_disponivel: boolean;
+  vinculo: TipoVinculoDecreto;
+  /** Artigos da lei em que a Câmara anotou o decreto. Vazio = a lei como um todo. */
+  dispositivos: string[];
+}
+
 export interface Lei extends LeiResumo {
   relacoes: Relacao[];
   artigos: Artigo[];
+  decretos?: DecretoDaLei[];
   /** Só nos dados de demonstração: lei inventada para mostrar uma função. Não existe no site da Câmara. */
   exemplo?: boolean;
 }
@@ -56,9 +76,31 @@ export interface Fonte {
   link: string;
 }
 
+/** Uma norma na cadeia da resposta: a lei, a lei que mudou o artigo, o decreto que detalha. */
+export interface Camada {
+  papel: "lei" | "alteracao" | TipoVinculoDecreto;
+  /** Papel em linguagem simples: "Decreto que detalha como aplicar a lei". */
+  descricao: string;
+  titulo: string;
+  lei_id?: string | null;
+  decreto_id?: string | null;
+  link?: string | null;
+  ementa?: string | null;
+  situacao?: string | null;
+  artigo?: string | null;
+  trecho?: string | null;
+  dispositivo?: string | null;
+  /** false quando só sabemos que o decreto existe (a Câmara cita), mas o texto não está na base. */
+  texto_na_base: boolean;
+}
+
 export interface Resposta {
   resposta: string;
   fontes: Fonte[];
+  /** Cadeia de normas por trás da resposta, para o botão "Ver de onde vem". */
+  camadas?: Camada[];
+  /** Avisos curtos: decreto fora da base, eficácia suspensa, regulamentação pendente. */
+  alertas?: string[];
   /** Leis revogadas que tratavam do assunto e foram deixadas de fora. */
   ignoradas: {
     lei_id: string | null;

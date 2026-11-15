@@ -4,7 +4,7 @@ import uuid
 
 import pytest
 
-from banco import MODELOS, MODELOS_GOVERNANCA, conectar
+from banco import MODELOS, MODELOS_DECRETOS, MODELOS_GOVERNANCA, conectar
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def db_governanca():
     db = conectar(nome)
     db.connect()
     schema = 'pytest_' + uuid.uuid4().hex
-    modelos = MODELOS + MODELOS_GOVERNANCA
+    modelos = MODELOS + MODELOS_GOVERNANCA + MODELOS_DECRETOS
     anteriores = {m: m._meta.schema for m in modelos}
     try:
         with db.atomic() as transacao:
@@ -45,7 +45,7 @@ def db_api():
     db = conectar(nome)
     db.connect()
     schema = 'pytest_api_' + uuid.uuid4().hex
-    modelos = MODELOS + MODELOS_GOVERNANCA
+    modelos = MODELOS + MODELOS_GOVERNANCA + MODELOS_DECRETOS
     anteriores = {m: m._meta.schema for m in modelos}
     try:
         db.execute_sql(f'CREATE SCHEMA "{schema}"')

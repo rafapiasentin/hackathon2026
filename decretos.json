@@ -1,0 +1,3674 @@
+{
+  "versao_formato": "1.0",
+  "gerado_em": "2026-11-14T23:16:57-03:00",
+  "leis_json_sha256": "08c3203f46388ee11150bf8ef5c3e726baf84ebe4a7e5e77d5000fa9225683cf",
+  "totais": {
+    "decretos": 120,
+    "com_texto": 3,
+    "revogados": 2,
+    "vinculos": 222,
+    "por_tipo_vinculo": {
+      "regulamentada_por": 109,
+      "anexo_atualizado_por": 6,
+      "eficacia_suspensa_por": 107
+    }
+  },
+  "decretos": [
+    {
+      "id": "decreto-45-2026",
+      "tipo": "Decreto",
+      "numero": "45",
+      "ano": 2026,
+      "data": "2026-01-19",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-76-2026",
+      "tipo": "Decreto",
+      "numero": "76",
+      "ano": 2026,
+      "data": "2026-01-26",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-500-2026",
+      "tipo": "Decreto",
+      "numero": "500",
+      "ano": 2026,
+      "data": "2026-05-11",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-539-2026",
+      "tipo": "Decreto",
+      "numero": "539",
+      "ano": 2026,
+      "data": "2026-05-20",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-680-2026",
+      "tipo": "Decreto",
+      "numero": "680",
+      "ano": 2026,
+      "data": "2026-06-17",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1341-2026",
+      "tipo": "Decreto",
+      "numero": "1341",
+      "ano": 2026,
+      "data": "2026-11-05",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-357-2025",
+      "tipo": "Decreto",
+      "numero": "357",
+      "ano": 2025,
+      "data": "2025-03-21",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-372-2025",
+      "tipo": "Decreto",
+      "numero": "372",
+      "ano": 2025,
+      "data": "2025-03-26",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-404-2025",
+      "tipo": "Decreto",
+      "numero": "404",
+      "ano": 2025,
+      "data": "2025-04-01",
+      "ementa": null,
+      "link": null,
+      "situacao": "revogado",
+      "revogado_por": "Decreto 45/2026",
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-413-2025",
+      "tipo": "Decreto",
+      "numero": "413",
+      "ano": 2025,
+      "data": "2025-04-01",
+      "ementa": null,
+      "link": null,
+      "situacao": "revogado",
+      "revogado_por": "Decreto 1.341/2026",
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-466-2025",
+      "tipo": "Decreto",
+      "numero": "466",
+      "ano": 2025,
+      "data": "2025-04-16",
+      "ementa": "Regulamenta procedimentos para emissão de Consulta Prévia e Diretrizes Urbanísticas de Parcelamento do Solo, nos termos da Lei Municipal nº 13.898 de 20 de dezembro de 2024, em especial, artigos 22, 50 e 56 e parágrafo único do artigo 111 da Lei Municipal nº 13.905 de 20 de dezembro de 2024 e dá outras providências.",
+      "link": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70387-decreto-466/file",
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": true,
+      "artigos": [
+        {
+          "ordem": 1,
+          "artigo": "Art. 1º",
+          "texto": "Art. 1º. A Consulta de Parcelamento do Solo (CPS) tem a finalidade informativa de subsidiar a elaboração de projetos de\nparcelamento do solo quanto aos parâmetros urbanísticos e legislação aplicável."
+        },
+        {
+          "ordem": 2,
+          "artigo": "Art. 2º",
+          "texto": "Art. 2º. Para obtenção da Consulta de Parcelamento do Solo (CPS) o interessado deverá protocolizar requerimento ao Poder\nPúblico, anexando os seguintes documentos:\nI. requerimento por meio de formulário eletrônico disponibilizado no sistema SEI\nII. croqui de localização do imóvel no bairro ou vizinhança;\nIII. Comprovante do recolhimento de taxa administrativa."
+        },
+        {
+          "ordem": 3,
+          "artigo": "Art. 3º",
+          "texto": "Art. 3º. O Instituto de Pesquisa e Planejamento Urbano - IPPUL examinará a solicitação da Consulta Prévia (CP) considerando,\nno mínimo, os seguintes aspectos sobre o imóvel e seu entorno:\nI. existência de elementos que representem riscos à segurança de pessoas e ao ambiente;\nII. existência de e corpos d'água, áreas de interesse ambiental, vegetação significativa;\nIII. infraestrutura existente, servidões e restrições construtivas\nIV. existência de edificações, equipamentos comunitários e áreas de lazer.\n§ 1º. A avaliação dos incisos deste artigo será baseada nas informações disponíveis no Sistema de Informação Geográfica de\nLondrina (SIGLON) e poderá ser ajustada na etapa de Diretrizes Urbanísticas, após a apresentação da planta planialtimétrica cadastral do\nimóvel, georreferenciada em coordenadas UTM.\n§ 2º. Sempre que o imóvel for enquadrado de forma desfavorável em relação aos aspectos apontados neste artigo, o Poder Público\nindicará a inviabilidade do parcelamento do solo pretendido.\n§ 3º. O interessado poderá apresentar solução técnica comprovada que supere os impedimentos existentes junto ao processo de\nDiretrizes Urbanísticas."
+        },
+        {
+          "ordem": 4,
+          "artigo": "Art. 4º",
+          "texto": "Art. 4º. Munido de todos os documentos e informações necessárias o IPPUL deverá emitir a Consulta Prévia (CP) de forma\neletrônica, compreendendo as seguintes informações:\nI. as áreas não edificáveis e com restrições à urbanização;\nII. os elementos de interesse ambiental urbanístico e cultural;\nIII. as vias de circulação com suas devidas larguras e hierarquias;\nIV. os requisitos para definição da áreas a serem destinadas ao uso público;\nV. a infraestrutura urbana mínima exigida;\nVI. os parâmetros de parcelamento, uso e ocupação do solo conforme o zoneamento;\nVII. outros órgãos públicos que deverão ser consultados."
+        },
+        {
+          "ordem": 5,
+          "artigo": "Art. 5º",
+          "texto": "Art. 5º. A Consulta Prévia (CPS) deverá ser expedida no prazo de 60 (sessenta) dias após o cumprimento das exigências legais e\nterá validade de 180 (cento e oitenta) dias após a sua expedição, podendo ser prorrogada por igual período, mediante requerimento do\ninteressado, durante seu prazo de validade."
+        },
+        {
+          "ordem": 6,
+          "artigo": "Art. 6º",
+          "texto": "Art. 6º. O Município de Londrina somente procederá à aprovação de loteamento para fins urbanos mediante a apresentação de\nDiretrizes Urbanísticas emitidas pelo Instituto de Pesquisa e Planejamento Urbano de Londrina - IPPUL;"
+        },
+        {
+          "ordem": 7,
+          "artigo": "Art. 7º",
+          "texto": "Art. 7º. Para obtenção de Diretrizes Urbanísticas de loteamento, o interessado deverá protocolizar requerimento ao Poder\nPúblico, anexando os documentos indicados nos Artigos 59 e 60 da Lei Municipal nº 13.898/2024."
+        },
+        {
+          "ordem": 8,
+          "artigo": "Art. 8º",
+          "texto": "Art. 8º. Após a averiguação da integral instrução do processo, bem como do recolhimento da respectiva taxa, o IPPUL indicará as\ncondicionantes e requisitos técnicos para definição de Diretrizes Urbanísticas, podendo solicitar pareceres ao demais órgãos públicos quanto:\nI. às restrições construtivas relacionadas à topografia e infraestrutura;\nII. às áreas com restrições à urbanização, áreas não edificáveis e componentes das áreas verdes;\nIII. ao dimensionamento das vias de circulação e demanda por transporte coletivo;\nIV. à demanda por equipamentos comunitários;\nV. aos requisitos para habitação de interesse social;\nVI. aos elementos de preservação histórico-cultural.\nParágrafo único. As diretrizes ambientais para parcelamento do solo urbano a serem emitidas pela SEMA poderão ser\nsubstituídas pela Licença Ambiental Prévia (LP), contendo definição das áreas não-edificáveis e dos critérios necessários para garantir a\nconservação dos recursos naturais, das medidas preventivas e mitigadoras da poluição e, quando couber, determinar estudos de impacto de\nvizinhança."
+        },
+        {
+          "ordem": 9,
+          "artigo": "Art. 9º",
+          "texto": "Art. 9º. O IPPUL avaliará o projeto urbanístico e emitirá as Diretrizes Urbanísticas, em conformidade com os requisitos técnicos\ne legais."
+        },
+        {
+          "ordem": 10,
+          "artigo": "Art. 10",
+          "texto": "Art. 10. As diretrizes urbanísticas poderão ser substituídas a pedido do interessado ou a critério do Poder Público, para fins de\nadaptação ou compatibilização do projeto urbanístico com os demais projetos complementares.\n§ 1º. Na hipótese de substituição motivada pelo Poder Público, a análise do Instituto deverá ser realizada no próprio procedimento\nadministrativo de aprovação de loteamento, devendo ser precedida da exposição das razões técnicas pela Diretoria de Loteamentos para a\nsubstituição da diretriz.\n§ 2º. Na hipótese de substituição motivada pelo empreendedor, a análise do IPPUL deverá ser realizada em processo\nadministrativo próprio, devidamente vinculado ao processo administrativo que motivou a emissão da Diretriz, observada a legislação vigente,\nsendo admitido o aproveitamento dos estudos técnicos já apresentados, desde que devidamente válidos.\n§ 3º. A substituição da Diretriz Urbanística motivada pelo empreendedor deverá ser precedida de cobrança de nova taxa."
+        },
+        {
+          "ordem": 11,
+          "artigo": "Art. 11",
+          "texto": "Art. 11. A transferência da área institucional e/ou área pública multifuncional em imóvel diferente da área a ser loteada será objeto de\nanálise durante a tramitação do processo de Diretrizes Urbanísticas.\n§ 1º. Somente serão aceitos para transferência imóveis localizados em loteamentos com infraestrutura completa instalada.\n§ 2º. A transferência de área em diretrizes simultâneas será admitida desde que atendidos os seguintes requisitos:\nI. Comprovação de interesse público devidamente justificado;\nII. Aprovação conjunta das áreas envolvidas;\nIII. Adoção das medidas necessárias para garantir a ausência de ônus ao município.\n§ 3º. Em caso de substituição de Diretrizes Urbanísticas já emitidas, a análise do IPPUL deverá ser realizada em processo\nadministrativo próprio precedido de cobrança de nova taxa administrativa."
+        },
+        {
+          "ordem": 12,
+          "artigo": "Art. 12",
+          "texto": "Art. 12. Após a averiguação da integral instrução do processo pelo IPPUL, o expediente será encaminhado às seguintes\nSecretarias Municipais para formalização de Parecer Técnico sobre o imóvel pretendido:\nI. Secretaria Municipal de Obras e Pavimentação, quanto às disposições do §1º do Art. 11, condicionantes topográficas,\ninfraestrutura necessária e viabilidade para edificações públicas, planta planialtimétrica cadastral e certidão/matrícula atualizada do lote em\nquestão (do Cartório de Registro de Imóveis), bem como demais informações pertinentes;\nII. Secretaria Municipal do Ambiente, quanto à existência de áreas de preservação permanente, áreas não edificáveis e/ou com\nrestrições à urbanização, vegetação que deve compor o sistema de áreas verdes, profundidade do solo, declividade e demais diretrizes\nambientais sobre o imóvel em questão;\nIII. Secretaria Municipal de Educação, quanto aos impedimentos para atender à demanda gerada pelo empreendimento, da\nexistência de unidades de educação no entorno e sua capacidade de suporte e absorção;\nIV. Secretaria Municipal de Assistência Social, quanto aos impedimentos para atender à demanda gerada pelo empreendimento,\nexistência de unidades socioassistenciais no entorno e sua capacidade de suporte e absorção;\nV. Autarquia Municipal de Saúde, quanto aos impedimentos para atender à demanda gerada pelo empreendimento, existência de\nunidades de saúde no entorno e sua capacidade de suporte e absorção.\nParágrafo único. Após a emissão dos pareceres, o IPPUL deverá analisar a possibilidade de emissão ou substituição de Diretrizes\nUrbanísticas."
+        },
+        {
+          "ordem": 13,
+          "artigo": "Art. 13",
+          "texto": "Art. 13. Após a aprovação das Diretrizes Urbanísticas, a transferência da área institucional e/ou área pública multifuncional\ndeverá ser efetivada na fase de aprovação do loteamento junto à Secretaria Municipal de Obras de Pavimentação, mediante avaliação\nimobiliária nos termos do §4º do Art. 23 da Lei Municipal 13.898/2024."
+        },
+        {
+          "ordem": 14,
+          "artigo": "Art. 14",
+          "texto": "Art. 14. Para obtenção de Diretrizes Urbanísticas Simplificadas, o interessado deverá protocolizar requerimento ao Poder Público,\nanexando os documentos indicados no Artigo 69 da Lei Municipal nº 13.898/2024."
+        },
+        {
+          "ordem": 15,
+          "artigo": "Art. 15",
+          "texto": "Art. 15. Após a averiguação da integral instrução do processo, de seu devido enquadramento no Artigo 68 da Lei Municipal nº\n13.898/2024, bem como do recolhimento da respectiva taxa, o IPPUL indicará as condicionantes e requisitos técnicos para definição de\nDiretrizes Urbanísticas, podendo solicitar pareceres ao demais órgãos públicos quanto:\nI. às restrições construtivas relacionadas à topografia e infraestrutura;\nII. às áreas com restrições à urbanização, áreas não edificáveis e componentes das áreas verdes;\nIII. ao dimensionamento das vias de circulação e demanda por transporte coletivo;\nIV. à demanda por equipamentos comunitários;\nV. aos requisitos para habitação de interesse social;\nVI. aos elementos de preservação histórico-cultural."
+        },
+        {
+          "ordem": 16,
+          "artigo": "Art. 16",
+          "texto": "Art. 16. Para os casos enquadrados nos Artigos 19, 20 e 21 da Lei Municipal nº 13.898/2024, o IPPUL poderá solicitar o projeto\nurbanístico, conforme Art. 59, inciso VIII, acompanhado do respectivo Registro ou Anotação de Responsabilidade Técnica (RRT ou ART), para\navaliação e emissão das Diretrizes Urbanísticas Simplificadas, em conformidade com os requisitos técnicos e legais."
+        },
+        {
+          "ordem": 17,
+          "artigo": "Art. 17",
+          "texto": "Art. 17. A Secretaria Municipal do Ambiente – SEMA deverá emitir diretrizes ambientais para parcelamento do solo urbano, com\na definição das áreas não-edificáveis e dos critérios necessários para garantir a conservação dos recursos naturais, das medidas preventivas e\nmitigadoras da poluição e, quando couber, determinar estudos de impacto de vizinhança."
+        },
+        {
+          "ordem": 18,
+          "artigo": "Art. 18",
+          "texto": "Art. 18. A Secretaria Municipal de Educação deverá emitir considerações técnicas acerca da demanda escolar gerada pelo\nempreendimento, da existência de unidades de educação no entorno e sua capacidade de suporte e absorção."
+        },
+        {
+          "ordem": 19,
+          "artigo": "Art. 19",
+          "texto": "Art. 19. A substituição da Diretriz Urbanística motivada pelo empreendedor deverá ser precedida de cobrança de nova taxa."
+        },
+        {
+          "ordem": 20,
+          "artigo": "Art. 20",
+          "texto": "Art. 20. Os imóveis que ainda não passaram pelo processo regular de parcelamento para fins urbanos, deverão ser regularizados nos\ntermos das Leis Municipais nº 4.195/1988 e nº 1.794/1970 por meio de Diretrizes Urbanísticas Simplificadas emitidas pelo IPPUL.\n§ 1º. Para fins de cumprimento dos requisitos expostos no caput do artigo fica instituído o Anexo I, que reflete os imóveis que\npodem ser enquadrados no procedimento de adequação urbanística e regularização do parcelamento do solo, com base nos estudos técnicos\ndesenvolvidos até a presente data.\n§ 2º. Caso sejam identificados outros imóveis sujeitos à regularização, o Decreto deverá ser atualizado de modo a incluir essas\náreas.\n§ 3º. Se forem identificados parcelamentos já regularizados, o Decreto poderá ser atualizado com a finalidade de excluir essas\náreas.\n§ 4º. Para atualização do Decreto, deverá ser observada a existência de parcelamento de solo originário, a efetiva doação de áreas\nao Município, bem como o cumprimento das obras e serviços de infraestrutura necessárias, anexando a documentação comprobatória.\n§ 5º. Em lotes e chácaras com área igual ou superior a 20.000m² (vinte mil metros quadrados), o procedimento de parcelamento\ndo solo dar-se-á na modalidade de loteamento."
+        },
+        {
+          "ordem": 21,
+          "artigo": "Art. 21",
+          "texto": "Art. 21. Cabe ao empreendedor a responsabilidade pela execução e custeio das obras de infraestrutura necessárias à adequação\nurbanística e regularização do parcelamento do solo dos imóveis, conforme Art. 39 da Lei Municipal nº 13.898/2024."
+        },
+        {
+          "ordem": 22,
+          "artigo": "Art. 22",
+          "texto": "Art. 22. Para aprovação junto à Secretaria Municipal de Obras e Pavimentação, o interessado deverá apresentar os projetos\nconforme Diretrizes Urbanísticas Simplificadas expedidas, instruído com os documentos previstos no Art. 73 da Lei Municipal nº 13.898/2024."
+        },
+        {
+          "ordem": 23,
+          "artigo": "Art. 23",
+          "texto": "Art. 23. A tramitação dos processos administrativos ocorrerá exclusivamente por meio de Sistema Eletrônico disponível no site oficial\nda Prefeitura Municipal de Londrina.\n§ 1º. É de responsabilidade do interessado o acompanhamento do processo e atendimento dos prazos fixados.\n§ 2º. Nos processos administrativos em trâmite, o não cumprimento de prazos e notificações administrativas emitidas pelo\nIPPUL, implicará em arquivamento do processo, sem prorrogação, e a aplicação das leis urbanísticas vigentes no caso de novo protocolo.\n§ 3º. A veracidade dos dados fornecidos pelo interessado é de sua inteira responsabilidade, de modo que, constatada falsidade em\nqualquer documento apresentado, o IPPUL fará a imediata comunicação de indeferimento ou cancelamento da solicitação."
+        },
+        {
+          "ordem": 24,
+          "artigo": "Art. 24",
+          "texto": "Art. 24. Este Decreto entra em vigor na data de sua publicação, revogadas as disposições em contrário, em especial o Decreto\nMunicipal nº 494, de 22 de abril de 2020."
+        }
+      ],
+      "fonte_texto": {
+        "url": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70387-decreto-466/file",
+        "sha256": "02a27c219fa6256a451cbe9cf55d2209f30e770f9356659b9fd99ab147b9309b",
+        "baixado_em": "2026-11-14T23:16:07-03:00",
+        "metodo": "pdf_textual"
+      }
+    },
+    {
+      "id": "decreto-486-2025",
+      "tipo": "Decreto",
+      "numero": "486",
+      "ano": 2025,
+      "data": "2025-04-26",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-718-2025",
+      "tipo": "Decreto",
+      "numero": "718",
+      "ano": 2025,
+      "data": "2025-06-18",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-783-2025",
+      "tipo": "Decreto",
+      "numero": "783",
+      "ano": 2025,
+      "data": "2025-07-07",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-831-2025",
+      "tipo": "Decreto",
+      "numero": "831",
+      "ano": 2025,
+      "data": "2025-07-16",
+      "ementa": "Regulamenta o Art. 50-A da Lei Municipal nº 13.898, de 20 de dezembro de 2024, que dispõe sobre o parcelamento do solo para fins urbanos no Município.",
+      "link": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70383-decreto-831/file",
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": true,
+      "artigos": [
+        {
+          "ordem": 1,
+          "artigo": "Art. 1º",
+          "texto": "Art. 1º Este Decreto regulamenta o procedimento para regularização, pelo Poder Público, das sedes urbanas dos distritos, patrimônios e parcelamentos\nprojetados e aprovados anteriormente à vigência da Lei Municipal nº 13.898, de 20 de dezembro de 2024, que não cumpririam os requisitos legais da lei vigente\nà época de sua implantação, tais como:\nI - os executados ou intermediados pela Companhia Melhoramentos Norte do Paraná, COHAB, Estado do Paraná, ou por outro órgão estadual ou federal;\nII - os arruamentos e parcelamentos na modalidade de subdivisão, projetados pela CODEL ou aprovados pelo Município, destinados à instalação de empresas\nde logística, universidades, cooperativas agroindustriais, parques agropecuários ou industriais;\nIII - os arruamentos ou subdivisões destinados a clubes recreativos implantados antes da vigência da Lei Federal 6.766/1979;\nIV - Os arruamentos ou subdivisões destinados a templos religiosos implantados antes da vigência da Lei Federal 6.766/1979.\n§ 1º. A regularização tratada neste decreto limita-se somente ao terreno, não alcançando as benfeitorias nele realizadas.\n§ 2º A regularização das benfeitorias será realizada por meio de processo próprio."
+        },
+        {
+          "ordem": 2,
+          "artigo": "Art. 2º",
+          "texto": "Art. 2º Para efeito deste Decreto, infraestrutura mínima compreende:\nI - abastecimento de água potável;\nII - coleta e afastamento de esgoto sanitário;\nIII - energia elétrica domiciliar;\nIV - sistema viário implantado e em condições de trafegabilidade;\nV - drenagem urbana ou solução de drenagem;\nVI - iluminação pública;\nVII - coleta de resíduos sólidos."
+        },
+        {
+          "ordem": 3,
+          "artigo": "Art. 3º",
+          "texto": "Art. 3º A regularização de que trata este Decreto será realizada mediante parecer técnico fundamentado pela Secretaria Municipal de Obras e Pavimentação –\nSMOP, com manifestação do Instituto de Pesquisa e Planejamento Urbano de Londrina – IPPUL, podendo ser exigido, sob responsabilidade dos\nproprietários:\nI – a doação de áreas destinadas ao sistema viário do entorno e ao fundo de vale;\nII – a execução ou complementação da infraestrutura urbana mínima;\nIII – a apresentação de documentação complementar necessária à instrução e conclusão do procedimento.\n§ 1º. O IPPUL se manifestará sobre as exigências previstas nos incisos I e II deste artigo.\n§ 2º A SMOP poderá solicitar manifestação técnica de outros órgãos ou entes, quando entender necessário."
+        },
+        {
+          "ordem": 4,
+          "artigo": "Art. 4º",
+          "texto": "Art. 4º O processo administrativo de regularização será instaurado mediante requerimento dos interessados, instruído, no mínimo com os seguintes\ndocumentos:\nI - planta planialtimétrica georreferenciada da gleba padrão, conforme estabelecido no Capítulo II, da Lei Municipal nº 13.898/2024.\nII - memorial descritivo da área;\nIII- quadro de áreas do parcelamento;\nIV - matrícula atualizada do imóvel objeto de regularização;\nV - declaração de infraestrutura existente;\nVI - fotografias e croqui de ocupação;\nVII - certidões emitidas por órgãos municipais competentes (Fazenda, Meio Ambiente, Obras, COHAB, etc.);\nVIII - laudo ou parecer técnico de viabilidade urbanística e ambiental, quando exigido;\nIX – anotação, registro ou termo de responsabilidade técnica (ART, RRT ou TRT);\nX – recolhimento da taxa de aceitação, prevista na Tabela VII, da Lei 7.303/1997 – Código Tributário Municipal.\nParágrafo único. Poderão ser solicitados pela SMOP outros documentos para instrução do processo administrativo de regularização."
+        },
+        {
+          "ordem": 5,
+          "artigo": "Art. 5º",
+          "texto": "Art. 5º O processo administrativo de regularização observará o seguinte procedimento:\n§ 1º O interessado formalizará requerimento por meio do sistema eletrônico, que será endereçado à Diretoria de Loteamentos/SMOP.\n§ 2º A Diretoria de Loteamentos realizará análise prévia quanto à apresentação da documentação exigida no art. 4º, deste Decreto.\n§ 3º Constatada a ausência de documentos obrigatórios, o interessado será notificado eletronicamente para apresentá-los no prazo de 10 (dez) dias úteis, sob\npena de arquivamento do processo.\n§ 4º Estando completa a documentação, a Diretoria de Loteamentos encaminhará o processo à Gerência de Topografia para conferência do\nlevantamento georreferenciado.\n§ 5º Após retorno da Gerência de Topografia, a Diretoria de Loteamentos realizará análise técnica quanto à infraestrutura instalada e à sua\neventual complementação, encaminhando o processo para o IPPUL para manifestação.\n§ 6º A Diretoria de Loteamentos, após compilar os apontamentos técnicos, poderá solicitar ao interessado ajustes técnicos ou documentação\ncomplementar.\n§ 7º Havendo a necessidade de complementação referente à doação de áreas para sistema viário ou fundo de vale, bem como da infraestrutura\nurbana, será firmado Termo de Compromisso, com registro em cartório e averbação na matrícula do imóvel, com força de título executivo\nextrajudicial, contendo, no mínimo, cronograma e orçamento.\n§ 8º A SMOP aprovará o projeto de regularização e os projetos complementares, se houver.\n§ 9º A responsabilidade pela abertura das novas matrículas das áreas públicas incidentes sobre o imóvel, quando houver, será do requerente.\n§ 10 A aprovação da regularização do terreno não impede eventual responsabilização por passivos ambientais ou vícios construtivos.\n§ 11 Cumpridas as formalidades previstas neste Decreto, a SMOP emitirá parecer técnico considerando o imóvel regularizado para fins de cadastro\nimobiliário."
+        },
+        {
+          "ordem": 6,
+          "artigo": "Art. 6º",
+          "texto": "Art. 6º O Parecer Técnico será emitido pela Diretoria de Loteamentos após cumprido o procedimento estabelecido no art. 5º."
+        },
+        {
+          "ordem": 7,
+          "artigo": "Art. 7º",
+          "texto": "Art. 7º O Parecer Técnico deverá conter o relatório, a fundamentação e a conclusão.\n§ 1º O relatório deverá incluir:\nI – o nome do proprietário do imóvel; e\nII – a identificação do imóvel.\n§ 2º Na fundamentação deverá constar:\nI – a demonstração do interesse público na regularização;\nII – que a área objeto de regularização encontra-se servida de infraestrutura mínima nos termos do art. 2º, deste Decreto ou que tenha sido firmado Termo de\nCompromisso, conforme previsto no § 7º, do art. 5º.\nIII – a informação de que as matrículas atualizadas do imóvel e das áreas públicas estão em nome do Município, quando houver;\nIV – a ratificação do projeto aprovado na fase regularização.\n§ 3º Na conclusão o imóvel será declarado regularizado nos termos do art. 50-A e 50-B."
+        },
+        {
+          "ordem": 8,
+          "artigo": "Art. 8º",
+          "texto": "Art. 8º Nas áreas descritas no Art. 1º, nas quais o Município autorizou o funcionamento de empresas, atividades comerciais ou de serviços, poderão ser\nmantidos e concedidos alvarás, até regularização final da área, assim como aprovação de projetos de obras."
+        },
+        {
+          "ordem": 9,
+          "artigo": "Art. 9º",
+          "texto": "Art. 9º Este Decreto entra em vigência na data de sua publicação, revogadas as disposições em contrário."
+        }
+      ],
+      "fonte_texto": {
+        "url": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70383-decreto-831/file",
+        "sha256": "b299bd50a380383c1cd7d5dbd5490ee3c398f5418e47c35338a1f09e73b4cd1c",
+        "baixado_em": "2026-11-14T23:16:08-03:00",
+        "metodo": "pdf_textual"
+      }
+    },
+    {
+      "id": "decreto-939-2025",
+      "tipo": "Decreto",
+      "numero": "939",
+      "ano": 2025,
+      "data": "2025-08-04",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-959-2025",
+      "tipo": "Decreto",
+      "numero": "959",
+      "ano": 2025,
+      "data": "2025-08-08",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1111-2025",
+      "tipo": "Decreto",
+      "numero": "1111",
+      "ano": 2025,
+      "data": "2025-09-12",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1112-2025",
+      "tipo": "Decreto",
+      "numero": "1112",
+      "ano": 2025,
+      "data": "2025-09-12",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1138-2025",
+      "tipo": "Decreto",
+      "numero": "1138",
+      "ano": 2025,
+      "data": "2025-09-19",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1144-2025",
+      "tipo": "Decreto",
+      "numero": "1144",
+      "ano": 2025,
+      "data": "2025-09-23",
+      "ementa": "Regulamenta o § 2º, do art. 39, da Lei nº 13.898, de 20 de dezembro de 2024, que dispõe sobre o parcelamento do solo para fins urbanos no Município.",
+      "link": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70367-decreto-1144-25/file",
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": true,
+      "artigos": [
+        {
+          "ordem": 1,
+          "artigo": "Art. 1º",
+          "texto": "Art. 1º Este Decreto regulamenta o § 2º, do artigo 39 da Lei Municipal nº 13.898, de 20 de dezembro de 2024, que trata da flexibilização das responsabilidades\nde custeio e execução de infraestrutura nos processos de parcelamento do solo."
+        },
+        {
+          "ordem": 2,
+          "artigo": "Art. 2º",
+          "texto": "Art. 2º A flexibilização das responsabilidades do empreendedor quanto ao custeio e à execução de infraestruturas em áreas públicas abrangerá os sistemas\nviários incidentes nos processos de parcelamento do solo.\n§ 1º A supressão da execução de sistemas viários somente será admitida quando atendidas as seguintes condições:\nI – em caso de sistema viário incidente sobre lote, as áreas deverão possuir matrícula individualizada em nome do Município;\nII – a não execução imediata da via deverá ser justificada por decisão da autoridade competente quanto à necessidade ou não de sua implantação;\nIII – a via não executada deverá contar com barreiras físicas que impeçam o acesso, devendo ser evitada a supressão total da vegetação existente;\nIV – a obrigação de execução da via poderá ser transferida para outra, desde que o valor da obra substitutiva não seja inferior ao da originalmente prevista e\nhaja anuência formal do loteador;\nV – nos parcelamentos promovidos diretamente pelo Município, poderá haver supressão da obrigação de execução de determinadas vias, mediante\njustificativa técnica;\nVI – o Poder Público deverá comunicar os confrontantes acerca da necessidade de abertura e execução das vias suprimidas, com antecedência mínima de 60\n(sessenta) dias da execução das obras pelo Município ou por terceiros.\n§ 2º Poderá ser dada autorização para o proprietário do lote lindeiro à via suprimida para realizar a sua manutenção e limpeza.\n§ 3º A contrapartida decorrente da supressão da obrigação de execução de determinadas vias, nos limites do inciso IV, do parágrafo 1º, poderá ser cumprida\nmediante:\nI – execução direta, hipótese em que o loteador poderá contratar a elaboração de projeto de interesse público definido pela Administração Municipal,\nobservadas as diretrizes técnicas fornecidas pelos órgãos competentes; e/ou\nII – depósito do valor em conta bancária específica indicada pelo Poder Público, a título de caução, para que o Município indique os projetos de interesse\npúblico e o requerente possa, mediante apresentação e aprovação dos respectivos projetos, resgatar progressivamente os valores depositados até o\ncumprimento integral da contrapartida."
+        },
+        {
+          "ordem": 3,
+          "artigo": "Art. 3º",
+          "texto": "Art. 3º Este decreto entra em vigência na data de sua publicação."
+        }
+      ],
+      "fonte_texto": {
+        "url": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70367-decreto-1144-25/file",
+        "sha256": "e8e1bb4b91b29476642dae9cf47314dc6395110901bcb02d8febbe81c94be313",
+        "baixado_em": "2026-11-14T23:16:09-03:00",
+        "metodo": "pdf_textual"
+      }
+    },
+    {
+      "id": "decreto-1151-2025",
+      "tipo": "Decreto",
+      "numero": "1151",
+      "ano": 2025,
+      "data": "2025-09-24",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1243-2025",
+      "tipo": "Decreto",
+      "numero": "1243",
+      "ano": 2025,
+      "data": "2025-10-10",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1282-2025",
+      "tipo": "Decreto",
+      "numero": "1282",
+      "ano": 2025,
+      "data": "2025-10-21",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1491-2025",
+      "tipo": "Decreto",
+      "numero": "1491",
+      "ano": 2025,
+      "data": "2025-12-03",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1609-2025",
+      "tipo": "Decreto",
+      "numero": "1609",
+      "ano": 2025,
+      "data": "2025-12-22",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-480-2024",
+      "tipo": "Decreto",
+      "numero": "480",
+      "ano": 2024,
+      "data": "2024-04-16",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-626-2024",
+      "tipo": "Decreto",
+      "numero": "626",
+      "ano": 2024,
+      "data": "2024-05-17",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-815-2024",
+      "tipo": "Decreto",
+      "numero": "815",
+      "ano": 2024,
+      "data": "2024-06-28",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1147-2024",
+      "tipo": "Decreto",
+      "numero": "1147",
+      "ano": 2024,
+      "data": "2024-09-03",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1148-2024",
+      "tipo": "Decreto",
+      "numero": "1148",
+      "ano": 2024,
+      "data": "2024-09-03",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1316-2024",
+      "tipo": "Decreto",
+      "numero": "1316",
+      "ano": 2024,
+      "data": "2024-10-09",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1325-2024",
+      "tipo": "Decreto",
+      "numero": "1325",
+      "ano": 2024,
+      "data": "2024-10-11",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1349-2024",
+      "tipo": "Decreto",
+      "numero": "1349",
+      "ano": 2024,
+      "data": "2024-10-17",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-376-2023",
+      "tipo": "Decreto",
+      "numero": "376",
+      "ano": 2023,
+      "data": "2023-03-31",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-842-2023",
+      "tipo": "Decreto",
+      "numero": "842",
+      "ano": 2023,
+      "data": "2023-07-19",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-356-2022",
+      "tipo": "Decreto",
+      "numero": "356",
+      "ano": 2022,
+      "data": "2022-04-04",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-614-2022",
+      "tipo": "Decreto",
+      "numero": "614",
+      "ano": 2022,
+      "data": "2022-06-07",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-597-2021",
+      "tipo": "Decreto",
+      "numero": "597",
+      "ano": 2021,
+      "data": "2021-05-27",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-711-2021",
+      "tipo": "Decreto",
+      "numero": "711",
+      "ano": 2021,
+      "data": "2021-06-28",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-20-2019",
+      "tipo": "Decreto",
+      "numero": "20",
+      "ano": 2019,
+      "data": "2019-01-04",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-54-2019",
+      "tipo": "Decreto",
+      "numero": "54",
+      "ano": 2019,
+      "data": "2019-01-14",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-56-2019",
+      "tipo": "Decreto",
+      "numero": "56",
+      "ano": 2019,
+      "data": "2019-01-15",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-74-2019",
+      "tipo": "Decreto",
+      "numero": "74",
+      "ano": 2019,
+      "data": "2019-01-17",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-228-2019",
+      "tipo": "Decreto",
+      "numero": "228",
+      "ano": 2019,
+      "data": "2019-02-15",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-294-2019",
+      "tipo": "Decreto",
+      "numero": "294",
+      "ano": 2019,
+      "data": "2019-03-07",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-406-2019",
+      "tipo": "Decreto",
+      "numero": "406",
+      "ano": 2019,
+      "data": "2019-03-29",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-463-2019",
+      "tipo": "Decreto",
+      "numero": "463",
+      "ano": 2019,
+      "data": "2019-04-17",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-551-2019",
+      "tipo": "Decreto",
+      "numero": "551",
+      "ano": 2019,
+      "data": "2019-05-09",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-553-2019",
+      "tipo": "Decreto",
+      "numero": "553",
+      "ano": 2019,
+      "data": "2019-05-10",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-657-2019",
+      "tipo": "Decreto",
+      "numero": "657",
+      "ano": 2019,
+      "data": "2019-05-29",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-797-2019",
+      "tipo": "Decreto",
+      "numero": "797",
+      "ano": 2019,
+      "data": "2019-06-26",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-888-2019",
+      "tipo": "Decreto",
+      "numero": "888",
+      "ano": 2019,
+      "data": "2019-07-17",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1028-2019",
+      "tipo": "Decreto",
+      "numero": "1028",
+      "ano": 2019,
+      "data": "2019-08-20",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-271-2018",
+      "tipo": "Decreto",
+      "numero": "271",
+      "ano": 2018,
+      "data": "2018-02-16",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-729-2018",
+      "tipo": "Decreto",
+      "numero": "729",
+      "ano": 2018,
+      "data": "2018-05-14",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-824-2018",
+      "tipo": "Decreto",
+      "numero": "824",
+      "ano": 2018,
+      "data": "2018-05-29",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1401-2018",
+      "tipo": "Decreto",
+      "numero": "1401",
+      "ano": 2018,
+      "data": "2018-09-25",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1450-2018",
+      "tipo": "Decreto",
+      "numero": "1450",
+      "ano": 2018,
+      "data": "2018-10-10",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1454-2018",
+      "tipo": "Decreto",
+      "numero": "1454",
+      "ano": 2018,
+      "data": "2018-10-10",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1512-2018",
+      "tipo": "Decreto",
+      "numero": "1512",
+      "ano": 2018,
+      "data": "2018-10-24",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1580-2018",
+      "tipo": "Decreto",
+      "numero": "1580",
+      "ano": 2018,
+      "data": "2018-11-13",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1642-2018",
+      "tipo": "Decreto",
+      "numero": "1642",
+      "ano": 2018,
+      "data": "2018-11-29",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1665-2018",
+      "tipo": "Decreto",
+      "numero": "1665",
+      "ano": 2018,
+      "data": "2018-12-06",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1734-2018",
+      "tipo": "Decreto",
+      "numero": "1734",
+      "ano": 2018,
+      "data": "2018-12-20",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1746-2018",
+      "tipo": "Decreto",
+      "numero": "1746",
+      "ano": 2018,
+      "data": "2018-12-26",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1756-2018",
+      "tipo": "Decreto",
+      "numero": "1756",
+      "ano": 2018,
+      "data": "2018-12-28",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-817-2017",
+      "tipo": "Decreto",
+      "numero": "817",
+      "ano": 2017,
+      "data": "2017-07-10",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-898-2017",
+      "tipo": "Decreto",
+      "numero": "898",
+      "ano": 2017,
+      "data": "2017-07-21",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1544-2017",
+      "tipo": "Decreto",
+      "numero": "1544",
+      "ano": 2017,
+      "data": "2017-12-21",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1556-2017",
+      "tipo": "Decreto",
+      "numero": "1556",
+      "ano": 2017,
+      "data": "2017-12-27",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1422-2016",
+      "tipo": "Decreto",
+      "numero": "1422",
+      "ano": 2016,
+      "data": "2016-11-24",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-109-2015",
+      "tipo": "Decreto",
+      "numero": "109",
+      "ano": 2015,
+      "data": "2015-01-29",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-720-2014",
+      "tipo": "Decreto",
+      "numero": "720",
+      "ano": 2014,
+      "data": "2014-05-27",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-924-2014",
+      "tipo": "Decreto",
+      "numero": "924",
+      "ano": 2014,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-495-2012",
+      "tipo": "Decreto",
+      "numero": "495",
+      "ano": 2012,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-68-2011",
+      "tipo": "Decreto",
+      "numero": "68",
+      "ano": 2011,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-863-2011",
+      "tipo": "Decreto",
+      "numero": "863",
+      "ano": 2011,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-1151-2011",
+      "tipo": "Decreto",
+      "numero": "1151",
+      "ano": 2011,
+      "data": "2011-11-25",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-263-2020",
+      "tipo": "Decreto Legislativo",
+      "numero": "263",
+      "ano": 2020,
+      "data": "2020-07-13",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-258-2019",
+      "tipo": "Decreto Legislativo",
+      "numero": "258",
+      "ano": 2019,
+      "data": "2019-02-26",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-256-2017",
+      "tipo": "Decreto Legislativo",
+      "numero": "256",
+      "ano": 2017,
+      "data": "2017-07-11",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-250-2014",
+      "tipo": "Decreto Legislativo",
+      "numero": "250",
+      "ano": 2014,
+      "data": "2014-05-13",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-251-2014",
+      "tipo": "Decreto Legislativo",
+      "numero": "251",
+      "ano": 2014,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-246-2012",
+      "tipo": "Decreto Legislativo",
+      "numero": "246",
+      "ano": 2012,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-241-2011",
+      "tipo": "Decreto Legislativo",
+      "numero": "241",
+      "ano": 2011,
+      "data": "2011-05-31",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-242-2011",
+      "tipo": "Decreto Legislativo",
+      "numero": "242",
+      "ano": 2011,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-243-2011",
+      "tipo": "Decreto Legislativo",
+      "numero": "243",
+      "ano": 2011,
+      "data": "2011-09-06",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-244-2011",
+      "tipo": "Decreto Legislativo",
+      "numero": "244",
+      "ano": 2011,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-236-2010",
+      "tipo": "Decreto Legislativo",
+      "numero": "236",
+      "ano": 2010,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-237-2010",
+      "tipo": "Decreto Legislativo",
+      "numero": "237",
+      "ano": 2010,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-238-2010",
+      "tipo": "Decreto Legislativo",
+      "numero": "238",
+      "ano": 2010,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-239-2010",
+      "tipo": "Decreto Legislativo",
+      "numero": "239",
+      "ano": 2010,
+      "data": "2010-12-01",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-227-2009",
+      "tipo": "Decreto Legislativo",
+      "numero": "227",
+      "ano": 2009,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-228-2009",
+      "tipo": "Decreto Legislativo",
+      "numero": "228",
+      "ano": 2009,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-229-2009",
+      "tipo": "Decreto Legislativo",
+      "numero": "229",
+      "ano": 2009,
+      "data": "2009-03-17",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-222-2008",
+      "tipo": "Decreto Legislativo",
+      "numero": "222",
+      "ano": 2008,
+      "data": "2008-02-12",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-223-2008",
+      "tipo": "Decreto Legislativo",
+      "numero": "223",
+      "ano": 2008,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-226-2008",
+      "tipo": "Decreto Legislativo",
+      "numero": "226",
+      "ano": 2008,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-219-2007",
+      "tipo": "Decreto Legislativo",
+      "numero": "219",
+      "ano": 2007,
+      "data": "2007-02-01",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-220-2007",
+      "tipo": "Decreto Legislativo",
+      "numero": "220",
+      "ano": 2007,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-221-2007",
+      "tipo": "Decreto Legislativo",
+      "numero": "221",
+      "ano": 2007,
+      "data": "2007-09-04",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-217-2006",
+      "tipo": "Decreto Legislativo",
+      "numero": "217",
+      "ano": 2006,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-211-2005",
+      "tipo": "Decreto Legislativo",
+      "numero": "211",
+      "ano": 2005,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-212-2005",
+      "tipo": "Decreto Legislativo",
+      "numero": "212",
+      "ano": 2005,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-213-2005",
+      "tipo": "Decreto Legislativo",
+      "numero": "213",
+      "ano": 2005,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-214-2005",
+      "tipo": "Decreto Legislativo",
+      "numero": "214",
+      "ano": 2005,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-216-2005",
+      "tipo": "Decreto Legislativo",
+      "numero": "216",
+      "ano": 2005,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-202-2003",
+      "tipo": "Decreto Legislativo",
+      "numero": "202",
+      "ano": 2003,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-203-2003",
+      "tipo": "Decreto Legislativo",
+      "numero": "203",
+      "ano": 2003,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-204-2003",
+      "tipo": "Decreto Legislativo",
+      "numero": "204",
+      "ano": 2003,
+      "data": "2003-05-28",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-205-2003",
+      "tipo": "Decreto Legislativo",
+      "numero": "205",
+      "ano": 2003,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-206-2003",
+      "tipo": "Decreto Legislativo",
+      "numero": "206",
+      "ano": 2003,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-207-2003",
+      "tipo": "Decreto Legislativo",
+      "numero": "207",
+      "ano": 2003,
+      "data": "2003-08-29",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-194-2002",
+      "tipo": "Decreto Legislativo",
+      "numero": "194",
+      "ano": 2002,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-195-2002",
+      "tipo": "Decreto Legislativo",
+      "numero": "195",
+      "ano": 2002,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-198-2002",
+      "tipo": "Decreto Legislativo",
+      "numero": "198",
+      "ano": 2002,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-199-2002",
+      "tipo": "Decreto Legislativo",
+      "numero": "199",
+      "ano": 2002,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-187-2001",
+      "tipo": "Decreto Legislativo",
+      "numero": "187",
+      "ano": 2001,
+      "data": null,
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    },
+    {
+      "id": "decreto-legislativo-188-2001",
+      "tipo": "Decreto Legislativo",
+      "numero": "188",
+      "ano": 2001,
+      "data": "2001-03-15",
+      "ementa": null,
+      "link": null,
+      "situacao": "sem_registro_de_revogacao",
+      "revogado_por": null,
+      "texto_disponivel": false,
+      "artigos": [],
+      "fonte_texto": null
+    }
+  ],
+  "vinculos": [
+    {
+      "lei_id": "264674",
+      "decreto_id": "decreto-1609-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.609 de 22 de dezembro de 2025 publicado no Diário Oficial nº 5.663 pg. 1 e 2)"
+    },
+    {
+      "lei_id": "260775",
+      "decreto_id": "decreto-1491-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1491 de 3 de dezembro de 2025)"
+    },
+    {
+      "lei_id": "249627",
+      "decreto_id": "decreto-1138-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.138, de 19 de setembro de 2025, págs. 2 a 4)"
+    },
+    {
+      "lei_id": "249627",
+      "decreto_id": "decreto-1151-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.151 de 24 de setembro de 2025)"
+    },
+    {
+      "lei_id": "249627",
+      "decreto_id": "decreto-1151-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.151 de 24 de setembro de 2025)"
+    },
+    {
+      "lei_id": "242609",
+      "decreto_id": "decreto-539-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 82",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 539 de 20 de maio de 2026, publicado no Jornal Oficial nº 5780 de 22 de maio de 2026, pags. 1 a 2.)"
+    },
+    {
+      "lei_id": "242561",
+      "decreto_id": "decreto-959-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 959, de 8 de agosto de 2025, págs. 17 a 19)"
+    },
+    {
+      "lei_id": "222803",
+      "decreto_id": "decreto-680-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 73",
+      "origem": "nota_cml",
+      "nota": "(Vide decreto nº 680, de 17 de junho de 2026, publicado no Jornal Oficial nº 5.800, de 19 de junho de 2026, pags. 7 a 12)"
+    },
+    {
+      "lei_id": "222803",
+      "decreto_id": "decreto-1282-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 83",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.282 de 21 de outubro de 2025, disponível no Jornal Oficial nº 5618 de 3 de novembro de 2025, pág. 4)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-413-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 413, de 1º de abril de 2025)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 466, de 16 de abril de 2025)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-404-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 404, de 1º de abril de 2025 - Revogado pelo Art. 69 do Decreto nº 45/2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-45-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 45, de 19 de janeiro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 14",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 16",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 20",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 22",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 466, de 16 de abril de 2025)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 30",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 48",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 50",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 466, de 16 de abril de 2025)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 56",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 466, de 16 de abril de 2025)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 93",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 111",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 466, de 16 de abril de 2025)"
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-1341-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 116",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto 1.341, de 5 de novembro de 2026)"
+    },
+    {
+      "lei_id": "222788",
+      "decreto_id": "decreto-357-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 357, de 21 de março de 2025)"
+    },
+    {
+      "lei_id": "222788",
+      "decreto_id": "decreto-404-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 404, de 1º de abril de 2025)"
+    },
+    {
+      "lei_id": "222788",
+      "decreto_id": "decreto-486-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 486, de 26 de abril de 2025)"
+    },
+    {
+      "lei_id": "222788",
+      "decreto_id": "decreto-718-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 109",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 718 de 18 de junho de 2025 publicado no Jornal Oficial nº 5522 em 2 de julho de 2025)"
+    },
+    {
+      "lei_id": "222788",
+      "decreto_id": "decreto-718-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 110",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 718 de 18 de junho de 2025 publicado no Jornal Oficial nº 5522 em 2 de julho de 2025)"
+    },
+    {
+      "lei_id": "222788",
+      "decreto_id": "decreto-357-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 275",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 357, de 21 de março de 2025)"
+    },
+    {
+      "lei_id": "222788",
+      "decreto_id": "decreto-357-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 293",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 357, de 21 de março de 2025)"
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 466, de 16 de abril de 2025)"
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-831-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 831, de 16 de julho de 2025)"
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-1144-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.144, de 23 de setembro de 2025)"
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-1243-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.243, de 10 de outubro de 2025 publicado no Jornal Oficial nº 5605 de 14 de outubro de 2025, página 5)"
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-1144-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 39",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.144, de 23 de setembro de 2025)"
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-831-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 50-A",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto Regulamentar nº 831, de 16 de julho de 2025)"
+    },
+    {
+      "lei_id": "27556",
+      "decreto_id": "decreto-356-2022",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 1º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 356, de 4/4/22 - JO nº 4609, de 8/4/22, págs. 4 e 5)"
+    },
+    {
+      "lei_id": "27284",
+      "decreto_id": "decreto-1450-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 13",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1450, de 10 de outubro de 2018)"
+    },
+    {
+      "lei_id": "27257",
+      "decreto_id": "decreto-1454-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 7º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1454, de 10 de outubro de 2018)"
+    },
+    {
+      "lei_id": "27088",
+      "decreto_id": "decreto-657-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 6º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 657, de 29 de maio de 2019)"
+    },
+    {
+      "lei_id": "27099",
+      "decreto_id": "decreto-888-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 13",
+      "origem": "nota_cml",
+      "nota": "(vide Decreto nº 888, de 17 de julho de 2019)"
+    },
+    {
+      "lei_id": "27099",
+      "decreto_id": "decreto-20-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 29",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 20, de 4 de janeiro de 2019)"
+    },
+    {
+      "lei_id": "26697",
+      "decreto_id": "decreto-74-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 24",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 74, de 17 de janeiro de 2019)"
+    },
+    {
+      "lei_id": "26726",
+      "decreto_id": "decreto-1422-2016",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto n° 1.422, de 24 de novembro de 2016)"
+    },
+    {
+      "lei_id": "26726",
+      "decreto_id": "decreto-1028-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.028, de 20 de agosto de 2019)"
+    },
+    {
+      "lei_id": "26635",
+      "decreto_id": "decreto-1734-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 271",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1734, de 20 de dezembro de 2018)"
+    },
+    {
+      "lei_id": "26635",
+      "decreto_id": "decreto-842-2023",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 271",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 842, de 19/7/23, págs. 3 e 4 do JO nº 4962, de 21/7/23)"
+    },
+    {
+      "lei_id": "27580",
+      "decreto_id": "decreto-404-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 404, de 1º de abril de 2025)"
+    },
+    {
+      "lei_id": "26329",
+      "decreto_id": "decreto-109-2015",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 1º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 109, de 29 de janeiro de 2015)"
+    },
+    {
+      "lei_id": "26342",
+      "decreto_id": "decreto-783-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 10",
+      "origem": "nota_cml",
+      "nota": "(Vide o art. 1º, VI do Decreto nº 783, de 7/7/25 - JO nº 5534, de 17/7/25, págs. 1 e 2 que Revogou o Decreto nº 714/2021)"
+    },
+    {
+      "lei_id": "26342",
+      "decreto_id": "decreto-1665-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 98",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1665, de 6 de dezembro de 2018)"
+    },
+    {
+      "lei_id": "35214",
+      "decreto_id": "decreto-54-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 16",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 54, de 14 de janeiro de 2019)"
+    },
+    {
+      "lei_id": "35214",
+      "decreto_id": "decreto-1148-2024",
+      "tipo": "anexo_atualizado_por",
+      "dispositivo": "Art. 37",
+      "origem": "nota_cml",
+      "nota": "(Anexo atualizado pelo Decreto nº 1148, de 3/9/2024 - JO nº 5295, de 10/9/2024, págs. 20 a 24)"
+    },
+    {
+      "lei_id": "35214",
+      "decreto_id": "decreto-614-2022",
+      "tipo": "anexo_atualizado_por",
+      "dispositivo": "Art. 38",
+      "origem": "nota_cml",
+      "nota": "(Atualização em PDF - Decreto nº 614, de 7 de junho de 2022, págs. 134 a 149)"
+    },
+    {
+      "lei_id": "35262",
+      "decreto_id": "decreto-legislativo-263-2020",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 18",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo art. 1º do Decreto Legislativo nº 263, de 13 de julho de 2020)"
+    },
+    {
+      "lei_id": "35262",
+      "decreto_id": "decreto-1544-2017",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 70",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1544, de 21 de dezembro de 2017)"
+    },
+    {
+      "lei_id": "35262",
+      "decreto_id": "decreto-1642-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 234",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1642, de 29 de novembro de 2018)"
+    },
+    {
+      "lei_id": "35262",
+      "decreto_id": "decreto-1512-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 352",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1512, de 24 de outubro de 2018)"
+    },
+    {
+      "lei_id": "35248",
+      "decreto_id": "decreto-463-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 22",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 463, de 17 de abril de 2019)"
+    },
+    {
+      "lei_id": "28194",
+      "decreto_id": "decreto-109-2015",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 7º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 109, de 29 de janeiro de 2015)"
+    },
+    {
+      "lei_id": "28194",
+      "decreto_id": "decreto-824-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 22",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 824, de 29 de maio de 2018)"
+    },
+    {
+      "lei_id": "28194",
+      "decreto_id": "decreto-109-2015",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 39",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 109, de 29 de janeiro de 2015)"
+    },
+    {
+      "lei_id": "27937",
+      "decreto_id": "decreto-1316-2024",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 25",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1316, de 9/10/24 - publicado no JO nº 5320, de 11/10/24, pág. 10)"
+    },
+    {
+      "lei_id": "27937",
+      "decreto_id": "decreto-1325-2024",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 30",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1325, de 11/10/24 - JO nº 5324, de 16/10/24, págs. 1 a 3)"
+    },
+    {
+      "lei_id": "27937",
+      "decreto_id": "decreto-1325-2024",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 30",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1325, de 11/10/24 - JO nº 5335, de 31/10/24, págs. 4 e 5)"
+    },
+    {
+      "lei_id": "27937",
+      "decreto_id": "decreto-711-2021",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 109",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 711, de 28/6/21 - JO nº 4385, de 1º/7/21, págs. 3 e 4)"
+    },
+    {
+      "lei_id": "28180",
+      "decreto_id": "decreto-legislativo-246-2012",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 246/2012 Suspende a eficácia da Lei nº 11.133/2011, que acrescenta artigo à Lei nº 10.966, de 26 de julho de 2010, que dispõe sobre a ordenação dos anúncios que compõem a paisagem urbana do Município de Londrina."
+    },
+    {
+      "lei_id": "33161",
+      "decreto_id": "decreto-553-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 9º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 553, de 10 de maio de 2019)"
+    },
+    {
+      "lei_id": "33764",
+      "decreto_id": "decreto-1151-2011",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 2º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.151, de 25 de novembro de 2011)"
+    },
+    {
+      "lei_id": "33764",
+      "decreto_id": "decreto-294-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 2º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 294, de 7 de março de 2019)"
+    },
+    {
+      "lei_id": "39407",
+      "decreto_id": "decreto-1580-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 12",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1580, de 13 de novembro de 2018)"
+    },
+    {
+      "lei_id": "33796",
+      "decreto_id": "decreto-372-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 117",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 372 de 26 de março de 2025)"
+    },
+    {
+      "lei_id": "33796",
+      "decreto_id": "decreto-372-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 118",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 372 de 26 de março de 2025)"
+    },
+    {
+      "lei_id": "33796",
+      "decreto_id": "decreto-372-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 119",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 372 de 26 de março de 2025)"
+    },
+    {
+      "lei_id": "39415",
+      "decreto_id": "decreto-legislativo-256-2017",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 256/2017 Suspende a eficácia da Lei nº 10.970/2010, que dá nova redação ao inciso III do artigo 1º da Lei nº 8.673, de 22 de dezembro de 2001, que dispõe sobre as diretrizes da renúncia fiscal do Município de Londrina."
+    },
+    {
+      "lei_id": "39412",
+      "decreto_id": "decreto-924-2014",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 8º",
+      "origem": "nota_cml",
+      "nota": "(vide Decreto nº 924, publicado no Jornal Oficial do Município, Edição nº 2494, de 5 de agosto de 2014)"
+    },
+    {
+      "lei_id": "39412",
+      "decreto_id": "decreto-863-2011",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 14",
+      "origem": "nota_cml",
+      "nota": "(vide Decreto nº 863, publicado no Jornal Oficial do Município, Edição nº 1667, de 23 de setembro de 2011)"
+    },
+    {
+      "lei_id": "39412",
+      "decreto_id": "decreto-495-2012",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 18",
+      "origem": "nota_cml",
+      "nota": "(vide Decreto nº 495, publicado no Jornal Oficial do Município, Edição nº 1860, de 7 de maio de 2012)"
+    },
+    {
+      "lei_id": "39412",
+      "decreto_id": "decreto-817-2017",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 29",
+      "origem": "nota_cml",
+      "nota": "( Vide Decreto nº 817, de 10 de julho de 2017)"
+    },
+    {
+      "lei_id": "39412",
+      "decreto_id": "decreto-68-2011",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 30",
+      "origem": "nota_cml",
+      "nota": "(vide Decreto nº 68, publicado no Jornal Oficial do Município, Edição nº 1471, de 26 de janeiro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 26",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 27",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 28",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 29",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 30",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 31",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 32",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 33",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 34",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "32636",
+      "decreto_id": "decreto-legislativo-243-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 35",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 243, de 6 de setembro de 2011)"
+    },
+    {
+      "lei_id": "36131",
+      "decreto_id": "decreto-legislativo-250-2014",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 2º",
+      "origem": "nota_cml",
+      "nota": "(Artigo com eficácia suspensa de acordo com art. 2º do Decreto Legislativo nº 250, de 13 de maio de 2014)"
+    },
+    {
+      "lei_id": "36131",
+      "decreto_id": "decreto-legislativo-250-2014",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 250/2014 Atribui interpretação conforme ao artigo 1º e suspende a eficácia do art. 2º, ambos da Lei nº 10.709/2009, nos termos da decisão proferida pelo Tribunal de Justiça do Estado do Paraná nos autos de Ação Direta de Inconstitucionalidade nº 896.323-5."
+    },
+    {
+      "lei_id": "32487",
+      "decreto_id": "decreto-1401-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 62",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1401, de 25/09/2018)"
+    },
+    {
+      "lei_id": "28257",
+      "decreto_id": "decreto-1556-2017",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 16",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1556, de 27 de dezembro de 2017)"
+    },
+    {
+      "lei_id": "28257",
+      "decreto_id": "decreto-1112-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 16",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1.112, de 12 de setembro de 2025)"
+    },
+    {
+      "lei_id": "34200",
+      "decreto_id": "decreto-626-2024",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 2º-H",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 626, de 17/5/24 - JO nº 5202, de 21/5/24, págs. 11 a 18)"
+    },
+    {
+      "lei_id": "34501",
+      "decreto_id": "decreto-legislativo-241-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 28",
+      "origem": "nota_cml",
+      "nota": "(Suspensa a eficácia pelo Decreto-Legislativo nº 241, de 31 de maio de 2011)"
+    },
+    {
+      "lei_id": "34501",
+      "decreto_id": "decreto-legislativo-241-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 29",
+      "origem": "nota_cml",
+      "nota": "(Suspensa a eficácia pelo Decreto-Legislativo nº 241, de 31 de maio de 2011)"
+    },
+    {
+      "lei_id": "34501",
+      "decreto_id": "decreto-legislativo-241-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 241/2011 Suspende a eficácia dos arts. 28 e 29 da Lei nº 10.419, de 21 de dezembro de 2007."
+    },
+    {
+      "lei_id": "36260",
+      "decreto_id": "decreto-legislativo-228-2009",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 228/2009 Suspende a eficácia da Lei nº 10.276, de 16 de julho de 2007."
+    },
+    {
+      "lei_id": "36247",
+      "decreto_id": "decreto-legislativo-251-2014",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 251/2014 Suspende a eficácia das Leis nºs 10.256/2007 e 10.274/2007, que autorizam a compensação de créditos tributários do Município com créditos de precatórios de contribuintes para com a Administração Municipal."
+    },
+    {
+      "lei_id": "36253",
+      "decreto_id": "decreto-legislativo-251-2014",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 251/2014 Suspende a eficácia das Leis nºs 10.256/2007 e 10.274/2007, que autorizam a compensação de créditos tributários do Município com créditos de precatórios de contribuintes para com a Administração Municipal."
+    },
+    {
+      "lei_id": "34304",
+      "decreto_id": "decreto-legislativo-238-2010",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 238/2010 Suspende a eficácia da Lei nº 9.935, de 8 de maio de 2006."
+    },
+    {
+      "lei_id": "34242",
+      "decreto_id": "decreto-legislativo-242-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 242/2011 Suspende a eficácia da Lei nº 9.901, de 23 de março de 2006, que dispõe sobre a não-aplicação da Portaria nº 1.508, de 1º de setembro de 2005, do Ministério da Saúde, no âmbito das Unidades de Saúde do Município de Londrina."
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 5º",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 7°",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 9°",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 12",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 29",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 30",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 31",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 32",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 33",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 35",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 36",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 37",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 38",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 39",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 40",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 41",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 44",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 45",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 46",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 47",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 48",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 49",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 50",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 51",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 52",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 53",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 54",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 55",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 56",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "29809",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 221/2007 Suspende a eficácia dos §§ 12, 13 e 14 do art. 8º, do parágrafo único do artigo 9º, do § 1º do artigo 31-M, do artigo 31-T, dos incisos V a XVI do artigo 21, todos da Lei nº 9.337/2004, e dos art. 4º, 5º, 7º, 9º, 12, 29 a 33, e 35 a 56 da Lei nº 9.879/2005."
+    },
+    {
+      "lei_id": "34401",
+      "decreto_id": "decreto-legislativo-219-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 219/2007 Suspende a eficácia da Lei Municipal nº 9.765, de 22 de agosto de 2005, que introduz alterações na Lei nº 8.673, de 22 de dezembro de 2001, que dispõe sobre as diretrizes da renúncia fiscal do Município de Londrina."
+    },
+    {
+      "lei_id": "34249",
+      "decreto_id": "decreto-legislativo-223-2008",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 223/2008 Aprova as contas do Poder Executivo do Município de Londrina, exercício financeiro de 2002, sob responsabilidade de Nedson Luiz Micheleti."
+    },
+    {
+      "lei_id": "34249",
+      "decreto_id": "decreto-legislativo-222-2008",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 222/2008 Suspende a eficácia da Lei nº 9.756, de 10 de agosto de 2005."
+    },
+    {
+      "lei_id": "29676",
+      "decreto_id": "decreto-legislativo-229-2009",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 9º",
+      "origem": "nota_cml",
+      "nota": "(artigo com eficácia suspensa pelo Decreto-Legislativo nº 229, de 17 de março de 2009)"
+    },
+    {
+      "lei_id": "29676",
+      "decreto_id": "decreto-legislativo-229-2009",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 229/2009 Suspende a eficácia do artigo 9º da Lei nº 9.663, de 15 de dezembro de 2004."
+    },
+    {
+      "lei_id": "36166",
+      "decreto_id": "decreto-legislativo-217-2006",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 217/2006 Suspende a eficácia da Lei Municipal nº 9.610, de 21 de setembeo de 2004, que estabelece normas para contratação dos profissionais que atuarão no Programa de Controle Ambiental de Endemias no Município de Londrina."
+    },
+    {
+      "lei_id": "33802",
+      "decreto_id": "decreto-legislativo-216-2005",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 216/2005 Suspende a eficácia da Lei Municipal nº 9.560, de 5 de julho de 2004, que regulamenta no Município de Londrina os casos de abandono de imóvel urbano conforme prevêem os artigos 1275 e 1276 do Código Civil Brasileiro."
+    },
+    {
+      "lei_id": "36065",
+      "decreto_id": "decreto-legislativo-214-2005",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 214/2005 Suspende eficácia da alínea \"h\" do artigo 28 da Lei Municipal nº 9.414, de 1º de abril de 2004."
+    },
+    {
+      "lei_id": "29599",
+      "decreto_id": "decreto-legislativo-236-2010",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 236/2010 Suspende a eficácia da Lei nº 9.352, de 17 de março de 2004."
+    },
+    {
+      "lei_id": "29577",
+      "decreto_id": "decreto-legislativo-213-2005",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 213/2005 Suspende a eficácia da Lei Municipal nº 9.347, de 11 de março de 2004, que autoriza o Município a arcar com o pagamento das tarifas de água e de energia elétrica devidas por centros comunitários administrados por associações de moradores."
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 8º",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 9º",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 21",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa do inciso V a XVI pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 31",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa do inciso V a XVI pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 31-T",
+      "origem": "nota_cml",
+      "nota": "(Eficácia suspensa do inciso V a XVI pelo Decreto-Legislativo nº 221, de 4 de setembro de 2007)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-376-2023",
+      "tipo": "anexo_atualizado_por",
+      "dispositivo": "Art. 54",
+      "origem": "nota_cml",
+      "nota": "(Anexo atualizado pelo Decreto nº 376, de 31 de março de 2023)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-1147-2024",
+      "tipo": "anexo_atualizado_por",
+      "dispositivo": "Art. 54",
+      "origem": "nota_cml",
+      "nota": "(Anexo atualizado pelo Decreto nº 1147, de 3/9/2024 - JO nº 5295, de 10/9/2024, págs. 3 a 20)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-614-2022",
+      "tipo": "anexo_atualizado_por",
+      "dispositivo": "Art. 56",
+      "origem": "nota_cml",
+      "nota": "(atualização em PDF - Decreto nº 614, de 7 de junho de 2022, págs. 1 a 134)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-480-2024",
+      "tipo": "anexo_atualizado_por",
+      "dispositivo": "Art. 56",
+      "origem": "nota_cml",
+      "nota": "(atualização em PDF - Decreto nº 480, de 16 de abril de 2024, págs 1 a 225)"
+    },
+    {
+      "lei_id": "32766",
+      "decreto_id": "decreto-legislativo-221-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 221/2007 Suspende a eficácia dos §§ 12, 13 e 14 do art. 8º, do parágrafo único do artigo 9º, do § 1º do artigo 31-M, do artigo 31-T, dos incisos V a XVI do artigo 21, todos da Lei nº 9.337/2004, e dos art. 4º, 5º, 7º, 9º, 12, 29 a 33, e 35 a 56 da Lei nº 9.879/2005."
+    },
+    {
+      "lei_id": "32792",
+      "decreto_id": "decreto-legislativo-239-2010",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 239/2010 Suspende a eficácia da Lei nº 9.231, de 10 de novembro de 2003, que dá nova redação ao inciso VI do artigo 1º da Lei nº 8.673, de 22 de dezembro de 2001, que dispõe sobre as diretrizes da renúncia fiscal do Município de Londrina."
+    },
+    {
+      "lei_id": "33287",
+      "decreto_id": "decreto-939-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 939, de 4 de agosto de 2025, págs. 1 a 17)"
+    },
+    {
+      "lei_id": "33555",
+      "decreto_id": "decreto-406-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 406, de 29 de março de 2019 - Regimento Interno)"
+    },
+    {
+      "lei_id": "33555",
+      "decreto_id": "decreto-797-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 797, de 26 de junho de 2019 - Regimento Interno)"
+    },
+    {
+      "lei_id": "33555",
+      "decreto_id": "decreto-228-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 228, de 15 de fevereiro de 2019)"
+    },
+    {
+      "lei_id": "33555",
+      "decreto_id": "decreto-720-2014",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 720, de 27 de maio de 2014 - Regimento Interno)"
+    },
+    {
+      "lei_id": "33555",
+      "decreto_id": "decreto-463-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 4º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 463, de 17 de abril de 2019 - Regimento Interno)"
+    },
+    {
+      "lei_id": "33555",
+      "decreto_id": "decreto-815-2024",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 34",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 815, de 28/6/24 - JO nº 5240, de 4/6/24, págs. 10 e 11)"
+    },
+    {
+      "lei_id": "29511",
+      "decreto_id": "decreto-legislativo-212-2005",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 212/2005 Suspende eficácia da Lei Municipal nº 8.680, de 26 de dezembro de 2001, que dispõe sobre a transferência da permissão para prestação do serviço de transporte de passageiros em táxi no Município de Londrina."
+    },
+    {
+      "lei_id": "33713",
+      "decreto_id": "decreto-legislativo-256-2017",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 1º",
+      "origem": "nota_cml",
+      "nota": "(Suspensa a Eficácia da Lei nº 10.970/2010 pelo Decreto Legislativo nº 256, de 11 de julho de 2017 )"
+    },
+    {
+      "lei_id": "33713",
+      "decreto_id": "decreto-legislativo-219-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 1º",
+      "origem": "nota_cml",
+      "nota": "(Suspensa a eficácia da Lei nº 9.765, de 22 de agosto de 2005 pelo Decreto Legislativo nº 219, de 1º de fevereiro de 2007 )"
+    },
+    {
+      "lei_id": "33713",
+      "decreto_id": "decreto-legislativo-239-2010",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 1º",
+      "origem": "nota_cml",
+      "nota": "(Suspensa a eficácia da Lei nº 9.231, de 10 de novembro de 2003 pelo Decreto Legislativo nº 239, de 1º de dezembro de 2010 )"
+    },
+    {
+      "lei_id": "33713",
+      "decreto_id": "decreto-legislativo-222-2008",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 1º",
+      "origem": "nota_cml",
+      "nota": "(Suspensa a eficácia da Lei nº 9.756, de 10 de agosto de 2005 pelo Decreto Legislativo nº 222, de 12 de fevereiro de 2008 )"
+    },
+    {
+      "lei_id": "33713",
+      "decreto_id": "decreto-1756-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 1º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1756, de 28 de dezembro de 2018)"
+    },
+    {
+      "lei_id": "33713",
+      "decreto_id": "decreto-legislativo-256-2017",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 256/2017 Suspende a eficácia da Lei nº 10.970/2010, que dá nova redação ao inciso III do artigo 1º da Lei nº 8.673, de 22 de dezembro de 2001, que dispõe sobre as diretrizes da renúncia fiscal do Município de Londrina."
+    },
+    {
+      "lei_id": "29378",
+      "decreto_id": "decreto-legislativo-211-2005",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 211/2005 Fica suspensa a eficácia da Lei Municipal nº 8.513, de 5 de setembro de 2001, declarada inconstitucional em decisão definitiva do Órgão Especial do Tribunal de Justiça do Estado do Paraná, por meio do Acórdão nº 5.817 proferido nos autos de Ação Direta de Inconstituci"
+    },
+    {
+      "lei_id": "29330",
+      "decreto_id": "decreto-legislativo-206-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 206/2003 Suspende a eficácia da Lei Municipal nº 8.497, de 23 de agosto de 2001, que dispõe sobre a iluminação especial nas áreas próximas às instituições públicas ou provadas de Educação Infantil e do Ensino Fundamental, Médio e Superior do Município de Londrina."
+    },
+    {
+      "lei_id": "32251",
+      "decreto_id": "decreto-legislativo-203-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 203/2003 Suspende a eficácia da disposição \"inativos e pensionistas\" presente no artigo 1° da Lei n° 8.481, de 16 de agosto de 2001, bem como de todo o artigo 3° da referida lei, que autoriza conceder o auxílio-alimentação aos inativos e pensionistas da Administração Direta e "
+    },
+    {
+      "lei_id": "29152",
+      "decreto_id": "decreto-legislativo-199-2002",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 199/2002 Suspende a eficácia da Lei Municipal nº 8.420, de 19 de junho de 2001, que dispõe sobre a jornada de trabalho dos fisioterapeutas da Autarquia do Serviço Municipal de Saúde."
+    },
+    {
+      "lei_id": "29110",
+      "decreto_id": "decreto-legislativo-198-2002",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 198/2002 Suspende a eficácia da Lei Municipal nº 8.438, de 26 de junho de 2001, que estabelece condições para preenchimento do cargo de Auditor Interno, pertencente ao Plano de Cargos e Carreiras do Município de Londrina, instituído pela lei Municipal nº 5.832, de 18 de julho "
+    },
+    {
+      "lei_id": "29180",
+      "decreto_id": "decreto-legislativo-199-2002",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 199/2002 Suspende a eficácia da Lei Municipal nº 8.420, de 19 de junho de 2001, que dispõe sobre a jornada de trabalho dos fisioterapeutas da Autarquia do Serviço Municipal de Saúde."
+    },
+    {
+      "lei_id": "29035",
+      "decreto_id": "decreto-legislativo-202-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 202/2003 Suspende a eficácia da Lei Municipal n° 8.361, de 22 de março de 2001, que proíbe a terceirização do serviço de coleta de lixo."
+    },
+    {
+      "lei_id": "28883",
+      "decreto_id": "decreto-legislativo-205-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 205/2003 Suspende a eficácia da Lei Municipal nº 8.301, de 20 de dezembro de 2000, que estabelece que, nas ligações telefônicas efetuadas para a zona rural e para os distritos do Município de Londrina, a Sercomtel S.A. - Telecomunicações deverá cobrar valor de tarifa de ligaçã"
+    },
+    {
+      "lei_id": "28788",
+      "decreto_id": "decreto-legislativo-195-2002",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 195/2002 Suspende a eficácia da Lei Municipal n° 8.205, de 11 de agosto de 2000, que estabelece a compensação da vantagem prevista na Lei nº 8.037, de 28 de dezembro de 1999, com as previstas nas leis nºs 5.941, de 27 de outubro de 1994, e 6.230, de 11 de julho de 1995, e dá o"
+    },
+    {
+      "lei_id": "28764",
+      "decreto_id": "decreto-legislativo-194-2002",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 194/2002 Suspende a eficácia da Lei Municipal n° 8.204, de 11 de agosto de 2000, que promove alterações no Plano de Cargos e Carreira da Administração Direta do Poder Executivo do Município, e dá outras providências."
+    },
+    {
+      "lei_id": "28882",
+      "decreto_id": "decreto-legislativo-204-2003",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto Legislativo nº 204 de 28 de maio de 2003)"
+    },
+    {
+      "lei_id": "28882",
+      "decreto_id": "decreto-legislativo-204-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 204/2003 Suspende a eficácia da Lei Municipal nº 8.139, de 27 de abril de 2000, que disciplina a exploração dos Serviços de Transporte de Escolares no Município de Londrina."
+    },
+    {
+      "lei_id": "27695",
+      "decreto_id": "decreto-legislativo-207-2003",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto Legislativo nº 207 de 29 de agosto de 2003)"
+    },
+    {
+      "lei_id": "27695",
+      "decreto_id": "decreto-legislativo-207-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 207/2003 Suspende a eficácia das leis municipais nºs 7.790, de 18 de agosto de 1999, 7.981, de 10 de dezembro de 1999 e 8.064, de 17 de janeiro de 2000, que tratam da Gratificação de Responsabilidade Técnica (GRT)."
+    },
+    {
+      "lei_id": "28584",
+      "decreto_id": "decreto-legislativo-207-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 207/2003 Suspende a eficácia das leis municipais nºs 7.790, de 18 de agosto de 1999, 7.981, de 10 de dezembro de 1999 e 8.064, de 17 de janeiro de 2000, que tratam da Gratificação de Responsabilidade Técnica (GRT)."
+    },
+    {
+      "lei_id": "27703",
+      "decreto_id": "decreto-legislativo-207-2003",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 207/2003 Suspende a eficácia das leis municipais nºs 7.790, de 18 de agosto de 1999, 7.981, de 10 de dezembro de 1999 e 8.064, de 17 de janeiro de 2000, que tratam da Gratificação de Responsabilidade Técnica (GRT)."
+    },
+    {
+      "lei_id": "39571",
+      "decreto_id": "decreto-legislativo-187-2001",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 187/2001 Suspende a eficácia da Lei Municipal n º 7.460, de 24 de junho de 1998, que inclui dois representantes do Poder Legislativo na composição do Conselho de Gestão Financeira (COGEFI)."
+    },
+    {
+      "lei_id": "39799",
+      "decreto_id": "decreto-legislativo-244-2011",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 244/2011 Suspende a eficácia da Lei nº 7.329, de 23 de março de 1998, que concede isenção do Imposto Sobre Serviços de Qualquer Natureza e do Imposto Predial e Territorial Urbano aos hospitais de Londrina que mantenham 70% ou mais de seus leitos à disposição do Serviço ùnico d"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-729-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 105",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 729, de 14 de maio de 2018)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-500-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 183",
+      "origem": "nota_cml",
+      "nota": "(Vide decreto nº 500 de 11 de maio de 2026, publicado no Jornal Oficial nº 5773 do dia 14 de maio de 2026, pags. 7 a 8)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-500-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 184",
+      "origem": "nota_cml",
+      "nota": "(Vide decreto nº 500 de 11 de maio de 2026, publicado no Jornal Oficial nº 5773 do dia 14 de maio de 2026, pags. 7 a 8)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-legislativo-258-2019",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 232",
+      "origem": "nota_cml",
+      "nota": "(Decreto-Legislativo nº 258, de 26 de fevereiro de 2019, suspende a eficácia desse inciso)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-legislativo-258-2019",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 234",
+      "origem": "nota_cml",
+      "nota": "(Decreto-Legislativo nº 258, de 26 de fevereiro de 2019, suspende a eficácia desse artigo no que se refere à taxa de combate ao incêndio)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-legislativo-258-2019",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 235",
+      "origem": "nota_cml",
+      "nota": "(Decreto-Legislativo nº 258, de 26 de fevereiro de 2019, suspende a eficácia desse inciso no que se refere à taxa de combate ao incêndio)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-legislativo-258-2019",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 244",
+      "origem": "nota_cml",
+      "nota": "(Decreto-Legislativo nº 258, de 26 de fevereiro de 2019, suspende a eficácia desse artigo)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-legislativo-258-2019",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 245",
+      "origem": "nota_cml",
+      "nota": "(Decreto-Legislativo nº 258, de 26 de fevereiro de 2019, suspende a eficácia desse artigo)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-1111-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 271",
+      "origem": "nota_cml",
+      "nota": "(Vide regulamentação dada pelo Decreto nº 1.111 de 12 de setembro de 2025)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-legislativo-258-2019",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 331",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto-Legislativo nº 258, de 26 de fevereiro de 2019, que suspende a eficácia dessa tabela)"
+    },
+    {
+      "lei_id": "39849",
+      "decreto_id": "decreto-legislativo-258-2019",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 258/2019 Suspende a eficácia dos arts. 232, inciso III, 234, 235, inciso I (estes dois últimos somente no que se referem à taxa de combate ao incêndio), 244, 245 e Tabela VII da Lei nº 7.303, de 30 de dezembro de 1997 (Código Tributário do Município de Londrina)."
+    },
+    {
+      "lei_id": "39846",
+      "decreto_id": "decreto-597-2021",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "nota_cml",
+      "nota": "(Vide Alterações no Decreto n° 597, de 27/5/2021 - JO nº 4365, de 31/5/2021, págs. 3 a 9)"
+    },
+    {
+      "lei_id": "39906",
+      "decreto_id": "decreto-legislativo-237-2010",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 237/2010 Suspende a eficácia da Lei nº 7.240, 26 de novembro de 1997."
+    },
+    {
+      "lei_id": "40177",
+      "decreto_id": "decreto-legislativo-226-2008",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 226/2008 Suspende a eficácia da Lei nº 6.966, de 15 de janeiro de 1997."
+    },
+    {
+      "lei_id": "40312",
+      "decreto_id": "decreto-legislativo-220-2007",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 220/2007 Suspende a eficácia da Lei Municipal nº 6.911, de 11 de dezembro de 1996, que isenta do pagamento de pavimentação asfáltica de que tratam os Editais nºs 013/95/SF e 017/95/SF, os proprietários de imóveis no Jardim Santiago II e no Conjunto Habitacional Antônio Marçal "
+    },
+    {
+      "lei_id": "40378",
+      "decreto_id": "decreto-legislativo-227-2009",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": null,
+      "origem": "relacionamento_cml",
+      "nota": "DECRETO LEGISLATIVO Nº 227/2009 Suspende a eficácia da Lei nº 6.825, de 22 de outubro de 1996."
+    },
+    {
+      "lei_id": "29685",
+      "decreto_id": "decreto-56-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 5º",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 56, de 15 de janeiro de 2019)"
+    },
+    {
+      "lei_id": "29685",
+      "decreto_id": "decreto-legislativo-188-2001",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 36",
+      "origem": "nota_cml",
+      "nota": "( Decreto Legislativo nº 188, de 15.03.2001 - Pub. JOML 22.03.2001, que suspende a eficácia deste inciso, por ter sido declarado inconstitucional em decisão definitiva do Órgão Especial do Tribunal de Justiça do Estado do Paraná, por meio do Acórdão nº 3739 proferido nos autos de Ação Direta de Inconstitucionalidade nº 54.126-0)"
+    },
+    {
+      "lei_id": "29685",
+      "decreto_id": "decreto-legislativo-188-2001",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 36",
+      "origem": "nota_cml",
+      "nota": "(EFICÁCIA SUSPENSA pelo Decreto Legislativo nº 188, de 15 de março de 2001)"
+    },
+    {
+      "lei_id": "29685",
+      "decreto_id": "decreto-551-2019",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 68",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 551, de 9 de maio de 2019)"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-1746-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 70",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1746, de 26 de dezembro de 2018, página 4--9)"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-1746-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 80",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1746, de 26 de dezembro de 2018, página 4--9)"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-898-2017",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 90",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 898, de 21 de julho de 2017, página 2-4)"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-1349-2024",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 92",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 1349, de 17/10/24 - publicado no JO nº 5328, de 22/10/24, págs. 3 e 4)"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-898-2017",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 101",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 898, de 21 de julho de 2017, página 2 -4 )"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-legislativo-237-2010",
+      "tipo": "eficacia_suspensa_por",
+      "dispositivo": "Art. 128",
+      "origem": "nota_cml",
+      "nota": "(Acrescido pela Lei nº 7.240, de 26 de novembro de 1997 , cuja a eficácia foi suspensa pelo Decreto Legislativo nº 237/2010)"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-271-2018",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 147",
+      "origem": "nota_cml",
+      "nota": "(Vide Decreto nº 271, de 16 de fevereiro de 2018 página 1-4)"
+    },
+    {
+      "lei_id": "27817",
+      "decreto_id": "decreto-76-2026",
+      "tipo": "regulamentada_por",
+      "dispositivo": "Art. 188",
+      "origem": "nota_cml",
+      "nota": "( Vide Decreto nº 76 de 26 de janeiro de 2026, publicado no Jornal Oficial nº 5691 de 3 de fevereiro de 2026)"
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "sumula_decreto",
+      "nota": "Regulamenta procedimentos para emissão de Consulta Prévia e Diretrizes Urbanísticas de Parcelamento do Solo, nos termos da Lei Municipal nº 13.898 de 20 de dezembro de 2024, em especial, artigos 22, 50 e 56 e parágrafo único do artigo 111 da Lei Municipal nº 13.905 de 20 de dezembro de 2024 e dá outras providências."
+    },
+    {
+      "lei_id": "222790",
+      "decreto_id": "decreto-466-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "sumula_decreto",
+      "nota": "Regulamenta procedimentos para emissão de Consulta Prévia e Diretrizes Urbanísticas de Parcelamento do Solo, nos termos da Lei Municipal nº 13.898 de 20 de dezembro de 2024, em especial, artigos 22, 50 e 56 e parágrafo único do artigo 111 da Lei Municipal nº 13.905 de 20 de dezembro de 2024 e dá outras providências."
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-831-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "sumula_decreto",
+      "nota": "Regulamenta o Art. 50-A da Lei Municipal nº 13.898, de 20 de dezembro de 2024, que dispõe sobre o parcelamento do solo para fins urbanos no Município."
+    },
+    {
+      "lei_id": "222659",
+      "decreto_id": "decreto-1144-2025",
+      "tipo": "regulamentada_por",
+      "dispositivo": null,
+      "origem": "sumula_decreto",
+      "nota": "Regulamenta o § 2º, do art. 39, da Lei nº 13.898, de 20 de dezembro de 2024, que dispõe sobre o parcelamento do solo para fins urbanos no Município."
+    }
+  ]
+}

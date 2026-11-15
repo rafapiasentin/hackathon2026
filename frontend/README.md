@@ -129,6 +129,23 @@ Resposta:
 
 `ignoradas` lista leis revogadas que tratavam do assunto e não foram usadas. É o que mostra, na tela, o valor do projeto.
 
+Campos opcionais para o botão **"Ver de onde vem esta resposta"** (`src/components/OrigemResposta.tsx`). O botão só aparece quando há mais de uma camada ou algum alerta:
+
+```json
+{
+  "camadas": [
+    { "papel": "lei", "descricao": "Lei que traz a regra", "titulo": "Lei 13.898/2024", "lei_id": "222659",
+      "artigo": "Art. 56", "trecho": "Decreto Municipal regulamentará...", "situacao": "vigente", "texto_na_base": true },
+    { "papel": "regulamentada_por", "descricao": "Decreto que detalha como aplicar a lei", "titulo": "Decreto 466/2025",
+      "decreto_id": "decreto-466-2025", "link": "https://repositorio.londrina.pr.gov.br/...", "artigo": "Art. 2º",
+      "trecho": "...anexando os seguintes documentos...", "texto_na_base": true }
+  ],
+  "alertas": ["Esta lei tem decreto que a regulamenta (Decreto 45/2026), mas o texto dele ainda não está na nossa base..."]
+}
+```
+
+`papel` pode ser `lei`, `alteracao` (lei que deu a redação atual do artigo), `regulamentada_por`, `anexo_atualizado_por` ou `eficacia_suspensa_por`. `GET /api/leis/{id}` também devolve `decretos` (lista de decretos ligados à lei, com `vinculo`, `situacao` e `dispositivos`), mostrada na página da lei.
+
 ### `GET /api/leis?q=texto&situacao=vigente&pagina=1`
 
 `situacao` é opcional (`vigente`, `vigente_com_alteracoes` ou `revogada`).

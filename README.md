@@ -18,7 +18,7 @@ Projeto do **Hackathon Smart Cities Londrina 2026**. Um assistente em que o cida
 6. [Regras do projeto](#regras-do-projeto-não-quebrar)
 7. [Produção](#produção-onde-cada-parte-roda)
 8. [Decisões em aberto](#decisões-em-aberto)
-9. Detalhes: [coleta](#coleta-dos-dados-como-rodar), [fonte](#fonte-dos-dados), [formato do `leis.json`](#formato-do-leisjson), [vigência](#como-a-vigência-é-calculada), [problemas nos dados](#problemas-encontrados-nos-dados-e-como-foram-resolvidos), [banco](#banco-local-com-peewee)
+9. Detalhes: [coleta](#coleta-dos-dados-como-rodar), [fonte](#fonte-dos-dados), [formato do `leis.json`](#formato-do-leisjson), [vigência](#como-a-vigência-é-calculada), [decretos](#decretos-lei--decreto), [problemas nos dados](#problemas-encontrados-nos-dados-e-como-foram-resolvidos), [banco](#banco-local-com-peewee)
 
 ## Introdução: o problema e a solução
 
@@ -49,7 +49,12 @@ Projeto do **Hackathon Smart Cities Londrina 2026**. Um assistente em que o cida
                         publicação governada)                    relacionamento_cml, carga...
                                                      │
                                                      ▼
+                       coleta_decretos.py ──► decretos.json ──► carregar_decretos.py (decreto,
+                       (notas da Câmara + PDFs do Município)       artigo_decreto, lei_decreto)
+                                                     │
+                                                     ▼
                        api_local.py (FastAPI)  ◄── busca_documental.py (full-text em português)
+                                               ◄── decretos.py (lei + alteração + decreto na resposta)
                        GET /api/leis · GET /api/leis/{id} · POST /api/perguntar · GET /api/health
                                                      │
                                                      ▼
@@ -65,10 +70,12 @@ Em produção, o PostgreSQL roda no **Neon**, a API na **Vercel** e o site no **
 | **Coleta** | `coleta_leis.py` | Baixa as leis da API e das páginas da Câmara; marca texto riscado; calcula vigência; gera `leis.json` e `leis.meta.json`. Explicado em [docs/COMO_FUNCIONA.md](docs/COMO_FUNCIONA.md) |
 | | `relatorio_problemas.py` | Gera [docs/PROBLEMAS_NOS_DADOS.md](docs/PROBLEMAS_NOS_DADOS.md) e `docs/leis_com_problemas.csv` (1.490 leis com problemas na fonte e a solução de cada um) |
 | | `conferir_fonte.py` | Confere disponibilidade e estrutura da API da Câmara sem expor o token |
+| | `coleta_decretos.py`, `decretos_fontes.json` | Gera `decretos.json`: decretos ligados às leis (notas da Câmara) e o texto dos decretos listados em `decretos_fontes.json`. Ver [Decretos](#decretos-lei--decreto) |
 | **Dados** | `leis.zip` | `leis.json` + `leis.meta.json` da coleta completa de 14/11/2026 (formato 2.0) |
 | | `leis.meta.json` | Hash SHA-256, totais e commit do coletor; usado para conferir a carga |
 | **Banco e governança** | `banco.py` | Modelos Peewee (PostgreSQL) e filtro `artigos_para_chatbot()` |
 | | `carregar_leis.py` | Carga do `leis.zip` no PostgreSQL, conferindo hash e totais |
+| | `carregar_decretos.py`, `decretos.py` | Carga do `decretos.json` (tabelas `decreto`, `artigo_decreto`, `lei_decreto`) e as regras de leitura das notas e de montagem da resposta |
 | | `governanca.py`, `contrato_governanca.json` | Publicação governada: contrato versionado, pendências, revisão de vigência. Ver [GOVERNANCA.md](GOVERNANCA.md) |
 | | `adaptadores.py`, `extracao_documentos.py`, `atualizar_base.py`, `preparar_ocr.py` | Entrada de novos dados em vários formatos (JSON, CSV, XML, HTML, PDF com OCR) e pasta de entrada automática |
 | **API** | `api_local.py` | API sobre o PostgreSQL, com busca documental (sem IA) e governança |
@@ -89,7 +96,9 @@ Não vão para o git: `.env` (token e senha do banco), `leis.json` descompactado
 
 | Parte | Situação |
 |---|---|
-| Coleta completa, texto riscado, vigência, relatório de problemas | ✅ Pronta (`leis.zip`, hash `459d6a82…`) |
+| Coleta completa, texto riscado, vigência, relatório de problemas | ✅ Pronta (`leis.zip`, hash `08c3203f…`; reprocessado para corrigir a Lei 13.905) |
+| Decretos ligados às leis (lei + decreto na resposta, botão "Ver de onde vem") | ✅ No código e nos testes · 3 decretos com texto (466, 831, 1.144/2025) · ⏳ carregar no Neon e publicar a API |
+| Coleta automática de todos os decretos no Jornal Oficial | ⏳ Atualização futura |
 | Carga no PostgreSQL com conferência de hash e totais | ✅ Feita, local e em produção (Neon) |
 | API (`api_local.py`) com busca documental | ✅ Publicada na Vercel, em modo `documental` |
 | Front no GitHub Pages ligado à API pública | ✅ No ar, com os dados reais |
@@ -244,7 +253,7 @@ https://www.cml.pr.gov.br/jsonweb/web-aplicativo.php?keysoft=TOKEN&call=legislac
 - `relacionamentos` é a lista crua da seção oficial da CML, com todos os rótulos (inclusive `Cita`, `Sanção`, `Vínculo`). As relações da lei com ela mesma, que existem na fonte por erro, ficam aqui mas **não** entram em `relacoes`.
 - `tipo` é `Lei` ou `Promulgação de partes vetadas`: trechos vetados pelo prefeito que a Câmara promulgou depois, publicados à parte com o **mesmo número** da lei. Nesse caso, `complementa_id` aponta para a lei principal, e os artigos fazem parte dela.
 - `situacao` pode ser `vigente`, `vigente_com_alteracoes`, `revogada` ou `inexistente` (número que ficou vago: "LEI INEXISTENTE").
-- `revogacao_nota` guarda a anotação original "(REVOGADA pelo ...)". Serve de evidência quando o revogador não é identificável (decreto ou erro de digitação na fonte).
+- `revogacao_nota` guarda a anotação original "(REVOGADA pelo ...)". Serve de evidência quando o revogador não é identificável (erro de digitação na fonte). Uma anotação que cita só decreto não conta como revogação: decreto não revoga lei (ver [Decretos](#decretos-lei--decreto)).
 - `data_lei` só recebe datas que existem no calendário, e pode ser `null`. `data_lei_fonte` diz de onde veio: `titulo`, `assinatura` ou `anexo`. `data_lei_original` guarda uma data impossível encontrada na fonte (ex.: `2010-02-29`) para revisão. `ano` está sempre preenchido.
 - `ementa` é `null` quando não existe; `ementa_fonte` é `api`, `texto` (súmula tirada do texto quando a API veio vazia) ou `null`.
 - `texto_disponivel` é `false` quando a lei só tem PDF anexado ou é inexistente. `anexos` traz os links dos PDFs.
@@ -283,12 +292,12 @@ Arquivo gerado ao lado do `leis.json`, sem mudar a estrutura dele (que continua 
 
 ## Como a vigência é calculada
 
-1. **Revogada:** a ementa tem a anotação oficial `(REVOGADA pelo ... Lei nº X ...)`. A lei X vai para `revogada_por`.
+1. **Revogada:** a ementa tem a anotação oficial `(REVOGADA pelo ... Lei nº X ...)`. A lei X vai para `revogada_por`. Anotação que cita só decreto, como `(Revogado pelo Decreto 1.341...)` logo depois de `(Vide Decreto nº 413...)`, fala do decreto e não revoga a lei.
 2. **Relações:** com `--texto`, vêm da seção oficial "Relacionamentos desta Matéria". Sem `--texto`, são deduzidas da ementa: quando ela começa com "Altera", "Insere", "Acrescenta", "Introduz alterações", "Dá nova redação", "Modifica" ou "Revoga", as leis citadas entram em `altera`, e o lado inverso (`alterada_por`) é preenchido automaticamente.
 3. **Vigente com alterações:** a lei não está revogada, mas tem `alterada_por` ou `revogada_por` (revogação parcial).
 4. **Vigente:** nenhum dos casos acima.
 
-Resultado da coleta completa (14/11/2026, `leis.meta.json`): **14.308 leis**, **74.630 artigos** (1.492 revogados por inteiro e 1.471 com algum trecho riscado) e **9.612 relações**, com 11.974 vigentes, 1.031 vigentes com alterações, 1.298 revogadas e 5 inexistentes. O caso da demo sai certo: a 11.471 fica `revogada`, com `revogada_por: ["14294", "13529"]` (revogação total pela 14.294 e parcial pela 13.529).
+Resultado da coleta completa (14/11/2026, `leis.meta.json`): **14.308 leis**, **74.630 artigos** (1.492 revogados por inteiro e 1.471 com algum trecho riscado) e **9.612 relações**, com 11.975 vigentes, 1.031 vigentes com alterações, 1.297 revogadas e 5 inexistentes (após o reprocessamento que corrigiu a Lei 13.905). O caso da demo sai certo: a 11.471 fica `revogada`, com `revogada_por: ["14294", "13529"]` (revogação total pela 14.294 e parcial pela 13.529).
 
 ## Problemas encontrados nos dados (e como foram resolvidos)
 
@@ -301,7 +310,8 @@ Os dados de origem (site e API da Câmara) têm problemas. O script **não corri
 | Data impossível | 1 | O texto da Lei 10.887 diz "29 de fevereiro de 2010" (2010 não foi bissexto). | Fica em `data_lei_original` para revisão; a data usada (29/03/2010) veio do anexo (`data_lei_fonte = "anexo"`). |
 | Relação da lei com ela mesma | 25 | Nos "Relacionamentos", a Câmara lista a lei como "Revoga" / "Altera" / "Revogada por" ela mesma (27 relações). | Descartadas em `relacoes`; continuam na lista crua `relacionamentos`. |
 | Anotação de revogação cita a própria lei | 2 | Ex.: a Lei 9.265 diz "(REVOGADA pelo Art. 14 da Lei nº 9.265 de 8 de dezembro de 2018)": número errado na fonte. | A lei continua `revogada`, o número errado não vira relação, a anotação fica em `revogacao_nota`. O revogador correto (Lei 12.232), listado pela Câmara nos Relacionamentos, entra em `revogada_por`. |
-| Revogada sem revogador identificável | 3 | Revogada por **decreto** (Lei 13.905), anotação quebrada na fonte (Lei 6.884: "Lei nº de de de 20") ou anotação que cita a própria lei sem outro revogador listado (Lei 6.135). | `situacao = revogada`, `revogada_por` vazio e a anotação original em `revogacao_nota`. |
+| Revogada sem revogador identificável | 2 | Anotação quebrada na fonte (Lei 6.884: "Lei nº de de de 20") ou anotação que cita a própria lei sem outro revogador listado (Lei 6.135). | `situacao = revogada`, `revogada_por` vazio e a anotação original em `revogacao_nota`. |
+| Nota de decreto lida como revogação da lei | 1 | A ementa da Lei 13.905/2024 (Uso e Ocupação do Solo) traz "(Vide Decreto nº 413...) (Revogado pelo Decreto 1.341...)": quem foi revogado é o **Decreto 413**. A versão anterior do coletor marcou a lei como revogada. | A anotação só conta se citar uma lei. `python coleta_leis.py --reprocessar leis.json` corrigiu o arquivo sem nova coleta: a lei voltou a `vigente`. |
 | Ementa vazia na API | 3 | A API devolveu a ementa em branco. | Usa a "SÚMULA:" do texto quando existe (`ementa_fonte = "texto"`); senão `ementa = null`. |
 | Promulgação de partes vetadas | 1 | A "Lei 13.960" aparecia duas vezes: a segunda é a promulgação, pela Câmara, dos trechos que o prefeito vetou. | `tipo = "Promulgação de partes vetadas"` e `complementa_id` apontando para a lei principal. |
 | Leis diferentes com o mesmo número | 7 | Ex.: duas Leis nº 48 de 1949, duas nº 1.041 de 1965, duas nº 1.641 de 1970. | Identificador é o `id` da Câmara; `chave`/`numero` sem `UNIQUE`. |
@@ -310,11 +320,39 @@ Os dados de origem (site e API da Câmara) têm problemas. O script **não corri
 
 A lista completa, **lei por lei** (com link para a página oficial e o detalhe de cada caso), está em [`docs/PROBLEMAS_NOS_DADOS.md`](docs/PROBLEMAS_NOS_DADOS.md) e em [`docs/leis_com_problemas.csv`](docs/leis_com_problemas.csv). Os dois são gerados por `python relatorio_problemas.py` a partir do `leis.json`.
 
+## Decretos (lei + decreto)
+
+A lei cria a regra; o **decreto** do prefeito diz como aplicá-la (prazo, valor, documento), sem poder contrariá-la. O **decreto legislativo** da Câmara pode suspender a eficácia de uma lei. Por isso a resposta certa às vezes está em dois atos: a Lei 13.898/2024, Art. 56, diz que "Decreto Municipal regulamentará a emissão de Consulta Prévia", e o Decreto 466/2025, Art. 2º, lista os documentos.
+
+**De onde vêm os vínculos** (`python coleta_decretos.py` gera o `decretos.json`):
+
+| Origem | Exemplo | Tipo do vínculo |
+|---|---|---|
+| Nota da Câmara na ementa ou no artigo | `(Vide Decreto nº 466, de 16 de abril de 2025)` | `regulamentada_por` |
+| | `(Anexo atualizado pelo Decreto nº 1148, de 3/9/2024)` | `anexo_atualizado_por` |
+| | `(Eficácia suspensa pelo Decreto-Legislativo nº 221, de 2007)` | `eficacia_suspensa_por` |
+| Relacionamento "Suspende" da Câmara | `DECRETO LEGISLATIVO Nº 246/2012 Suspende a eficácia da Lei...` | `eficacia_suspensa_por` |
+| Súmula do próprio decreto (PDF) | `Regulamenta o Art. 50-A da Lei Municipal nº 13.898...` | `regulamentada_por` |
+
+Uma nota `(Revogado pelo Decreto X)` logo depois de um `(Vide Decreto Y)` marca o decreto Y como revogado. Na coleta de 14/11/2026: 120 decretos citados, 222 vínculos (109 de regulamentação, 6 de anexo, 107 de suspensão).
+
+**Texto dos decretos:** cada decreto com texto entra em `decretos_fontes.json` (URL do Município, `*.londrina.pr.gov.br`). O script baixa o PDF uma vez (`cache_decretos/`), confere se número e ano batem com o título, separa a súmula e os artigos e registra o SHA-256 do PDF. Hoje: Decretos 466, 831 e 1.144/2025, que regulamentam a Lei 13.898/2024.
+
+**Na resposta** (`POST /api/perguntar`): a resposta curta continua citando a lei; se um decreto ligado a ela responde à pergunta, entra uma segunda frase ("O Decreto 466/2025, que regulamenta a Lei nº 13.898/2024, detalha no Art. 2º: ..."). Os campos `camadas` (lei → lei que mudou a redação do artigo → decretos) e `alertas` (decreto fora da base, eficácia suspensa, regulamentação pendente) alimentam o botão "Ver de onde vem esta resposta" do front. Suspensão de eficácia do artigo aparece também na resposta curta. Decretos só entram no modo documental: ainda não passam pela revisão institucional.
+
+```powershell
+python coleta_decretos.py          # gera decretos.json a partir do leis.json e de decretos_fontes.json
+python carregar_decretos.py        # carrega no banco do .env (substitui só as tabelas de decretos)
+```
+
+O workflow diário (`deploy/worker.py`) refaz os dois passos depois da coleta das leis; uma falha nos decretos fica registrada no resultado e não desfaz a publicação das leis.
+
 ## Limitações conhecidas
 
 - Sem `--texto`, as alterações são deduzidas da ementa e podem ter falsos positivos ou negativos. Com `--texto`, valem as relações oficiais da CML.
 - Artigos revogados por inteiro são identificados pelo texto riscado (`revogado`). Trechos menores riscados (um inciso, um parágrafo) ficam em `texto_riscado` do artigo.
-- Algumas leis revogadas ficam com `revogada_por` vazio, porque o revogador é um decreto ou a anotação da CML tem erro de digitação. A anotação original fica em `revogacao_nota`.
+- Algumas leis revogadas ficam com `revogada_por` vazio, porque a anotação da CML tem erro de digitação. A anotação original fica em `revogacao_nota`.
+- Só 3 decretos têm o texto na base. Os outros 117 citados pela Câmara aparecem como "texto ainda fora da base", com aviso na resposta. A suspensão de eficácia por decreto legislativo vira aviso, mas não muda a `situacao` da lei.
 - A fonte tem erros que o script não corrige, só sinaliza: datas impossíveis (`data_lei_original`) e relações de uma lei com ela mesma (ficam só em `relacionamentos`).
 - 18 leis só têm o texto em PDF anexado, que ainda não é lido (os links estão em `anexos`).
 - Requisições com `curl` são bloqueadas pelo site (406 Not Acceptable). O script em Python funciona normalmente; se ele receber 406, mostra um aviso.
@@ -328,6 +366,8 @@ A lista completa, **lei por lei** (com link para a página oficial e o detalhe d
 - [x] Front ligado à API local (conversa, busca, página da lei, comparação, validador)
 - [x] Publicar a API (Vercel) e o banco (Neon) e ligar o front do Pages a eles
 - [x] Coleta e governança automáticas diárias (GitHub Actions)
+- [x] Ligar leis a decretos: notas da Câmara, texto dos decretos de parcelamento do solo, resposta com lei + decreto e aviso de eficácia suspensa
+- [ ] **Atualização futura:** coletar automaticamente os decretos do Jornal Oficial do Município (hoje cada decreto com texto é incluído à mão em `decretos_fontes.json`)
 - [ ] Decidir e, se for o caso, integrar uma IA para responder em linguagem natural (a partir dos artigos encontrados)
 - [ ] Incluir leis complementares, Lei Orgânica e Emendas à Lei Orgânica (outros tipos da API)
 - [ ] Ler o texto das 18 leis que só têm PDF

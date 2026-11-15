@@ -17,3 +17,4 @@ dados_recebidos/
 .pytest_cache/
 dados_entrada/
 __pycache__/
+cache_decretos/

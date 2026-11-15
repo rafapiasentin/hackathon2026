@@ -1,6 +1,6 @@
 # Problemas encontrados nos dados das leis
 
-Relatório gerado por `relatorio_problemas.py` a partir do `leis.json` de 2026-11-14 (SHA-256 `459d6a82532a…`).
+Relatório gerado por `relatorio_problemas.py` a partir do `leis.json` de 2026-11-14 (SHA-256 `08c3203f4638…`).
 Os problemas abaixo estão **na fonte** (site e API da Câmara). O script não corrige a fonte: ele trata cada caso e deixa registrado de onde veio cada informação.
 
 **1.490 de 14.308 leis** têm pelo menos um problema tratado. Uma lei pode aparecer em mais de uma categoria.
@@ -14,7 +14,7 @@ Os problemas abaixo estão **na fonte** (site e API da Câmara). O script não c
 | [Data impossível no texto](#data-impossivel) | 1 | A data impossível não entra em `data_lei`: fica em `data_lei_original` para revisão. O script tenta a próxima fonte (anexo); `data_lei_fonte` diz de onde veio a data usada. |
 | [Relação da lei com ela mesma](#autorrelacao) | 25 | A relação é descartada em `relacoes` (usada para a vigência). A lista crua `relacionamentos` continua como veio da fonte. |
 | [Anotação de revogação cita a própria lei](#anotacao-numero-errado) | 2 | A lei continua `revogada` (a anotação existe), mas o número errado não vira relação. A anotação original fica em `revogacao_nota`; o revogador correto, quando a Câmara o lista nos Relacionamentos, entra em `revogada_por`. |
-| [Revogada sem lei revogadora identificável](#revogada-sem-revogador) | 3 | `situacao = revogada` e `revogada_por` vazio. A anotação original fica em `revogacao_nota` como evidência. |
+| [Revogada sem lei revogadora identificável](#revogada-sem-revogador) | 2 | `situacao = revogada` e `revogada_por` vazio. A anotação original fica em `revogacao_nota` como evidência. |
 | [Ementa vazia na API](#ementa-vazia) | 3 | Quando o texto traz "SÚMULA:", ela é usada (`ementa_fonte = "texto"`). Senão, `ementa = null` (`ementa_fonte = null`). |
 | [Promulgação de partes vetadas com o mesmo número](#promulgacao-veto) | 1 | `tipo = "Promulgação de partes vetadas"` e `complementa_id` apontando para a lei principal. Os artigos fazem parte da lei principal e seguem a situação dela. |
 | [Leis diferentes com o mesmo número](#numero-repetido) | 7 | O identificador é o `id` da Câmara (único). `chave`/`numero` não podem ser chave primária nem `UNIQUE`. |
@@ -1572,15 +1572,14 @@ Só no texto riscado: **1.492 artigos revogados por inteiro** e **1.471 artigos 
 | [LEI ORDINÁRIA Nº 6135/1995](https://www.cml.pr.gov.br/proposicoes/0/0/0/0/35691) | 35691 | (REVOGADA pelo art. 1º da Lei nº 6.135, de 10 de maio de 1995) → revogada_por: — |
 
 <a id="revogada-sem-revogador"></a>
-## Revogada sem lei revogadora identificável (3 leis)
+## Revogada sem lei revogadora identificável (2 leis)
 
-**O que aconteceu:** A anotação de revogação cita um decreto (não uma lei) ou veio quebrada da fonte (ex.: "Lei nº de de de 20").
+**O que aconteceu:** A anotação de revogação veio quebrada da fonte (ex.: "Lei nº de de de 20") ou cita a própria lei. Anotações que citam só decreto não contam: decreto não revoga lei, e essas notas falam de outro decreto citado na ementa (caso da Lei 13.905/2024, que continua vigente).
 
 **Solução:** `situacao = revogada` e `revogada_por` vazio. A anotação original fica em `revogacao_nota` como evidência.
 
 | Lei | id | Detalhe |
 |---|---|---|
-| [LEI N.º 13905, DE 27 DE DEZEMBRO DE 2024](https://www.cml.pr.gov.br/proposicoes/0/0/0/0/222790) | 222790 | (Revogado pelo Decreto 1.341, de 5 de novembro de 2026) |
 | [LEI ORDINÁRIA Nº 6884/1996](https://www.cml.pr.gov.br/proposicoes/0/0/0/0/40348) | 40348 | (REVOGADA pelo Art. da Lei nº de de de 20) |
 | [LEI ORDINÁRIA Nº 6135/1995](https://www.cml.pr.gov.br/proposicoes/0/0/0/0/35691) | 35691 | (REVOGADA pelo art. 1º da Lei nº 6.135, de 10 de maio de 1995) |
 

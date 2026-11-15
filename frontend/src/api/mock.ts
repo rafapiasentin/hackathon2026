@@ -6,6 +6,9 @@ import type { Lei, Resposta } from "./types";
 
 export const PENDENTE = "Texto completo disponível quando o front estiver ligado ao banco de leis.";
 
+const DECRETO_466 =
+  "Regulamenta procedimentos para emissão de Consulta Prévia e Diretrizes Urbanísticas de Parcelamento do Solo, nos termos da Lei Municipal nº 13.898 de 20 de dezembro de 2024, em especial, artigos 22, 50 e 56 e parágrafo único do artigo 111 da Lei Municipal nº 13.905 de 20 de dezembro de 2024 e dá outras providências.";
+
 // Par de EXEMPLO (inventado) para a tela "O que mudou": uma lei de 1980, escrita no padrão antigo,
 // substituída por uma lei de 2026 no padrão da LC 95/1998.
 const EXEMPLO_1980: Lei = {
@@ -189,6 +192,42 @@ export const LEIS: Lei[] = [
     relacoes: [{ tipo: "revogada_por", id: null, chave: "2576" }],
     artigos: [{ ordem: 1, artigo: "Art. 1º", texto: PENDENTE }],
   },
+  {
+    // Lei e decreto reais: a lei manda regulamentar, o Decreto 466/2025 lista os documentos.
+    id: "222659",
+    chave: "13898",
+    ano: "2024",
+    data_lei: "2024-12-19",
+    titulo: "LEI N.º 13898, DE 19 DE DEZEMBRO DE 2024",
+    ementa: "Dispõe sobre o parcelamento do solo para fins urbanos no Município de Londrina e dá outras providências.",
+    situacao: "vigente",
+    link: "https://www.cml.pr.gov.br/proposicoes/0/0/0/0/222659",
+    relacoes: [],
+    artigos: [
+      {
+        ordem: 59,
+        artigo: "Art. 56",
+        texto:
+          "Art. 56. Decreto Municipal regulamentará a emissão de Consulta Prévia de Parcelamento do Solo de caráter informativo sobre os parâmetros urbanísticos e a legislação aplicável. Parágrafo único. A Consulta Prévia de Parcelamento do Solo deverá ser expedida no prazo de 60 (sessenta) dias após o cumprimento das exigências legais e terá validade de 180 (cento e oitenta) dias após sua expedição, podendo ser prorrogada por igual período, mediante requerimento do interessado, durante seu prazo de validade.",
+      },
+    ],
+    decretos: [
+      {
+        id: "decreto-466-2025",
+        titulo: "Decreto 466/2025",
+        tipo: "Decreto",
+        numero: "466",
+        ano: 2025,
+        ementa: DECRETO_466,
+        link: "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70387-decreto-466/file",
+        situacao: "sem_registro_de_revogacao",
+        revogado_por: null,
+        texto_disponivel: true,
+        vinculo: "regulamentada_por",
+        dispositivos: [],
+      },
+    ],
+  },
 ];
 
 const porId = (id: string) => LEIS.find((l) => l.id === id)!;
@@ -209,6 +248,45 @@ function fonte(id: string, artigoOrdem?: number) {
 }
 
 const RESPOSTAS: { palavras: RegExp; resposta: Resposta }[] = [
+  {
+    // Mesma resposta que a API monta com a Lei 13.898/2024 e o Decreto 466/2025 (textos reais).
+    palavras: /consulta pr[ée]via|parcelamento do solo|loteamento/i,
+    resposta: {
+      resposta:
+        "Segundo a Lei nº 13.898/2024, Art. 56: “Decreto Municipal regulamentará a emissão de Consulta Prévia de Parcelamento do Solo de caráter informativo sobre os parâmetros urbanísticos e a legislação aplicável.”\n\nO Decreto 466/2025, que regulamenta a Lei nº 13.898/2024, detalha no Art. 2º: “Para obtenção da Consulta de Parcelamento do Solo (CPS) o interessado deverá protocolizar requerimento ao Poder Público, anexando os seguintes documentos: I. requerimento por meio de formulário eletrônico disponibilizado no sistema SEI II. croqui de localização do imóvel no bairro ou vizinhança; III. Comprovante do recolhimento de taxa administrativa.”",
+      fontes: [fonte("222659", 59)],
+      ignoradas: [],
+      camadas: [
+        {
+          papel: "lei",
+          descricao: "Lei que traz a regra",
+          titulo: "Lei 13.898/2024",
+          lei_id: "222659",
+          link: "https://www.cml.pr.gov.br/proposicoes/0/0/0/0/222659",
+          ementa: "Dispõe sobre o parcelamento do solo para fins urbanos no Município de Londrina e dá outras providências.",
+          situacao: "vigente",
+          artigo: "Art. 56",
+          trecho:
+            "Art. 56. Decreto Municipal regulamentará a emissão de Consulta Prévia de Parcelamento do Solo de caráter informativo sobre os parâmetros urbanísticos e a legislação aplicável.",
+          texto_na_base: true,
+        },
+        {
+          papel: "regulamentada_por",
+          descricao: "Decreto que detalha como aplicar a lei",
+          titulo: "Decreto 466/2025",
+          decreto_id: "decreto-466-2025",
+          link: "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70387-decreto-466/file",
+          ementa: DECRETO_466,
+          situacao: "sem_registro_de_revogacao",
+          artigo: "Art. 2º",
+          trecho:
+            "Art. 2º. Para obtenção da Consulta de Parcelamento do Solo (CPS) o interessado deverá protocolizar requerimento ao Poder Público, anexando os seguintes documentos: I. requerimento por meio de formulário eletrônico disponibilizado no sistema SEI II. croqui de localização do imóvel no bairro ou vizinhança; III. Comprovante do recolhimento de taxa administrativa.",
+          texto_na_base: true,
+        },
+      ],
+      alertas: [],
+    },
+  },
   {
     palavras: /árvore|arvore|poda|podar|corte de/i,
     resposta: {

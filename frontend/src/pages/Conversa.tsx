@@ -5,6 +5,7 @@ import { ArrowRight, CircleX, ExternalLink, Info, Square, Volume2 } from "lucide
 import { perguntar } from "../api/client";
 import type { Resposta } from "../api/types";
 import { CaixaPergunta } from "../components/CaixaPergunta";
+import { OrigemResposta } from "../components/OrigemResposta";
 import { StatusBadge } from "../components/StatusBadge";
 import { Equalizador, Riscado, TextoDigitando } from "../components/Animacoes";
 import { useRota } from "../lib/rota";
@@ -243,6 +244,12 @@ export function CartaoResposta({
             </>
           )}
         </motion.button>
+      )}
+
+      {pronto && (
+        <motion.div {...aparecer(0)}>
+          <OrigemResposta camadas={resposta.camadas} alertas={resposta.alertas} />
+        </motion.div>
       )}
 
       {pronto && resposta.fontes.length > 0 && (

@@ -100,8 +100,12 @@ RE_VERBO_ALTERA = re.compile(
 # Anotação oficial da CML na ementa de lei revogada por inteiro:
 # "(REVOGADA pelo art. 270. da Lei nº 12.236, de 29 de janeiro de 2015)"
 #   \(\s*REVOGAD[AO]\b -> abre parêntese + "REVOGADA" ou "REVOGADO"
+#   (?=...)             -> só vale se citar uma LEI ou não citar DECRETO nenhum (ver abaixo)
 #   ([^()]*)            -> grupo 1: tudo até fechar o parêntese (onde está a lei revogadora)
-RE_ANOTACAO_REVOGADA = re.compile(r"\(\s*REVOGAD[AO]\b([^()]*)\)", re.I)
+# Decreto não revoga lei. Uma anotação que cita só decreto fala de OUTRO decreto citado na ementa.
+# Ex. (Lei 13.905): "(Vide Decreto nº 413, de 2025) (Revogado pelo Decreto 1.341, de 2026)":
+# quem foi revogado é o Decreto 413, e a lei continua valendo.
+RE_ANOTACAO_REVOGADA = re.compile(r"\(\s*REVOGAD[AO]\b(?=[^()]*\bLei\b|(?![^()]*\bDecreto\b))([^()]*)\)", re.I)
 
 # Início de artigo: "Art. 1º", "Art. 225.", "Art. 5º-A".
 # (?m)^ = só no COMEÇO DE UMA LINHA. Assim "conforme o art. 5º" no meio de uma frase não vira artigo.
@@ -720,7 +724,36 @@ def commit_do_script():
         return None
 
 
-def gerar_meta(leis, saida, args):
+def reaplicar_anotacao_revogada(leis):
+    """Relê a anotação "(REVOGADA ...)" das ementas com a regra atual, sem baixar nada.
+
+    Serve para corrigir um leis.json já coletado quando a regra de leitura muda.
+    Ex.: a Lei 13.905/2024 estava "revogada" porque a anotação "(Revogado pelo Decreto 1.341...)"
+    falava do Decreto 413, citado logo antes na ementa. Devolve a lista de leis corrigidas.
+    """
+    corrigidas = []
+    por_id = {l["id"]: l for l in leis}
+    for lei in leis:
+        nota = RE_ANOTACAO_REVOGADA.search(lei["ementa"] or "")
+        nova = nota.group(0) if nota else None
+        if nova == lei["revogacao_nota"]:
+            continue
+        if nova is not None or lei["situacao"] != "revogada":
+            raise ValueError(f"Lei {lei['id']}: anotação de revogação mudou de forma inesperada.")
+        if refs_leis(lei["revogacao_nota"] or ""):
+            raise ValueError(f"Lei {lei['id']}: a anotação descartada citava uma lei.")
+        principal = por_id.get(lei.get("complementa_id"))
+        if principal and principal["situacao"] == "revogada":
+            continue  # segue a lei principal (Promulgação de partes vetadas)
+        antes = lei["situacao"]
+        lei["revogacao_nota"] = None
+        # Mesma regra de calcular_vigencia: sem revogação total, alterações = "vigente_com_alteracoes"
+        lei["situacao"] = "vigente_com_alteracoes" if (lei["alterada_por"] or lei["revogada_por"]) else "vigente"
+        corrigidas.append((lei, antes))
+    return corrigidas
+
+
+def gerar_meta(leis, saida, args, reprocessamento=None):
     """Gera <saida>.meta.json (ex.: leis.meta.json) descrevendo como o leis.json foi produzido:
     versão do formato, quando foi gerado, quando os textos foram baixados, commit do script, totais
     e o hash SHA-256 do arquivo (para conferir se o leis.json é exatamente o que foi gerado)."""
@@ -757,6 +790,8 @@ def gerar_meta(leis, saida, args):
     }
     # Mesmo hash no nível de cima: é a chave que o carregar_leis.py (carga no Postgres) confere
     meta["sha256_leis_json"] = meta["arquivo"]["sha256"]
+    if reprocessamento:
+        meta["reprocessamento"] = reprocessamento
     arq_meta = caminho.with_suffix(".meta.json")
     arq_meta.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     return arq_meta
@@ -769,7 +804,11 @@ def main():
     ap.add_argument("--texto", action="store_true", help="baixa texto e relacionamentos de cada lei")
     ap.add_argument("--paralelo", type=int, default=3, help="downloads simultâneos de texto (padrão 3)")
     ap.add_argument("--saida", default="leis.json")
+    ap.add_argument("--reprocessar", metavar="ARQUIVO",
+                    help="relê as anotações de um leis.json já coletado com as regras atuais (sem baixar nada)")
     args = ap.parse_args()
+    if args.reprocessar:
+        return reprocessar(args)
     if not TOKEN:
         raise SystemExit("Defina CML_TOKEN no arquivo .env")
 
@@ -797,6 +836,27 @@ def main():
 
     # Arquivo de metadados ao lado do leis.json (não muda a estrutura do leis.json, que continua uma lista)
     print(f"metadados em {gerar_meta(leis, args.saida, args)}")
+
+
+def reprocessar(args):
+    """python coleta_leis.py --reprocessar leis.json: corrige o arquivo sem nova coleta.
+    As opções da coleta original (texto, páginas) são preservadas nos metadados."""
+    entrada = Path(args.reprocessar)
+    leis = json.loads(entrada.read_text(encoding="utf-8"))
+    anterior = entrada.with_suffix(".meta.json")
+    meta_antiga = json.loads(anterior.read_text(encoding="utf-8")) if anterior.exists() else {}
+    corrigidas = reaplicar_anotacao_revogada(leis)
+    for lei, antes in corrigidas:
+        print(f"Lei {lei['chave']}/{lei['ano']} (id {lei['id']}): {antes} -> {lei['situacao']}")
+    with open(args.saida, "w", encoding="utf-8") as f:
+        json.dump(leis, f, ensure_ascii=False, indent=2)
+    opcoes = (meta_antiga.get("script") or {}).get("opcoes") or {"texto": True, "paginas": None}
+    origem = argparse.Namespace(texto=opcoes.get("texto"), paginas=opcoes.get("paginas"))
+    info = {"em": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
+            "motivo": "anotação de revogação que cita só decreto não revoga a lei",
+            "sha256_anterior": (meta_antiga.get("arquivo") or {}).get("sha256"),
+            "leis_corrigidas": [l["id"] for l, _ in corrigidas]}
+    print(f"{len(corrigidas)} lei(s) corrigida(s); metadados em {gerar_meta(leis, args.saida, origem, info)}")
 
 
 # Só roda main() quando o arquivo é executado direto (python coleta_leis.py),

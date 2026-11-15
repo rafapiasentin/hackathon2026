@@ -118,6 +118,49 @@ class Carga(BaseModel):
 MODELOS = [Lei, Artigo, Relacao, RelacionamentoCml, Carga]
 
 
+class Decreto(BaseModel):
+    """Decreto do prefeito ou decreto legislativo da Câmara. id: "decreto-466-2025"."""
+    id = CharField(primary_key=True)
+    tipo = CharField()
+    numero = CharField()
+    ano = IntegerField()
+    data = DateField(null=True)
+    ementa = TextField(null=True)
+    link = TextField(null=True)
+    situacao = CharField(index=True)
+    revogado_por = CharField(null=True)
+    texto_disponivel = BooleanField(default=False)
+    fonte_texto = BinaryJSONField(null=True)
+
+
+class ArtigoDecreto(BaseModel):
+    decreto = ForeignKeyField(Decreto, backref='artigos', column_name='decreto_id', on_delete='CASCADE')
+    ordem = IntegerField(constraints=[Check('ordem > 0')])
+    artigo = CharField()
+    texto = TextField()
+
+    class Meta:
+        table_name = 'artigo_decreto'
+        primary_key = CompositeKey('decreto', 'ordem')
+
+
+class LeiDecreto(BaseModel):
+    # Sem FK para lei: a carga das leis recria a tabela lei, e o vínculo sobrevive a ela.
+    id = AutoField()
+    lei_id = CharField(index=True)
+    decreto = ForeignKeyField(Decreto, backref='vinculos', column_name='decreto_id', on_delete='CASCADE')
+    tipo = CharField(index=True)
+    dispositivo = CharField(null=True)
+    origem = CharField()
+    nota = TextField(null=True)
+
+    class Meta:
+        table_name = 'lei_decreto'
+
+
+MODELOS_DECRETOS = [Decreto, ArtigoDecreto, LeiDecreto]
+
+
 def agora_utc():
     return datetime.now(timezone.utc).replace(tzinfo=None)
 

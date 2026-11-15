@@ -6,6 +6,7 @@ import { useRota } from "../lib/rota";
 
 const SUGESTOES = [
   "quais são as regras do código ambiental?",
+  "quais documentos preciso para a consulta prévia de parcelamento do solo?",
   "corte de árvore em logradouro público",
   "isenção de IPTU para aposentado",
   "quem tem direito a passe escolar?",

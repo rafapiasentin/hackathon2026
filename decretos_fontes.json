@@ -1,0 +1,23 @@
+{
+  "observacao": "Decretos com texto incluído na base. Cada url deve ser do Município de Londrina (londrina.pr.gov.br). Para incluir um decreto, acrescente uma entrada e rode: python coleta_decretos.py",
+  "decretos": [
+    {
+      "tipo": "Decreto",
+      "numero": "466",
+      "ano": 2025,
+      "url": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70387-decreto-466/file"
+    },
+    {
+      "tipo": "Decreto",
+      "numero": "831",
+      "ano": 2025,
+      "url": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70383-decreto-831/file"
+    },
+    {
+      "tipo": "Decreto",
+      "numero": "1144",
+      "ano": 2025,
+      "url": "https://repositorio.londrina.pr.gov.br/index.php/menu-obras/diretoria-de-loteamentos/70367-decreto-1144-25/file"
+    }
+  ]
+}

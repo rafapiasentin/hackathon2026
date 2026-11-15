@@ -398,7 +398,9 @@ Funções de apoio:
 
 Do outro lado, a 14.294 fica `vigente`, com `revoga: ["11471"]` e 225 artigos.
 
-A anotação original fica em `revogacao_nota`. Ela é a única evidência quando o revogador não é identificável: a 13.905 foi revogada por um **decreto**, e a anotação da 6.884 veio quebrada da fonte ("Lei nº de de de 20").
+A anotação original fica em `revogacao_nota`. Ela é a única evidência quando o revogador não é identificável: a anotação da 6.884 veio quebrada da fonte ("Lei nº de de de 20").
+
+Decreto não revoga lei. Por isso a anotação só conta quando cita uma lei, ou quando não cita decreto nenhum. A ementa da 13.905 tem "(Vide Decreto nº 413, de 2025) (Revogado pelo Decreto 1.341, de 2026)": quem foi revogado é o Decreto 413, e a lei continua `vigente`. As notas de decreto viram vínculos lei → decreto no `coleta_decretos.py` (ver o README, seção Decretos).
 
 ---
 
@@ -456,7 +458,8 @@ Para conferir se um `leis.json` é exatamente o que foi gerado, compare o SHA-25
 | Relações de uma lei com ela mesma | 27 casos na fonte | descartadas em `relacoes`, mantidas em `relacionamentos` |
 | Ementas vazias na API | 3 casos | súmula tirada do texto; senão `null` |
 | "Lei 13.960" aparecendo duas vezes | chave repetida | é promulgação de partes vetadas; `complementa_id` |
-| Revogada sem revogador identificável | decreto / erro na fonte | `revogacao_nota` guarda a anotação original |
+| Revogada sem revogador identificável | erro na fonte | `revogacao_nota` guarda a anotação original |
+| Nota de decreto lida como revogação | Lei 13.905 ("Revogado pelo Decreto 1.341" fala do Decreto 413) | a anotação só conta se citar lei; `--reprocessar` corrige o `leis.json` |
 | Sem rastreabilidade da coleta | revisão do colega | `leis.meta.json` e `hash_texto` |
 
 ---

@@ -31,6 +31,19 @@ VITE_API_URL=http://127.0.0.1:8000
 - API e documentação interativa: http://127.0.0.1:8000/docs
 - Saúde e contagem real: http://127.0.0.1:8000/api/health
 
+### Decretos (opcional)
+
+Depois de carregar as leis, carregue os decretos ligados a elas (o `decretos.json` já está no repositório):
+
+```powershell
+.\.venv\Scripts\python.exe carregar_decretos.py
+```
+
+Sem esse passo, a API funciona normalmente, só sem os decretos na resposta.
+
+O `leis.zip` foi reprocessado (a Lei 13.905/2024 deixou de aparecer como revogada). Um banco
+carregado com o ZIP anterior precisa ser recarregado: `carregar_leis.py leis.zip --recriar` (veja o README).
+
 ## O que testar
 
 1. Buscar `Lei 14.294/2026`: abre o Código Ambiental coletado, com 225 artigos.
@@ -38,6 +51,9 @@ VITE_API_URL=http://127.0.0.1:8000
 3. Perguntar `Posso cortar uma árvore na calçada?`: recupera artigos reais,
    com número da lei, artigo, trecho e link oficial.
 4. Buscar algo inexistente: retorna ausência de resultados, sem resposta inventada.
+5. Perguntar `Quais documentos preciso para a consulta prévia de parcelamento do solo?`: cita a
+   Lei 13.898/2024 (Art. 56) e o Decreto 466/2025 (Art. 2º). O botão "Ver de onde vem esta resposta"
+   mostra a lei, os decretos e os avisos.
 
 O chat atual é **documental/extrativo**, não usa um modelo de IA externo:
 seleciona e cita trechos do PostgreSQL. Não sintetiza aconselhamento jurídico.
